@@ -1,0 +1,13 @@
+{
+    "/js/main.scripts.js": "/js/main.scripts.js",
+    "/css/main.styles.css": "/css/main.styles.css",
+    "/js/main.scripts.js.map": "/js/main.scripts.js.map",
+    "/css/main.styles.css.map": "/css/main.styles.css.map",
+    "/js/profile.scripts.js": "/js/profile.scripts.js",
+    "/js/profile.scripts.js.map": "/js/profile.scripts.js.map",
+    "/js/vendor/jquery.slim.min.js": "/js/vendor/jquery.slim.min.js",
+    "/js/vendor/bootstrap.min.js": "/js/vendor/bootstrap.min.js",
+    "/js/vendor/popper.min.js": "/js/vendor/popper.min.js",
+    "/js/vendor/swiper.js": "/js/vendor/swiper.js",
+    "/css/swiper.min.css": "/css/swiper.min.css"
+}

@@ -1,0 +1,253 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "ucam-icons";
+  src:url("fonts/ucam-icons.eot");
+  src:url("fonts/ucam-icons.eot?#iefix") format("embedded-opentype"),
+    url("fonts/ucam-icons.woff") format("woff"),
+    url("fonts/ucam-icons.ttf") format("truetype"),
+    url("fonts/ucam-icons.svg#ucam-icons") format("svg");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+[data-icon]:before {
+  font-family: "ucam-icons" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  font-family: "ucam-icons" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-google:before {
+  content: "\64";
+}
+.icon-icon-rounded-flag-eng-01:before {
+  content: "\65";
+}
+.icon-youtube:before {
+  content: "\66";
+}
+.icon-diploma-empty:before {
+  content: "\6e";
+}
+.icon-insurance:before {
+  content: "\41";
+}
+.icon-artboard-1-copy-10-copia-4-16:before {
+  content: "\41";
+}
+.icon-ucam-gsuite:before {
+  content: "\49";
+}
+.icon-check-simple:before {
+  content: "\29";
+}
+.icon-cap:before {
+  content: "\4c";
+}
+.icon-phone:before {
+  content: "\63";
+}
+.icon-exit:before {
+  content: "\68";
+}
+.icon-euro:before {
+  content: "\69";
+}
+.icon-email:before {
+  content: "\6a";
+}
+.icon-edit:before {
+  content: "\6b";
+}
+.icon-documents:before {
+  content: "\6c";
+}
+.icon-check:before {
+  content: "\6d";
+}
+.icon-blog:before {
+  content: "\70";
+}
+.icon-arrow-left-right:before {
+  content: "\62";
+}
+.icon-download:before {
+  content: "\61";
+}
+.icon-financial:before {
+  content: "\77";
+}
+.icon-ajustes:before {
+  content: "\79";
+}
+.icon-lupa:before {
+  content: "\7a";
+}
+.icon-bank:before {
+  content: "\42";
+}
+.icon-question:before {
+  content: "\43";
+}
+.icon-desktop:before {
+  content: "\45";
+}
+.icon-briefcase:before {
+  content: "\46";
+}
+.icon-speech-bubble:before {
+  content: "\47";
+}
+.icon-calendar-1:before {
+  content: "\48";
+}
+.icon-world:before {
+  content: "\67";
+}
+.icon-artboard-1-copy-10-copia:before {
+  content: "\4d";
+}
+.icon-iconos-web-fp-idioma:before {
+  content: "\78";
+}
+.icon-iconos-web-fp-duracion:before {
+  content: "\71";
+}
+.icon-pre-registration:before {
+  content: "\4e";
+}
+.icon-learning:before {
+  content: "\72";
+}
+.icon-student:before {
+  content: "\75";
+}
+.icon-duracion:before {
+  content: "\76";
+}
+.icon-tranvia:before {
+  content: "\4f";
+}
+.icon-bus:before {
+  content: "\50";
+}
+.icon-launch:before {
+  content: "\51";
+}
+.icon-iconos-web-fp-copia:before {
+  content: "\52";
+}
+.icon-bulb:before {
+  content: "\73";
+}
+.icon-clipboard:before {
+  content: "\4b";
+}
+.icon-facebook:before {
+  content: "\74";
+}
+.icon-instagram:before {
+  content: "\53";
+}
+.icon-diploma:before {
+  content: "\54";
+}
+.icon-noticias:before {
+  content: "\55";
+}
+.icon-twitter:before {
+  content: "\56";
+}
+.icon-play:before {
+  content: "\6f";
+}
+.icon-play-artboard:before {
+  content: "\44";
+}
+.icon-memory:before {
+  content: "\4a";
+}
+.icon-star-shield:before {
+  content: "\57";
+}
+.icon-vector-6:before {
+  content: "\59";
+}
+.icon-confirmation:before {
+  content: "\58";
+}
+.icon-list-big:before {
+  content: "\5a";
+}
+.icon-grid:before {
+  content: "\30";
+}
+.icon-list:before {
+  content: "\31";
+}
+.icon-spotify:before {
+  content: "\32";
+}
+.icon-linkedin:before {
+  content: "\33";
+}
+.icon-room:before {
+  content: "\34";
+}
+.icon-perm-identity:before {
+  content: "\35";
+}
+.icon-close:before {
+  content: "\36";
+}
+.icon-schedule-24px:before {
+  content: "\37";
+}
+.icon-secretaria:before {
+  content: "\38";
+}
+.icon-key:before {
+  content: "\39";
+}
+.icon-nube:before {
+  content: "\21";
+}
+.icon-wifi:before {
+  content: "\22";
+}
+.icon-solicitudes:before {
+  content: "\23";
+}
+.icon-calendar-1-1:before {
+  content: "\24";
+}
+.icon-web-2:before {
+  content: "\25";
+}
+.icon-web-1:before {
+  content: "\26";
+}
+.icon-handshake:before {
+  content: "\27";
+}
