@@ -2,6 +2,7 @@ package com.example.buscadorpersonasucam.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +25,16 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/perfil/{id}")
-    public String perfil() {
+    public String perfil(Model model) {
+
+        //Aqui hace el pedido al backend con la id que se le pasa {id}
+        //devuelde una persona completa con todos los datos para usarlos en el frontend
+
+        Persona persona = new Persona();
+
+        //model.addAttribute("nombre", persona.getNombre());
+        //mandar de vuelta todos los valores para rellenar la pagina
+
         return "profile";
     }
 
