@@ -46,11 +46,11 @@
                 <form action="#">
                     <div class="input-group">
                         <span class="input-group-prepend">
-                          <div class="input-group-text bg-ucam-gray-lighter border-right-0"><i
-                                  class="icon-lupa"></i></div>
+                            <div class="input-group-text bg-ucam-gray-lighter border-right-0">
+                                <i class="icon-lupa"></i>
+                            </div>
                         </span>
-                        <input type="text" class="form-control bg-ucam-gray-lighter py-2 border-left-0" name="search"
-                               placeholder="Nombre, apellidos, extensión, email...">
+                        <input type="text" class="form-control bg-ucam-gray-lighter py-2 border-left-0" name="search" placeholder="Nombre, apellidos, extensión, email...">
                     </div>
                 </form>
             </div>
@@ -61,31 +61,17 @@
         <div class="row">
             <div class="col">
                 <!-- tabs -->
-                <!--<ul class="nav nav-tabs nav-justified" id="results" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="" aria-selected="true"
-                           id="personal-tab" href="#personal">Personal UCAM</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
-                           id="facultades-tab" href="#facultades">Facultades y Departamentos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
-                           id="publicaciones-tab" href="#publicaciones">Publicaciones</a>
-                    </li>
-                </ul>-->
                 <div id="swiper-results-tabs" class="swiper-container">
                     <ul class="nav nav-tabs nav-justified swiper-wrapper" id="results" role="tablist">
-                        <li class="nav-item swiper-slide">
+                        <li th:if="${personal != null}" class="nav-item swiper-slide">
                             <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="" aria-selected="true"
                                id="personal-tab" href="#personal">Personal UCAM</a>
                         </li>
-                        <li class="nav-item swiper-slide">
+                        <li th:if="${facultadesDepartamentos != null}" class="nav-item swiper-slide">
                             <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
                                id="facultades-tab" href="#facultades">Facultades y Departamentos</a>
                         </li>
-                        <li class="nav-item swiper-slide">
+                        <li th:if="${publicaciones}" class="nav-item swiper-slide">
                             <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
                                id="publicaciones-tab" href="#publicaciones">Publicaciones</a>
                         </li>
@@ -101,7 +87,7 @@
                 <!-- tabs content -->
                 <div class="tab-content" id="results-content">
                     <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
-                        <div class="row">
+                        <div class="row"> <!--todo recorrer la lista de personas encontradas para mostrarla-->
                             <!-- resultados -->
                             <!-- item -->
                             <div class="col-12 col-md-6">
@@ -503,11 +489,14 @@
                             </div>
                             <!-- end item -->
                             <!-- fin resultados -->
-
                         </div>
                     </div>
+
                     <div class="tab-pane fade" id="facultades" role="tabpanel" aria-labelledby="facultades-tab">
                         <div class="row">
+                            <!--todo recorrer la lista de facultades y departamentos para mostar las respuestas encontradas-->
+                            <!--todo preguntar si he de mostrar personas separadas por dep o departamentos en lugar de personas-->
+
                             <!-- resultados -->
                             <!-- item -->
                             <div class="col-12 col-md-6">
@@ -531,8 +520,11 @@
                             <!-- end resultados -->
                         </div>
                     </div>
+
                     <div class="tab-pane fade" id="publicaciones" role="tabpanel" aria-labelledby="publicaciones-tab">
                         <div class="row">
+                            <!--todo recorrer la lista de publicaciones las respuestas encontradas-->
+
                             <!-- resultados -->
                             <!-- item -->
                             <div class="col-12">
@@ -560,8 +552,9 @@
                             <!-- // borrar este H2 -->
                             <h2 class="mb-5">&darr; Ejemplo de búsqueda sin resultados &darr;<small>Borrar este título</small></h2>
 
+                            <!--Todo en caso de no tener resultados mostrar este contenido-->
                             <!-- // borrar este H2 -->
-                            <!-- ejemplo búsqueda sin resultados -->
+                            <!-- ejemplo búsqueda sin resultados
                             <div class="col-12">
                                 <p class="text-size-subtitulo1 text-color-info">Lo sentimos, no hemos encontrado ningún resultado para la búsqueda. </p>
                                 <p>Te sugerimos que:</p>
@@ -571,26 +564,30 @@
                                     <li>Pruebes con palabras más generales</li>
                                 </ul>
                             </div>
-                            <!-- end búsqueda sin resultados -->
+                            end búsqueda sin resultados -->
 
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- end tabs content -->
+                    <!-- end tabs content -->
 
-                        </div>
                     </div>
-
                 </div>
             </div>
-            <!-- fin resultados de búsqueda -->
+        </div>
+        <!-- fin resultados de búsqueda -->
+
         </div>
 
+        <!--Boton para volver arriba-->
         <button id="btn-up">
             <span id="btn-up-icon" class="material-symbols-outlined">expand_less</span>
         </button>
+        <!--En of boton para volver arriba-->
+
 </article>
 
+<!--Script para el boton de volver arriba-->
 <script>
     window.onscroll = function () {
         if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {

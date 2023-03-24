@@ -31,7 +31,6 @@
 
   <meta property="og:image" th:content="${imagen}">
   <meta name="twitter:image" th:content="${imagen}">
-
   <!-- End of Metadata -->
 
   <link th:href="@{/assets/plugins/ucam-icons/styles.css}" rel="stylesheet"/>
@@ -58,28 +57,41 @@
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-12 col-md-6 col-lg-5 order-md-2 d-flex justify-content-center align-items-end">
-            <img th:src="@{/assets/img/personas/rmartinez.png}" th:alt="${nombre} + ' ' + ${apellidos}" class="img-fluid">
+            <img th:if="${imagen != null}" th:src="${imagen}" th:alt="${nombre} + ' ' + ${apellidos}" class="img-fluid">
           </div>
           <div class="col-12 col-md-6 col-lg-5 order-md-1 profile__contact-data d-flex flex-column">
-            <a th:href="@{/resultados}" class="back-link mt-3 d-none d-md-block" title="Volver atrás"><
-              Volver atrás</a>
+            <a th:href="@{/resultados}" class="back-link mt-3 d-none d-md-block" title="Volver atrás">< Volver atrás</a>
             <!-- datos escritorio -->
             <div class="data-wrapper flex-1 flex-column justify-content-center d-none d-md-flex">
-              <h2 class="text-size-titulo1 font-weight-bold mt-5 mt-md-0" th:text="${nombre} + ' ' + ${apellidos}"></h2>
-              <h4 class="text-size-subtitulo1"><i th:text="${puesto}"></i></h4>
-              <p><i class="icon-email"></i> <a th:href="'mailto:' + ${email}"
-                                               th:title="'Enviar correo a ' + ${email}" th:text="${email}"></a></p>
-              <p><i class="icon-phone"></i> <a th:href="'tel:' + ${telefono}"
-                                               th:title="'Llamar al teléfono ' + ${telefono}" th:text="${extension}"></a></p>
-              <p th:text="${departamento}"><i class="icon-room"></i></p>
+              <h2 class="text-size-titulo1 font-weight-bold mt-5 mt-md-0" th:if="${nombre != null && apellidos != null}" th:text="${nombre} + ' ' + ${apellidos}"></h2>
+              <h4 class="text-size-subtitulo1"><i th:if="${puesto != null}" th:text="${puesto}"></i>
+              </h4>
+
+              <p><i class="icon-email"></i>
+                <a th:if="${mail != null}" th:href="'mailto:' + ${email}" th:title="'Enviar correo a ' + ${email}" th:text="${email}">
+                </a>
+              </p>
+
+              <p><i class="icon-phone"></i>
+                <a th:if="${telefono != null}" th:href="'tel:' + ${telefono}" th:title="'Llamar al teléfono ' + ${telefono}" th:text="${extension}">
+                </a>
+              </p>
+
+              <p th:if="${departamento != null}" th:text="${departamento}"><i class="icon-room"></i></p>
+
               <ul class="list-inline mt-2">
-                <li class="list-inline-item text-size-titulo2"><a class="decoration-none" th:href="${instagram}"
-                                                                  title="Instagram"><i
-                        class="icon-instagram"></i></a></li>
-                <li class="list-inline-item text-size-titulo2"><a class="decoration-none" th:href="${linkedin}"
-                                                                  title="LinkedIn"><i
-                        class="icon-linkedin"></i></a></li>
+                <li class="list-inline-item text-size-titulo2">
+                  <a class="decoration-none" th:if="${instagram != null}" th:href="${instagram}" title="Instagram">
+                    <i class="icon-instagram"></i>
+                  </a>
+                </li>
+                <li class="list-inline-item text-size-titulo2">
+                  <a class="decoration-none" th:if="${linkedin != null}" th:href="${linkedin}" title="LinkedIn">
+                    <i class="icon-linkedin"></i>
+                  </a>
+                </li>
               </ul>
+
             </div>
             <!-- end datos escritorio -->
           </div>
@@ -92,21 +104,33 @@
     <div class="container d-block d-md-none">
       <div class="row">
         <div class="col-12 profile__contact-data">
-          <h2 class="text-size-titulo1 font-weight-bold mt-4 mt-md-0" th:text="${nombre} + ' ' + ${apellidos}"></h2>
-          <h4 class="text-size-subtitulo1"><i th:text="${puesto}"></i></h4>
-          <p><i class="icon-email"></i> <a th:href="'mailto:' + ${email}"
-                                           th:title="'Enviar correo a ' + ${email}" th:text="${email}"></a></p>
-          <p><i class="icon-phone"></i> <a th:href="'tel:' + ${telefono}"
-                                           th:title="'Llamar al teléfono ' + ${telefono}" th:text="${extension}"></a></p>
-          <p th:text="${departamento}"><i class="icon-room"></i></p>
+          <h2 class="text-size-titulo1 font-weight-bold mt-4 mt-md-0" th:if="${nombre != null && apellidos != null}" th:text="${nombre} + ' ' + ${apellidos}"></h2>
+          <h4 class="text-size-subtitulo1"><i th:if="${puesto != null}" th:text="${puesto}"></i></h4>
+          <p><i class="icon-email"></i>
+            <a th:if="${mail != null}" th:href="'mailto:' + ${email}" th:title="'Enviar correo a ' + ${email}" th:text="${email}">
+            </a>
+          </p>
+
+          <p><i class="icon-phone"></i>
+            <a th:if="${telefono != null}" th:href="'tel:' + ${telefono}" th:title="'Llamar al teléfono ' + ${telefono}" th:text="${extension}">
+            </a>
+          </p>
+
+          <p th:if="${departamento != null}" th:text="${departamento}"><i class="icon-room"></i></p>
+
           <ul class="list-inline mt-2">
-            <li class="list-inline-item text-size-titulo2"><a class="decoration-none" th:href="${instagram}"
-                                                              title="Instagram"><i
-                    class="icon-instagram"></i></a></li>
-            <li class="list-inline-item text-size-titulo2"><a class="decoration-none" th:href="${linkedin}"
-                                                              title="LinkedIn"><i class="icon-linkedin"></i></a>
+            <li class="list-inline-item text-size-titulo2">
+              <a class="decoration-none" th:if="${instagram != null}" th:href="${instagram}" title="Instagram">
+                <i class="icon-instagram"></i>
+              </a>
+            </li>
+            <li class="list-inline-item text-size-titulo2">
+              <a class="decoration-none" th:if="${linkedin != null}" th:href="${linkedin}" title="LinkedIn">
+                <i class="icon-linkedin"></i>
+              </a>
             </li>
           </ul>
+
         </div>
       </div>
     </div>
@@ -128,28 +152,20 @@
           <!-- Se puede quitar todo el bloque para el PAS. No afecta a la maquetación. -->
           <div id="profile-tabs" class="swiper-container">
             <ul class="nav nav-tabs nav-justified swiper-wrapper" id="results" role="tablist">
-              <li class="nav-item swiper-slide">
-                <a class="nav-link active" data-toggle="tab" role="tab" aria-controls=""
-                   aria-selected="true"
-                   id="informacion-tab" href="#informacion">Información general</a>
+              <li th:if="${informacionGeneral != null}" class="nav-item swiper-slide">
+                <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="" aria-selected="true" id="informacion-tab" href="#informacion">Información general</a>
               </li>
-              <li class="nav-item swiper-slide">
-                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
-                   id="publicaciones-tab" href="#publicaciones">Publicaciones</a>
+              <li th:if="${publicaciones != null}" class="nav-item swiper-slide">
+                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="publicaciones-tab" href="#publicaciones">Publicaciones</a>
               </li>
-              <li class="nav-item swiper-slide">
-                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
-                   id="proyectos-competitivos-tab" href="#proyectos-competitivos">Proyectos
-                  Competitivos</a>
+              <li th:if="${proyectosCompetitivos != null}" class="nav-item swiper-slide">
+                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="proyectos-competitivos-tab" href="#proyectos-competitivos">Proyectos Competitivos</a>
               </li>
-              <li class="nav-item swiper-slide">
-                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
-                   id="proyectos-no-competitivos-tab" href="#proyectos-no-competitivos">Proyectos
-                  Competitivos</a>
+              <li th:if="${proyectosNoCompetitivos != null}" class="nav-item swiper-slide">
+                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="proyectos-no-competitivos-tab" href="#proyectos-no-competitivos">Proyectos Competitivos</a>
               </li>
-              <li class="nav-item swiper-slide">
-                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
-                   id="docencia-tab" href="#docencia">Docencia impartida en los últimos años</a>
+              <li th:if="${docenciaImpartida != null}" class="nav-item swiper-slide">
+                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="docencia-tab" href="#docencia">Docencia impartida en los últimos años</a>
               </li>
             </ul>
           </div>
@@ -157,25 +173,24 @@
 
           <!-- contenido tabs -->
           <div class="tab-content">
-            <div class="tab-pane fade show active" id="informacion" role="tabpanel"
-                 aria-labelledby="informacion-tab">
+            <!--informacion general-->
+            <div class="tab-pane fade show active" id="informacion" role="tabpanel" aria-labelledby="informacion-tab">
 
-              <h3 class="text-size-subtitulo1">Formación</h3>
-              <!--Aqui va un for para recorrer toda la formacion que tenga y pintarla en un li-->
+              <h3 th:if="${formacion != null}" class="text-size-subtitulo1">Formación</h3>
+              <!-- todo Aqui va un for para recorrer toda la formacion que tenga y pintarla en un li-->
               <ul>
                 <li th:text="${formacion}"></li>
               </ul>
 
-              <h3 class="text-size-subtitulo1">Grupos de investigación</h3>
-              <!--Preguntar como manejar esta informacion-->
+              <h3 th:if="${grupoInvestigacion}" class="text-size-subtitulo1">Grupos de investigación</h3>
+              <!-- todo Preguntar como manejar esta informacion-->
               <ul>
                 <li><a th:href="${grupoInvestigacion}"></a></li>
               </ul>
 
-              <h3 class="text-size-subtitulo1">Personas relacionadas</h3>
+              <h3 th:if="${personasRelacionadas != null}" class="text-size-subtitulo1">Personas relacionadas</h3>
               <!-- personas relacionadas -->
-              <div id="related-profiles">
-                <!--Recorrer las personas relacionadas o las del departamento-->
+              <div id="related-profiles"> <!-- todo Recorrer las personas relacionadas o las del departamento-->
                   <!-- item -->
                   <a href="#" title="Samuel Ferrer García" class="related-profile__wrapper">
                     <div class="profile-card">
@@ -292,31 +307,31 @@
                 </button>
               </div>
               <!--end of boton mas resultados-->
+            <!--end of informacion general-->
 
+              <!--todo formatear y preparar el resto de tabs-->
             <!--publicaciones-->
             </div>
-            <div class="tab-pane fade" id="publicaciones" role="tabpanel"
-                 aria-labelledby="publicaciones-tab">
+            <div class="tab-pane fade" id="publicaciones" role="tabpanel" aria-labelledby="publicaciones-tab">
 
               <h6>Aplicación de la metodología del Aula Inversa en asignaturas del Grado en Turismo</h6>
-
               <p>María Dolores Gil , Margarita Capdepón , Miguel Ángel Beltrán , Francisco José Noguera ,
                 Ginesa Martinez , María Dolores García , Jorge López , María Fernández , Victoria Pérez
-                , Mario Cava (2015)</p>
-
+                , Mario Cava (2015)
+              </p>
               <p class="text-color-ucam-gray-medium">Publicado en: <strong>La Universidad como comunidad
-                de innovación y cambio</strong>, 112, 120</p>
+                de innovación y cambio</strong>, 112, 120
+              </p>
             </div>
             <!--End of publicaciones-->
+
             <!--Proyectos competitivos-->
-            <div class="tab-pane fade" id="proyectos-competitivos" role="tabpanel"
-                 aria-labelledby="proyectos-competitivos-tab">
+            <div class="tab-pane fade" id="proyectos-competitivos" role="tabpanel" aria-labelledby="proyectos-competitivos-tab">
               3
             </div>
             <!--End of proyectos competitivos-->
             <!--Proyectos no competitivos-->
-            <div class="tab-pane fade" id="proyectos-no-competitivos" role="tabpanel"
-                 aria-labelledby="proyectos-no-competitivos-tab">
+            <div class="tab-pane fade" id="proyectos-no-competitivos" role="tabpanel" aria-labelledby="proyectos-no-competitivos-tab">
               4
             </div>
             <!--End of proyectos competitivos-->
