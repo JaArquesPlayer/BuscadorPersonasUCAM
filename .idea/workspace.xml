@@ -4,6 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="34cdec78-4e6f-40cb-b9ad-b49b52f0ae2e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.6.1/executionHistory/executionHistory.lock" afterDir="false" />
@@ -26,6 +27,9 @@
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/profile.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/search-results.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/search-results.html" afterDir="false" />
     </list>
+=======
+    <list default="true" id="34cdec78-4e6f-40cb-b9ad-b49b52f0ae2e" name="Changes" comment="" />
+>>>>>>> f866ca31c623d7c755f3c91ccf01e6c5cc2a1431
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -142,7 +146,7 @@
       <workItem from="1679386170381" duration="24588000" />
       <workItem from="1679472232058" duration="23009000" />
       <workItem from="1679558669632" duration="23596000" />
-      <workItem from="1679645061683" duration="2162000" />
+      <workItem from="1679645061683" duration="2672000" />
     </task>
     <servers />
   </component>
