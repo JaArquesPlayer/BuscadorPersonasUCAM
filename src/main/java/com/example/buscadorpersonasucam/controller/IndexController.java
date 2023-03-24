@@ -61,7 +61,6 @@ public class IndexController {
         }
         return ResponseEntity.ok(personasEncontradas);
     }
-
     public String normalize(String string) {
         return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
     }
