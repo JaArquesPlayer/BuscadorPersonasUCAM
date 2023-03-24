@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+  <link rel="shortcut icon" th:href="@{/assets/img/escudo-ucam.svg}"  type="image/x-icon"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <title>Persona</title>
+
+  <link th:href="@{/assets/plugins/ucam-icons/styles.css}" rel="stylesheet"/>
+  <link th:href="@{/assets/css/swiper.min.css}" rel="stylesheet"/>
+  <link th:href="@{/assets/css/main.css}" rel="stylesheet"/>
+</head>
+
+<body>
+
+<header>
+  <nav class="navbar navbar-light bg-info justify-content-end">
+    <a class="navbar-brand mr-auto" href="/">
+      <img class="img-fluid" th:src="@{/assets/img/logo.svg}" width="200" height="50" alt="Logo UCAM Personas">
+    </a>
+    <div class="dropdown">
+      <button class="btn btn-link decoration-none text-white text-size-titulo2 mr-4" id="navbarBuscador"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="icon-lupa"></i>
+      </button>
+      <div id="dropdownBuscador" class="dropdown-menu dropdown-menu-right fixed-top"
+           aria-labelledby="navbarBuscador">
+        <button type="button" class="close" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="form-group w-md-75 mx-auto my-5">
+          <input type="text" class="form-control bg-white rounded-0 border-bottom" name="search"
+                 placeholder="Nombre, apellidos, extensión, email...">
+        </div>
+
+      </div>
+    </div>
+  </nav>
+
+</header>
+
+<article class="profile">
+
+  <!-- portada -->
+  <section>
+    <div class="hero bg-ucam-gray-light">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-6 col-lg-5 order-md-2 d-flex justify-content-center align-items-end">
+            <img th:src="@{/assets/img/personas/rmartinez.png}" alt="Raquel Martínez Moreno" class="img-fluid">
+          </div>
+          <div class="col-12 col-md-6 col-lg-5 order-md-1 profile__contact-data d-flex flex-column">
+            <a th:href="@{/resultados}" class="back-link mt-3 d-none d-md-block" title="Volver atrás"><
+              Volver atrás</a>
+            <!-- datos escritorio -->
+            <div class="data-wrapper flex-1 flex-column justify-content-center d-none d-md-flex">
+              <h2 class="text-size-titulo1 font-weight-bold mt-5 mt-md-0">Raquel Martínez Moreno</h2>
+              <h4 class="text-size-subtitulo1"><i>Diseñadora UX</i></h4>
+              <p><i class="icon-email"></i> <a href="mailto:sferrer@ucam.edu"
+                                               title="Enviar correo a sferrer@ucam.edu">sferrer@ucam.edu</a>
+              </p>
+              <p><i class="icon-phone"></i> <a href="tel:0034968278294"
+                                               title="Llamar al teléfono 968278294">Ext. 294</a></p>
+              <p><i class="icon-room"></i> Departamento Multimedia</p>
+              <ul class="list-inline mt-2">
+                <li class="list-inline-item text-size-titulo2"><a class="decoration-none" href="#"
+                                                                  title="Instagram"><i
+                        class="icon-instagram"></i></a></li>
+                <li class="list-inline-item text-size-titulo2"><a class="decoration-none" href="#"
+                                                                  title="LinkedIn"><i
+                        class="icon-linkedin"></i></a></li>
+              </ul>
+            </div>
+            <!-- end datos escritorio -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- datos móvil -->
+    <div class="container d-block d-md-none">
+      <div class="row">
+        <div class="col-12 profile__contact-data">
+          <h2 class="text-size-titulo1 font-weight-bold mt-4 mt-md-0">Raquel Martínez Moreno</h2>
+          <h4 class="text-size-subtitulo1"><i>Diseñadora UX</i></h4>
+          <p><i class="icon-email"></i> <a href="mailto:sferrer@ucam.edu"
+                                           title="Enviar correo a sferrer@ucam.edu">sferrer@ucam.edu</a></p>
+          <p><i class="icon-phone"></i> <a href="tel:0034968278294" title="Llamar al teléfono 968278294">Ext.
+            294</a></p>
+          <p><i class="icon-room"></i> Departamento Multimedia</p>
+          <ul class="list-inline mt-2">
+            <li class="list-inline-item text-size-titulo2"><a class="decoration-none" href="#"
+                                                              title="Instagram"><i
+                    class="icon-instagram"></i></a></li>
+            <li class="list-inline-item text-size-titulo2"><a class="decoration-none" href="#"
+                                                              title="LinkedIn"><i class="icon-linkedin"></i></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- end datos móvil -->
+
+  </section>
+
+  <!-- end portada -->
+
+  <!-- contenido -->
+
+  <section class="profile__content">
+
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12">
+
+          <!-- inicio tabs -->
+          <!-- Se puede quitar todo el bloque para el PAS. No afecta a la maquetación. -->
+          <div id="profile-tabs" class="swiper-container">
+            <ul class="nav nav-tabs nav-justified swiper-wrapper" id="results" role="tablist">
+              <li class="nav-item swiper-slide">
+                <a class="nav-link active" data-toggle="tab" role="tab" aria-controls=""
+                   aria-selected="true"
+                   id="informacion-tab" href="#informacion">Información general</a>
+              </li>
+              <li class="nav-item swiper-slide">
+                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
+                   id="publicaciones-tab" href="#publicaciones">Publicaciones</a>
+              </li>
+              <li class="nav-item swiper-slide">
+                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
+                   id="proyectos-competitivos-tab" href="#proyectos-competitivos">Proyectos
+                  Competitivos</a>
+              </li>
+              <li class="nav-item swiper-slide">
+                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
+                   id="proyectos-no-competitivos-tab" href="#proyectos-no-competitivos">Proyectos
+                  Competitivos</a>
+              </li>
+              <li class="nav-item swiper-slide">
+                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
+                   id="docencia-tab" href="#docencia">Docencia impartida en los últimos años</a>
+              </li>
+            </ul>
+          </div>
+          <!-- end tabs -->
+
+          <!-- contenido tabs -->
+
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="informacion" role="tabpanel"
+                 aria-labelledby="informacion-tab">
+              <h3 class="text-size-subtitulo1">Formación</h3>
+              <ul>
+                <li>Dirección y Planificación del Turismo. Instituto Universitario de Investigaciones
+                  Turísticas
+                </li>
+                <li>Filosofía y Letras. Geografía e Historia. Especialidad Historia del Arte.</li>
+                <li>Filosofía y Letras. Geografía e Historia. Especialidad Historia Antigua y
+                  Arqueología.
+                </li>
+              </ul>
+              <h3 class="text-size-subtitulo1">Grupos de investigación</h3>
+              <ul>
+                <li><a href="#" title="Planificación y desarrollo para la competitividad turística">Planificación
+                  y desarrollo para la competitividad turística</a></li>
+              </ul>
+              <h3 class="text-size-subtitulo1">Personas relacionadas</h3>
+
+              <!-- personas relacionadas -->
+              <div id="related-profiles">
+                  <!-- item -->
+                  <a href="#" title="Samuel Ferrer García" class="related-profile__wrapper">
+                    <div class="profile-card">
+                      <img class="img-fluid" th:src="@{/assets/img/personas/sferrer.jpg}"
+                           alt="Samuel Ferrer García">
+                      <p class="related-profile__caption">Samuel Ferrer García</p>
+                    </div>
+                  </a>
+                  <!-- end item -->
+                  <!-- item -->
+                  <a href="#" title="Nabil" class="related-profile__wrapper">
+                    <div class="profile-card">
+                      <img class="img-fluid" th:src="@{/assets/img/personas/nejey.jpg}" alt="Nabil">
+                      <p class="related-profile__caption">Nabil El Jadaui El Yamaha</p>
+                    </div>
+                  </a>
+                  <!-- end item -->
+                  <!-- item -->
+                  <a href="#" title="Jean Carlos" class="related-profile__wrapper">
+                    <div class="profile-card">
+                      <img class="img-fluid" th:src="@{/assets/img/personas/jcsousa.jpg}"
+                           alt="Jean Carlos">
+                      <p class="related-profile__caption">Jean Carlos De Sousa González</p>
+                    </div>
+                  </a>
+                  <!-- end item -->
+                  <!-- item -->
+                  <a href="#" title="María Sánchez García" class="related-profile__wrapper">
+                    <div class="profile-card">
+                      <img class="img-fluid" th:src="@{/assets/img/personas/msanchez.jpg}"
+                           alt="María Sánchez García">
+                      <p class="related-profile__caption">María Sánchez García</p>
+                    </div>
+                  </a>
+                  <!-- end item -->
+                  <!-- item -->
+                  <a href="#" title="Samuel Ferrer García" class="related-profile__wrapper">
+                    <div class="profile-card">
+                      <img class="img-fluid" th:src="@{/assets/img/personas/sferrer.jpg}"
+                           alt="Samuel Ferrer García">
+                      <p class="related-profile__caption">Samuel Ferrer García</p>
+                    </div>
+                  </a>
+                  <!-- end item -->
+                  <!-- item -->
+                  <a href="#" title="Nabil" class="related-profile__wrapper">
+                    <div class="profile-card">
+                      <img class="img-fluid" th:src="@{/assets/img/personas/nejey.jpg}" alt="Nabil">
+                      <p class="related-profile__caption">Nabil El Jadaui El Yamaha</p>
+                    </div>
+                  </a>
+                  <!-- end item -->
+                  <!-- item -->
+                  <a href="#" title="Jean Carlos" class="related-profile__wrapper">
+                    <div class="profile-card">
+                      <img class="img-fluid" th:src="@{/assets/img/personas/jcsousa.jpg}"
+                           alt="Jean Carlos">
+                      <p class="related-profile__caption">Jean Carlos De Sousa González</p>
+                    </div>
+                  </a>
+                  <!-- end item -->
+                  <!-- item -->
+                  <a href="#" title="María Sánchez García" class="related-profile__wrapper">
+                    <div class="profile-card">
+                      <img class="img-fluid" th:src="@{/assets/img/personas/msanchez.jpg}"
+                           alt="María Sánchez García">
+                      <p class="related-profile__caption">María Sánchez García</p>
+                    </div>
+                  </a>
+                  <!-- end item -->
+                  <!-- item -->
+                  <a href="#" title="Jean Carlos" class="related-profile__wrapper">
+                    <div class="profile-card">
+                      <img class="img-fluid" th:src="@{/assets/img/personas/jcsousa.jpg}"
+                           alt="Jean Carlos">
+                      <p class="related-profile__caption">Jean Carlos De Sousa González</p>
+                    </div>
+                  </a>
+                  <!-- end item -->
+                  <!-- item -->
+                  <a href="#" title="María Sánchez García" class="related-profile__wrapper">
+                    <div class="profile-card">
+                      <img class="img-fluid" th:src="@{/assets/img/personas/msanchez.jpg}"
+                           alt="María Sánchez García">
+                      <p class="related-profile__caption">María Sánchez García</p>
+                    </div>
+                  </a>
+                  <!-- end item -->
+                <!-- item -->
+                <a href="#" title="Samuel Ferrer García" class="related-profile__wrapper">
+                  <div class="profile-card">
+                    <img class="img-fluid" th:src="@{/assets/img/personas/sferrer.jpg}"
+                         alt="Samuel Ferrer García">
+                    <p class="related-profile__caption">Samuel Ferrer García</p>
+                  </div>
+                </a>
+                <!-- end item -->
+                <!-- item -->
+                <a href="#" title="Nabil" class="related-profile__wrapper">
+                  <div class="profile-card">
+                    <img class="img-fluid" th:src="@{/assets/img/personas/nejey.jpg}" alt="Nabil">
+                    <p class="related-profile__caption">Nabil El Jadaui El Yamaha</p>
+                  </div>
+                </a>
+                <!-- end item -->
+              </div>
+              <!-- end personas relacionadas -->
+
+            </div>
+            <div class="tab-pane fade" id="publicaciones" role="tabpanel"
+                 aria-labelledby="publicaciones-tab">
+              <h6><a href="#"
+                     title="Aplicación de la metodología del Aula Inversa en asignaturas del Grado en Turismo">Aplicación
+                de la metodología del Aula Inversa en asignaturas del Grado en Turismo</a></h6>
+              <p>María Dolores Gil , Margarita Capdepón , Miguel Ángel Beltrán , Francisco José Noguera ,
+                Ginesa Martinez , María Dolores García , Jorge López , María Fernández , Victoria Pérez
+                , Mario Cava (2015)</p>
+              <p class="text-color-ucam-gray-medium">Publicado en: <strong>La Universidad como comunidad
+                de innovación y cambio</strong>, 112, 120</p>
+            </div>
+            <div class="tab-pane fade" id="proyectos-competitivos" role="tabpanel"
+                 aria-labelledby="proyectos-competitivos-tab">
+              3
+            </div>
+            <div class="tab-pane fade" id="proyectos-no-competitivos" role="tabpanel"
+                 aria-labelledby="proyectos-no-competitivos-tab">
+              4
+            </div>
+            <div class="tab-pane fade" id="docencia" role="tabpanel" aria-labelledby="docencia-tab">
+              5
+            </div>
+          </div>
+
+          <!-- end content tabs -->
+
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-div">
+      <button class="more-results">
+      <p>Ver más resultados</p>
+      <span class="material-symbols-outlined">expand_more</span>
+    </button></div>
+
+  </section>
+
+  <!-- end contenido -->
+
+
+</article>
+
+
+<script th:src="@{/assets/js/vendor/jquery.slim.min.js}"></script>
+<script th:src="@{/assets/js/vendor/popper.min.js}"></script>
+<script th:src="@{/assets/js/vendor/bootstrap.min.js}"></script>
+<script th:src="@{/assets/js/vendor/swiper.js}"></script>
+<script th:src="@{/assets/js/profile.scripts.js}"></script>
+</body>
+</html>

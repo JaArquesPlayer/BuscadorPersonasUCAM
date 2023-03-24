@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+    <link rel="shortcut icon" th:href="@{/assets/img/escudo-ucam.svg}"  type="image/x-icon"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <title>Buscador de personas UCAM</title>
+
+    <link th:href="@{/assets/plugins/ucam-icons/styles.css}"  rel="stylesheet"/>
+    <link th:href="@{/assets/css/main.css}" rel="stylesheet"/>
+</head>
+
+<body>
+
+<header>
+    <nav class="navbar navbar-light bg-info justify-content-end">
+        <a class="navbar-brand mr-auto" th:href="@{/personas}">
+            <img class="img-fluid" src="/assets/img/logo.svg?0102" width="200" height="50" alt="Logo UCAM Personas">
+        </a>
+        <div class="dropdown">
+            <button class="btn btn-link decoration-none text-white text-size-titulo2 mr-4" id="navbarBuscador" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="icon-lupa"></i>
+            </button>
+            <div id="dropdownBuscador" class="dropdown-menu dropdown-menu-right fixed-top" aria-labelledby="navbarBuscador">
+                <button type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="form-group w-md-75 mx-auto my-5">
+                    <input type="text" class="form-control bg-white rounded-0 border-bottom" name="search"
+                           placeholder="Nombre, apellidos, extensión, email...">
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+</header>
+
+<article>
+    <div class="container mt-5">
+        <!-- buscador -->
+        <div class="row">
+            <div class="col">
+                <form action="#">
+                    <div class="input-group">
+                        <span class="input-group-prepend">
+                          <div class="input-group-text bg-ucam-gray-lighter border-right-0"><i
+                                  class="icon-lupa"></i></div>
+                        </span>
+                        <input type="text" class="form-control bg-ucam-gray-lighter py-2 border-left-0" name="search"
+                               placeholder="Nombre, apellidos, extensión, email...">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- fin buscador -->
+
+        <!-- resultados de búsqueda -->
+        <div class="row">
+            <div class="col">
+                <!-- tabs -->
+                <!--<ul class="nav nav-tabs nav-justified" id="results" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="" aria-selected="true"
+                           id="personal-tab" href="#personal">Personal UCAM</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
+                           id="facultades-tab" href="#facultades">Facultades y Departamentos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
+                           id="publicaciones-tab" href="#publicaciones">Publicaciones</a>
+                    </li>
+                </ul>-->
+                <div id="swiper-results-tabs" class="swiper-container">
+                    <ul class="nav nav-tabs nav-justified swiper-wrapper" id="results" role="tablist">
+                        <li class="nav-item swiper-slide">
+                            <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="" aria-selected="true"
+                               id="personal-tab" href="#personal">Personal UCAM</a>
+                        </li>
+                        <li class="nav-item swiper-slide">
+                            <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
+                               id="facultades-tab" href="#facultades">Facultades y Departamentos</a>
+                        </li>
+                        <li class="nav-item swiper-slide">
+                            <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
+                               id="publicaciones-tab" href="#publicaciones">Publicaciones</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- end tabs -->
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10">
+
+                <!-- tabs content -->
+                <div class="tab-content" id="results-content">
+                    <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
+                        <div class="row">
+                            <!-- resultados -->
+                            <!-- item -->
+                            <div class="col-12 col-md-6">
+                                <div class="card mb-3">
+                                    <div class="row no-gutters">
+                                        <div class="col-auto p-3">
+                                            <img th:src="@{/assets/img/personas/sferrer.jpg}" alt="Samuel Ferrer García" width="86" height="105" class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <div class="card-body d-flex flex-column justify-content-end h-100">
+                                                <p class="card-title flex-1"><a th:href="@{/perfil/1}" title="Samuel Ferrer García">Samuel Ferrer García</a></p>
+                                                <p class="card-text"><i class="icon-email"></i> <a href="mailto:sferrer@ucam.edu" title="Enviar correo a sferrer@ucam.edu">sferrer@ucam.edu</a></p>
+                                                <p class="card-text"><i class="icon-phone"></i> <a href="tel:0034968278294" title="Llamar al teléfono 968278294">Ext. 294</a></p>
+                                                <p class="card-text"><i class="icon-room"></i> Departamento Multimedia</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end item -->
+                            <!-- item -->
+                            <div class="col-12 col-md-6">
+                                <div class="card mb-3">
+                                    <div class="row no-gutters">
+                                        <div class="col-auto p-3">
+                                            <img th:src="@{/assets/img/personas/jcsousa.jpg}" alt="Jean Carlos De Sousa González" width="86" height="105" class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <div class="card-body d-flex flex-column justify-content-end h-100">
+                                                <p class="card-title flex-1"><a th:href="@{/perfil/1}" title="Jean Carlos De Sousa González">Jean Carlos De Sousa González</a></p>
+                                                <p class="card-text"><i class="icon-email"></i> <a href="mailto:rmartinez@ucam.edu" title="Enviar correo a rmartinez@ucam.edu">rmartinez@ucam.edu</a></p>
+                                                <p class="card-text"><i class="icon-phone"></i> <a href="tel:0034968278294" title="Llamar al teléfono 968278294">Ext. 294</a></p>
+                                                <p class="card-text"><i class="icon-room"></i> Departamento Multimedia</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end item -->
+                            <!-- item -->
+                            <div class="col-12 col-md-6">
+                                <div class="card mb-3">
+                                    <div class="row no-gutters">
+                                        <div class="col-auto p-3">
+                                            <img th:src="@{/assets/img/personas/default.png}" alt="Nabil El Hadaoui El Yamani" width="86" height="105" class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <div class="card-body d-flex flex-column justify-content-end h-100">
+                                                <p class="card-title flex-1"><a th:href="@{/perfil/1}" title="Nabil El Hadaoui El Yamani">Nabil El Hadaoui El Yamani</a></p>
+                                                <p class="card-text"><i class="icon-email"></i> <a href="mailto:nejey@ucam.edu" title="Enviar correo a nejey@ucam.edu">nejey@ucam.edu</a></p>
+                                                <p class="card-text"><i class="icon-phone"></i> <a href="tel:0034968278295" title="Llamar al teléfono 968278295">Ext. 295</a></p>
+                                                <p class="card-text"><i class="icon-room"></i> Departamento Multimedia</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end item -->
+                            <!-- item -->
+                            <div class="col-12 col-md-6">
+                                <div class="card mb-3">
+                                    <div class="row no-gutters">
+                                        <div class="col-auto p-3">
+                                            <img th:src="@{/assets/img/personas/rmartinez.jpg}" alt="Raquel Martínez Moreno" width="86" height="105" class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <div class="card-body d-flex flex-column justify-content-end h-100">
+                                                <p class="card-title flex-1"><a th:href="@{/perfil/1}" title="Raquel Martínez Moreno">Raquel Martínez Moreno</a></p>
+                                                <p class="card-text"><i class="icon-email"></i> <a href="mailto:nejey@ucam.edu" title="Enviar correo a nejey@ucam.edu">nejey@ucam.edu</a></p>
+                                                <p class="card-text"><i class="icon-phone"></i> <a href="tel:0034968278295" title="Llamar al teléfono 968278295">Ext. 295</a></p>
+                                                <p class="card-text"><i class="icon-room"></i> Departamento Multimedia</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end item -->
+                            <!-- fin resultados -->
+
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="facultades" role="tabpanel" aria-labelledby="facultades-tab">
+                        <div class="row">
+                            <!-- resultados -->
+                            <!-- item -->
+                            <div class="col-12 col-md-6">
+                                <div class="card mb-3">
+                                    <div class="row no-gutters">
+                                        <div class="col-auto p-3">
+                                            <img th:src="@{/assets/img/escudo-ucam.svg}" alt="Escudo UCAM" width="86" height="105" class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <div class="card-body d-flex flex-column justify-content-end h-100">
+                                                <p class="card-title flex-1"><a href="#" title="Samuel Ferrer García">Departamento Multimedia </a></p>
+                                                <p class="card-text"><i class="icon-email"></i> <a href="mailto:multimedia@ucam.edu" title="Enviar correo a multimedia@ucam.edu">multimedia@ucam.edu</a></p>
+                                                <p class="card-text"><i class="icon-phone"></i> <a href="tel:0034968278294" title="Llamar al teléfono 968278294">Ext. 294</a></p>
+                                                <p class="card-text"><i class="icon-room"></i> 1ª planta del Templo</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end item -->
+                            <!-- end resultados -->
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="publicaciones" role="tabpanel" aria-labelledby="publicaciones-tab">
+                        <div class="row">
+                            <!-- resultados -->
+                            <!-- item -->
+                            <div class="col-12">
+                                <a href="#" class="text-color-info font-weight-bold mb-3">Organizaciones nativas responsables: la RSC en la cultura de las startups digitales españolas</a>
+                                <p class="mt-3">María Dolores Gil , Margarita Capdepón , Miguel Ángel Beltrán , Francisco José Noguera , Ginesa Martinez , María Dolores García , Jorge López , María Fernández , Victoria Pérez , Mario Cava (2015)</p>
+                                <hr>
+                            </div>
+                            <!-- end item -->
+                            <!-- item -->
+                            <div class="col-12">
+                                <a href="#" class="text-color-info font-weight-bold mb-3">Propuesta de diseño claro y transparente para la factura eléctrica regulada en España</a>
+                                <p class="mt-3">Blas José Subiela , María Ascensión Miralles , David Sánchez (2018)</p>
+                                <hr>
+                            </div>
+                            <!-- end item -->
+                            <!-- item -->
+                            <div class="col-12">
+                                <a href="#" class="text-color-info font-weight-bold mb-3">Influencia del diseño periodístico en la comprensión de la información</a>
+                                <p class="mt-3">Blas José Subiela , Ariana Gómez (2018)</p>
+                                <hr>
+                            </div>
+                            <!-- end item -->
+                            <!-- end resultados -->
+
+                            <!-- // borrar este H2 -->
+                            <h2 class="mb-5">&darr; Ejemplo de búsqueda sin resultados &darr;<small>Borrar este título</small></h2>
+                            <!-- // borrar este H2 -->
+                            <!-- ejemplo búsqueda sin resultados -->
+                            <div class="col-12">
+                                <p class="text-size-subtitulo1 text-color-info">Lo sentimos, no hemos encontrado ningún resultado para la búsqueda. </p>
+                                <p>Te sugerimos que:</p>
+                                <ul class="marker-secondary">
+                                    <li>Compruebes que las palabras que buscas están escritas correctmente</li>
+                                    <li>Intentes usar otras palabras</li>
+                                    <li>Pruebes con palabras más generales</li>
+                                </ul>
+                            </div>
+                            <!-- end búsqueda sin resultados -->
+                        </div>
+                    </div>
+                </div>
+                <!-- end tabs content -->
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- fin resultados de búsqueda -->
+        </div>
+
+        <button id="btn-up">
+            <span id="btn-up-icon" class="material-symbols-outlined">expand_less</span>
+        </button>
+</article>
+
+<script>
+    window.onscroll = function () {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("btn-up").style.display = "block";
+        } else {
+            document.getElementById("btn-up").style.display = "none";
+        }
+    };
+
+    document.getElementById("btn-up").onclick = function () {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    };
+</script>
+
+<script type="text/javascript" th:src="@{/assets/js/vendor/swiper.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/vendor/jquery.slim.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/vendor/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/vendor/popper.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/main.scripts.js}"></script>
+</body>
+</html>
