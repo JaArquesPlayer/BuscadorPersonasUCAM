@@ -9,7 +9,7 @@
     <title>Buscador de personas UCAM</title>
 
     <link th:href="@{/assets/plugins/ucam-icons/styles.css}"  rel="stylesheet"/>
-    <link th:href="@{/assets/css/main.css}" rel="stylesheet"/>
+    <link defer th:href="@{/assets/css/main.css}" rel="stylesheet"/>
 </head>
 
 <body>
@@ -646,20 +646,21 @@
 
         $busqueda.on('input', function() {
 
-            $.getJSON('/searchDepartamentos', {nombre: $busqueda.val()})
-                .done(function(departamentosEncontrados) {
+            $.getJSON('/searchPersonal', {nombre: $busqueda.val()})
+                .done(function(personasEncontradas) {
                     $resultadosDepartamentos.empty();
 
-                    departamentosEncontrados.forEach(function(persona) {
+                    personasEncontradas.forEach(function(persona) {
+                        var nombre = persona.nombre + ' ' + persona.apellidos;
                         var $card = $(
-                            '<a href="#" title="Samuel Ferrer García" class="related-profile__wrapper">\n' +
+                            '<a href="/perfil/'+persona.id+'" title="'+nombre+'" class="related-profile__wrapper">\n' +
                             '  <div class="profile-card">\n' +
-                            '     <img class="img-fluid" th:src="@{/assets/img/personas/sferrer.jpg}" alt="Samuel Ferrer García">\n' +
-                            '        <p class="related-profile__caption">Samuel Ferrer García</p>\n' +
+                            '     <img class="img-fluid" src="'+persona.image+'" alt="">\n' +
+                            '        <p class="related-profile__caption">'+persona.nombre+'</p>\n' +
                             '  </div>\n' +
                             '</a>\n');
 
-                        $resultadosPersonal.append($card);
+                        $resultadosDepartamentos.append($card);
                     });
                 })
                 .fail(function() {
@@ -686,7 +687,7 @@
                         var $card = $(
                             '<div class="col-12">\n' +
                             '   <a href="#" class="text-color-info font-weight-bold mb-3">Organizaciones nativas responsables: la RSC en la cultura de las startups digitales españolas</a>\n' +
-                            '       <p class="mt-3">María Dolores Gil , Margarita Capdepón , Miguel Ángel Beltrán , Francisco José Noguera , Ginesa Martinez , María Dolores García , Jorge López , María Fernández , Victoria Pérez , Mario Cava (2015)</p>\' +
+                            '       <p class="mt-3">María Dolores Gil , Margarita Capdepón , Miguel Ángel Beltrán , Francisco José Noguera , Ginesa Martinez , María Dolores García , Jorge López , María Fernández , Victoria Pérez , Mario Cava (2015)</p>\n' +
                             '       <hr>\n' +
                             '</div>\n');
 

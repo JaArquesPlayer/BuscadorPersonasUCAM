@@ -72,13 +72,7 @@ public class IndexController {
 
         return ResponseEntity.ok(personasEncontradas);
     }
-    @GetMapping("/searchDepartamentos")
-    public ResponseEntity<List<Departamento>> buscarDepartamentos(@RequestParam("nombre") String busqueda) {
 
-        List<Departamento> departamentosEncontrados = new ArrayList<>();
-
-        return ResponseEntity.ok(departamentosEncontrados);
-    }
     @GetMapping("/searchPublicaciones")
     public ResponseEntity<List<Publicacion>> buscarPublicaciones(@RequestParam("publicacion") String busqueda) {
 
