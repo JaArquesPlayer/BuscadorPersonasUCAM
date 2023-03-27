@@ -38,7 +38,7 @@ public class IndexController {
         return "profile";
     }
 
-    @GetMapping("/search")
+    @GetMapping("/searchPersonal")
     public ResponseEntity<List<Persona>> buscarPersonas(@RequestParam("nombre") String busqueda) {
 
         if(busqueda.length() < 3){
@@ -69,8 +69,25 @@ public class IndexController {
                 personasEncontradas.add(personas.get(i));
             }
         }
+
         return ResponseEntity.ok(personasEncontradas);
     }
+    @GetMapping("/searchDepartamentos")
+    public ResponseEntity<List<Departamento>> buscarDepartamentos(@RequestParam("nombre") String busqueda) {
+
+        List<Departamento> departamentosEncontrados = new ArrayList<>();
+
+        return ResponseEntity.ok(departamentosEncontrados);
+    }
+    @GetMapping("/searchPublicaciones")
+    public ResponseEntity<List<Publicacion>> buscarPublicaciones(@RequestParam("publicacion") String busqueda) {
+
+        List<Publicacion> publicacionesEncontradas = new ArrayList<>();
+
+        return ResponseEntity.ok(publicacionesEncontradas);
+    }
+
+
     public String normalize(String string) {
         return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
     }
