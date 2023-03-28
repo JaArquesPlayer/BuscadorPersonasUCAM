@@ -80,11 +80,11 @@
             }
 
             $.getJSON('/searchPersonal', { nombre: $busqueda.val()})
-                .done(function(personasEncontradas) {
+                .done(function(personas) {
                     $sugerencias.empty();
 
-                    personasEncontradas.forEach(function(persona) {
-                        var nombre = persona.nombre + ' ' + persona.apellidos;
+                    personas.forEach(function(persona) {
+                        var nombre = persona.nombre_completo;
                         var $option = $('<a href="/perfil/'+persona.id+'" >'+nombre+'</a>')
 
                         $sugerencias.append($option);

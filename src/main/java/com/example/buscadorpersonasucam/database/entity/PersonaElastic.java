@@ -1,17 +1,23 @@
 package com.example.buscadorpersonasucam.database.entity;
 
 import com.example.buscadorpersonasucam.beans.DTO.*;
+
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+@Entity
 @Document(indexName = "alias_personas", createIndex = false)
 public class PersonaElastic implements Serializable {
 
+    @Id
     private Long id;
     @Field(name = "id_ucam")
     private Long idUcam;
