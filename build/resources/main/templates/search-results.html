@@ -9,7 +9,7 @@
     <title>Buscador de personas UCAM</title>
 
     <link th:href="@{/assets/plugins/ucam-icons/styles.css}"  rel="stylesheet"/>
-    <link defer th:href="@{/assets/css/main.css}" rel="stylesheet"/>
+    <link th:href="@{/assets/css/main.css}" rel="stylesheet"/>
 </head>
 
 <body>
@@ -85,7 +85,7 @@
                 <!-- tabs content -->
                 <div class="tab-content" id="results-content">
                     <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
-                        <div id="resultados-personal" class="row"> <!--todo recorrer la lista de personas encontradas para mostrarla-->
+                        <div id="resultados-personal" class="row">
                             <!-- resultados -->
                             <!-- item -->
                             <div class="col-12 col-md-6">
@@ -492,7 +492,7 @@
 
                     <!--Departamentos-->
                     <div class="tab-pane fade" id="facultades" role="tabpanel" aria-labelledby="facultades-tab">
-                        <div id="resultados-departamentos" class="row">
+                        <div id="related-profiles" class="row">
 
                             <!-- item -->
                             <div class="col-12 col-md-6">
@@ -616,15 +616,15 @@
                             '               </div>\n' +
                             '               <div class="col">\n' +
                             '                   <div class="card-body d-flex flex-column justify-content-end h-100">\n' +
-                            '                   <p class="card-title flex-1"><a href="/perfil/'+persona.id+'" title="'+nombre+'">'+nombre+'</a></p>\n' +
-                            '                   <p class="card-text"><i class="icon-email"></i> <a href="mailto:'+persona.email+'" title="Enviar correo a '+persona.email+'">'+persona.email+'</a></p>\n' +
-                            '                   <p class="card-text"><i class="icon-phone"></i> <a href="tel:'+persona.telefono+'" title="Llamar al teléfono '+persona.telefono+'">Ext. 294 '+persona.telefono+'</a></p>\n' +
-                            '                   <p class="card-text"><i class="icon-room"></i>'+persona.departamento+'</p>\n' +
+                            '                       <p class="card-title flex-1"><a href="/perfil/'+persona.id+'" title="'+nombre+'">'+nombre+'</a></p>\n' +
+                            '                       <p class="card-text"><i class="icon-email"></i> <a href="mailto:'+persona.email+'" title="Enviar correo a '+persona.email+'">'+persona.email+'</a></p>\n' +
+                            '                       <p class="card-text"><i class="icon-phone"></i> <a href="tel:'+persona.telefono+'" title="Llamar al teléfono '+persona.telefono+'">Ext. 294 '+persona.telefono+'</a></p>\n' +
+                            '                       <p class="card-text"><i class="icon-room"></i>'+persona.departamento+'</p>\n' +
+                            '                   </div>\n' +
                             '               </div>\n' +
                             '           </div>\n' +
                             '       </div>\n' +
-                            '   </div>\n' +
-                            '</div>\n');
+                            '   </div>\n');
 
                         $resultadosPersonal.append($card);
                     });
@@ -637,12 +637,11 @@
 </script>
 
 <!--Script para buscar departamentos-->
-<script>
-    <!-- todo hacer que este devuelva una lista de departamentos con una lista de personal dentro de cada uno dichas personas coinciden con el nombre pasado -->
 
+<script>
     $(document).ready(function() {
         var $busqueda = $('#busqueda2');
-        var $resultadosDepartamentos = $('#resultados-departamentos');
+        var $resultadosDepartamentos = $('#related-profiles');
 
         $busqueda.on('input', function() {
 
@@ -655,7 +654,7 @@
                         var $card = $(
                             '<a href="/perfil/'+persona.id+'" title="'+nombre+'" class="related-profile__wrapper">\n' +
                             '  <div class="profile-card">\n' +
-                            '     <img class="img-fluid" src="'+persona.image+'" alt="">\n' +
+                            '     <img class="img-fluid" src="'+persona.image+'" alt="'+nombre+'">\n' +
                             '        <p class="related-profile__caption">'+persona.nombre+'</p>\n' +
                             '  </div>\n' +
                             '</a>\n');
@@ -682,12 +681,11 @@
                 .done(function(publicacionesEncontradas) {
                     $resultadosPublicaciones.empty();
 
-                    publicacionesEncontradas.forEach(function(persona) {
-                        var nombre = persona.nombre + ' ' + persona.apellidos;
+                    publicacionesEncontradas.forEach(function(publicacion) {
                         var $card = $(
                             '<div class="col-12">\n' +
-                            '   <a href="#" class="text-color-info font-weight-bold mb-3">Organizaciones nativas responsables: la RSC en la cultura de las startups digitales españolas</a>\n' +
-                            '       <p class="mt-3">María Dolores Gil , Margarita Capdepón , Miguel Ángel Beltrán , Francisco José Noguera , Ginesa Martinez , María Dolores García , Jorge López , María Fernández , Victoria Pérez , Mario Cava (2015)</p>\n' +
+                            '   <a href="#" class="text-color-info font-weight-bold mb-3">'+publicacion.titulo+'</a>\n' +
+                            '       <p class="mt-3">'+publicacion.contenido+'</p>\n' +
                             '       <hr>\n' +
                             '</div>\n');
 

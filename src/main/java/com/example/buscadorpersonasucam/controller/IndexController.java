@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -25,16 +26,24 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/perfil/{id}")
-    public String perfil(Model model) {
+    public String perfil(Model model, @PathVariable int id) {
 
-        //Aqui hace el pedido al backend con la id que se le pasa {id}
+        //todo Aqui hace el pedido al backend con la id que se le pasa {id}
         //devuelde una persona completa con todos los datos para usarlos en el frontend
+        List<Persona> personas = new ArrayList<>();
+        personas.add(new Persona(1, "Jose Ángel", "Alcolea Arques"));
+        personas.add(new Persona(2, "Jose Manuel", "Martín Melero"));
+        personas.add(new Persona(3, "Joselito", "Jiménez Fernández"));
+        personas.add(new Persona(4, "Laura", "Martínez Ortega"));
+        personas.add(new Persona(5, "María", "Caldel García"));
+        personas.add(new Persona(6, "María del Carmen", "Astero Martín"));
 
-        Persona persona = new Persona();
-
-        //model.addAttribute("nombre", persona.getNombre());
-        //mandar de vuelta todos los valores para rellenar la pagina
-
+        for (int i=0; i<personas.size(); i++){
+            if(personas.get(i).getId() == id){
+                model.addAttribute("nombre", personas.get(i).getNombre());
+                model.addAttribute("apellidos", personas.get(i).getApellidos());
+            }
+        }
         return "profile";
     }
 
@@ -46,7 +55,7 @@ public class IndexController {
             return ResponseEntity.ok(emptyList);
         }
 
-        //Datos de llegada, son ficticios pero deben de ser los reales.
+        //todo Datos de llegada, son ficticios pero deben de ser los reales.
         List<Persona> personas = new ArrayList<>();
 
         personas.add(new Persona(1, "Jose Ángel", "Alcolea Arques"));
@@ -55,7 +64,6 @@ public class IndexController {
         personas.add(new Persona(4, "Laura", "Martínez Ortega"));
         personas.add(new Persona(5, "María", "Caldel García"));
         personas.add(new Persona(6, "María del Carmen", "Astero Martín"));
-        //Fin de datos de lledada
 
         List<Persona> personasEncontradas = new ArrayList<>();
 
@@ -76,7 +84,29 @@ public class IndexController {
     @GetMapping("/searchPublicaciones")
     public ResponseEntity<List<Publicacion>> buscarPublicaciones(@RequestParam("publicacion") String busqueda) {
 
+        if(busqueda.length() < 3){
+            List<Publicacion> emptyList = new ArrayList<>();
+            return ResponseEntity.ok(emptyList);
+        }
+
+        //todo Datos de llegada, son ficticios pero deben de ser los reales.
+        List<Publicacion> publicaciones = new ArrayList<>();
+
+        publicaciones.add(new Publicacion(1, "Organizaciones nativas responsables: la RSC en la cultura de las startups digitales españolas", "María Dolores Gil , Margarita Capdepón , Miguel Ángel Beltrán , Francisco José Noguera , Ginesa Martinez , María Dolores García , Jorge López , María Fernández , Victoria Pérez , Mario Cava (2015)"));
+        publicaciones.add(new Publicacion(2, "Propuesta de diseño claro y transparente para la factura eléctrica regulada en España", "Blas José Subiela , María Ascensión Miralles , David Sánchez (2018)"));
+        publicaciones.add(new Publicacion(3, "Influencia del diseño periodístico en la comprensión de la información", "Blas José Subiela , Ariana Gómez (2018)"));
+
         List<Publicacion> publicacionesEncontradas = new ArrayList<>();
+
+        for (int i=0; i<publicaciones.size(); i++){
+            busqueda = normalize(busqueda).toLowerCase();
+            String titulo = normalize(publicaciones.get(i).getTitulo());
+            String contenido = normalize(publicaciones.get(i).getContenido());
+
+            if(titulo.contains(busqueda) || contenido.contains(busqueda)){
+                publicacionesEncontradas.add(publicaciones.get(i));
+            }
+        }
 
         return ResponseEntity.ok(publicacionesEncontradas);
     }
