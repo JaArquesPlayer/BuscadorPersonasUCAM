@@ -149,7 +149,6 @@
         <div class="col-12">
 
           <!-- inicio tabs -->
-          <!-- Se puede quitar todo el bloque para el PAS. No afecta a la maquetación. -->
           <div id="profile-tabs" class="swiper-container">
             <ul class="nav nav-tabs nav-justified swiper-wrapper" id="results" role="tablist">
               <li th:if="${informacionGeneral != null}" class="nav-item swiper-slide">
@@ -190,7 +189,8 @@
 
               <h3 th:if="${personasRelacionadas != null}" class="text-size-subtitulo1">Personas relacionadas</h3>
               <!-- personas relacionadas -->
-              <div id="related-profiles"> <!-- todo Recorrer las personas relacionadas o las del departamento-->
+              <div id="related-profiles">
+                <!-- todo Recorrer las personas relacionadas o las del departamento-->
                   <!-- item -->
                   <a href="#" title="Samuel Ferrer García" class="related-profile__wrapper">
                     <div class="profile-card">
