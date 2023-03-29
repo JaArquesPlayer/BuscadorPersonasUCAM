@@ -34,7 +34,7 @@ public class ElasticsearchRepository {
         SearchRequest searchRequest = new SearchRequest("personas");
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.matchAllQuery());
-        searchSourceBuilder.fetchSource(new String[] {"nombre_completo", "id"}, null);
+        searchSourceBuilder.fetchSource(new String[] {"nombre_completo", "nombre_mostrar", "id", "correor_personales", "correos_institucionales", "telefonos", "extension", "instagram", "linkedin", "twitter", "ubicacion", "foto"}, null);
         searchRequest.source(searchSourceBuilder);
         return client.search(searchRequest, RequestOptions.DEFAULT);
     }

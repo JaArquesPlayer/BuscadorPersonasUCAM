@@ -33,11 +33,6 @@ public class IndexController {
         return "index";
     }
 
-    @RequestMapping(value = "/resultados")
-    public String resultados() {
-        return "search-results";
-    }
-
     @RequestMapping(value = "/perfil/{id}")
     public String perfil(Model model, @PathVariable int id) {
         //todo utilizar la busqueda por id para devolver una persona completa o lo necesario
@@ -48,12 +43,46 @@ public class IndexController {
         return "profile";
     }
 
-    @GetMapping("/searchPersonal")
-    public ResponseEntity<List<PersonaDTO>> buscarPersonas(@RequestParam("nombre") String busqueda) throws IOException {
+    @RequestMapping(value = "/searchPersonal")
+    public String buscarPersonas(@RequestParam(name = "nombre", required = false) String busqueda, Model model) throws IOException{
 
+        System.out.println(busqueda);
+
+        List<PersonaDTO> personasEncontradas = new ArrayList<>();
+        if (busqueda != null) {
+            personasEncontradas = getPersonas(busqueda);
+        }
+        model.addAttribute("personasEncontradas", personasEncontradas);
+
+        System.out.println("Se acciona el controlador");
+        return "search-results";
+    }
+
+    @GetMapping("/searchNombres")
+    public ResponseEntity<List<PersonaDTO>> buscarNombres(@RequestParam(name = "nombre", required = false) String busqueda) throws IOException {
+
+        List<PersonaDTO> personasEncontradas = new ArrayList<>();
+        if (busqueda != null) {
+            personasEncontradas = getPersonas(busqueda);
+        }
+        return ResponseEntity.ok(personasEncontradas);
+    }
+
+    @GetMapping("/searchPublicaciones")
+    public ResponseEntity<List<PersonaElastic>> buscarPublicaciones(@RequestParam("publicacion") String busqueda) {
+        //todo
+        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+        return ResponseEntity.ok(personasEncontradas);
+    }
+
+    public String normalize(String string) {
+        return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
+    }
+
+    public List<PersonaDTO> getPersonas(String busqueda) throws IOException {
         if (busqueda.length() < 3){
             List<PersonaDTO> emptyList = new ArrayList<>();
-            return ResponseEntity.ok(emptyList);
+            return emptyList;
         }
 
         String result = String.valueOf(elasticsearchRepository.searchAllAndReturnFields());
@@ -79,17 +108,7 @@ public class IndexController {
                 personasEncontradas.add(personas.get(i));
             }
         }
-        return ResponseEntity.ok(personasEncontradas);
-    }
 
-    @GetMapping("/searchPublicaciones")
-    public ResponseEntity<List<PersonaElastic>> buscarPublicaciones(@RequestParam("publicacion") String busqueda) {
-        //todo
-        List<PersonaElastic> personasEncontradas = new ArrayList<>();
-        return ResponseEntity.ok(personasEncontradas);
-    }
-
-    public String normalize(String string) {
-        return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
+        return personasEncontradas;
     }
 }

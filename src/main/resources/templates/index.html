@@ -45,7 +45,7 @@
             <img th:src="@{/assets/img/portada/portada-ucam-4-escritorio1920.jpg}" alt="Vista del monasterio de los Jerónimos | Home">
         </picture>
         <div class="form-wrapper">
-            <form id="searchPortadaForm" th:action="@{/resultados}">
+            <form id="searchPortadaForm" th:action="@{/searchPersonal}">
                 <div class="input-group">
                 <span class="input-group-prepend">
                     <div class="input-group-text bg-light border-right-0"><i class="icon-lupa"></i></div>
@@ -79,13 +79,12 @@
                 $('.buscar').css('background-color', '#a8a8a8');
             }
 
-            $.getJSON('/searchPersonal', { nombre: $busqueda.val()})
+            $.getJSON('/searchNombres', { nombre: $busqueda.val()})
                 .done(function(personas) {
                     $sugerencias.empty();
 
                     personas.forEach(function(persona) {
-                        var nombre = persona.nombre_completo;
-                        var $option = $('<a href="/perfil/'+persona.id+'" >'+nombre+'</a>')
+                        var $option = $('<a href="/perfil/'+persona.id+'" >'+persona.nombre_mostrar+'</a>')
 
                         $sugerencias.append($option);
                     });

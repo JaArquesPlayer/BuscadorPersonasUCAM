@@ -35,7 +35,7 @@
                                 <i class="icon-lupa"></i>
                             </div>
                         </span>
-                        <input id="busqueda2" type="text" th:value="${param.search}" class="form-control bg-ucam-gray-lighter py-2 border-left-0" name="search" placeholder="Nombre, apellidos, extensión, email...">
+                        <input id="busqueda" type="text" class="form-control bg-ucam-gray-lighter py-2 border-left-0" name="search" placeholder="Nombre, apellidos, extensión, email...">
                     </div>
                 </form>
             </div>
@@ -82,11 +82,39 @@
         <div class="row justify-content-center">
             <div class="col-12 col-lg-10">
 
-                <!-- tabs content -->
+                <!-- tabs content th:each="persona : ${personalEncontrado}"-->
                 <div class="tab-content" id="results-content">
+
+                    <!--Personal-->
                     <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
-                        <div id="resultados-personal" class="row"></div>
+                        <p th:if="${personasEncontradas != null}" th:text="${personasEncontradas.size()}"></p>
+                        <div id="resultados-personal" th:each="persona : ${personasEncontradas}" class="row">
+
+                            <!--item-->
+                            <div class="col-12 col-md-6">
+                                <div class="card mb-3">
+                                    <div class="col-auto p-3">
+                                        <img th:alt="${persona.nombre_mostrar}" width="86" height="105" class="img-fluid">
+                                    </div>
+                                    <div class="col">
+                                        <div class="card-body d-flex flex-column justify-content-end h-100">
+                                            <p class="card-title flex-1"><a th:href="'/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" th:text="${persona.nombre_mostrar}"></a></p>
+                                            <p class="card-text"><i class="icon-email"></i><a th:href="'mailto:'+${persona.correos_institucionales[0]}" th:title="'Enviar correo a '+${persona.correos_institucionales[0]}" th:text="${persona.correos_institucionales[0]}"></a></p>
+                                            <p class="card-text"><i class="icon-email"></i><a th:href="'mailto:'+${persona.correos_personales}" th:title="'Enviar correo a '+${persona.correos_personales}" th:text="${persona.correos_personales}">${persona.correos_personales}</a></p>
+                                            <p class="card-text"><i class="icon-phone"></i><a th:href="'tel:'+${persona.telefonos}" th:title="'Llamar al teléfono '+${persona.telefonos}" th:text="${persona.telefonos} + ' ' + ${persona.extension}"></a></p>
+                                            <p class="card-text"><i class="icon-diploma"></i><a th:text="${persona.ubicacion}"></a></p>
+                                            <p class="card-text"><i class="icon-instagram"></i><a th:href="${persona.instagram}" th:title="Instagram"></a></p>
+                                            <p class="card-text"><i class="icon-linkedin"></i><a th:href="${persona.linkedin}" th:title="Linkedin"></a></p>
+                                            <p class="card-text"><i class="icon-twitter"></i><a th:href="${persona.twitter}" th:title="Twitter"></a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end of item-->
+
+                        </div>
                     </div>
+                    <!--End of personal-->
 
                     <!--Departamentos-->
                     <div class="tab-pane fade" id="facultades" role="tabpanel" aria-labelledby="facultades-tab">
@@ -97,24 +125,24 @@
                     <!--Publicaciones-->
                     <div class="tab-pane fade" id="publicaciones" role="tabpanel" aria-labelledby="publicaciones-tab">
                         <div id="resultados-publicaciones" class="row"></div>
-                        </div>
                     </div>
                     <!--End of publicaciones-->
-                    <!-- end tabs content -->
+                </div>
+                <!-- end tabs content -->
 
-                    </div>
                 </div>
             </div>
         </div>
-        <!-- fin resultados de búsqueda -->
+    </div>
+    <!-- fin resultados de búsqueda -->
 
-        </div>
+    </div>
 
-        <!--Boton para volver arriba-->
-        <button id="btn-up">
-            <span id="btn-up-icon" class="material-symbols-outlined">expand_less</span>
-        </button>
-        <!--En of boton para volver arriba-->
+    <!--Boton para volver arriba-->
+    <button id="btn-up">
+        <span id="btn-up-icon" class="material-symbols-outlined">expand_less</span>
+    </button>
+    <!--En of boton para volver arriba-->
 
 </article>
 
@@ -142,8 +170,19 @@
 
 <!--Script para la busqueda en tiempo real del buscador-->
 <script src="//code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var $busqueda = $('#busqueda');
+
+        $busqueda.on('input', function() {
+            $.getJSON('/searchPersonal', {nombre: $busqueda.val()});
+        });
+    });
+</script>
 
 <!--Script para buscar personal-->
+<!--todo añadir el enlace al departamento-->
+<!--
 <script>
     $(document).ready(function() {
         var $busqueda = $('#busqueda2');
@@ -156,25 +195,28 @@
                 $resultadosPersonal.empty();
 
                 personasEncontradas.forEach(function(persona) {
-                    var nombre = persona.nombre + ' ' + persona.apellidos;
+
                     var $card = $(
-                        '   <div class="col-12 col-md-6">\n' +
-                        '       <div class="card mb-3">\n' +
-                        '           <div class="row no-gutters">\n' +
-                        '               <div class="col-auto p-3">\n' +
-                        '                   <img src="'+persona.image+'" alt="'+nombre+'" width="86" height="105" class="img-fluid">\n' +
-                        '               </div>\n' +
-                        '               <div class="col">\n' +
-                        '                   <div class="card-body d-flex flex-column justify-content-end h-100">\n' +
-                        '                       <p class="card-title flex-1"><a href="/perfil/'+persona.id+'" title="'+nombre+'">'+nombre+'</a></p>\n' +
-                        '                       <p class="card-text"><i class="icon-email"></i> <a href="mailto:'+persona.email+'" title="Enviar correo a '+persona.email+'">'+persona.email+'</a></p>\n' +
-                        '                       <p class="card-text"><i class="icon-phone"></i> <a href="tel:'+persona.telefono+'" title="Llamar al teléfono '+persona.telefono+'">Ext. 294 '+persona.telefono+'</a></p>\n' +
-                        '                       <p class="card-text"><i class="icon-room"></i>'+persona.departamento+'</p>\n' +
-                        '                   </div>\n' +
-                        '               </div>\n' +
-                        '           </div>\n' +
-                        '       </div>\n' +
-                        '   </div>\n');
+                        `    <div class="col-12 col-md-6">\n` +
+                        `       <div class="card mb-3">\n`+
+                        `               <div class="col-auto p-3">\n` +
+                        `                   <img src="${persona.foto}" alt="${persona.nombre_mostrar}" width="86" height="105" class="img-fluid">\n` +
+                        `               </div>\n` +
+                        `               <div class="col">\n` +
+                        `                   <div class="card-body d-flex flex-column justify-content-end h-100">\n` +
+                        `                       <p class="card-title flex-1"><a href="/perfil/${persona.id}" title="${persona.nombre_mostrar}"> ${persona.nombre_mostrar}</a></p>\n`+
+                        `                       <p class="card-text"><i class="icon-email"></i> <a href="mailto:${persona.correos_institucionales[0]}" title="Enviar correo a ${persona.correos_institucionales[0]}">${persona.correos_institucionales[0]}</a></p>\n` +
+                        `                       <p class="card-text"><i class="icon-email"></i> <a href="mailto:${persona.correos_personales}" title="Enviar correo a ${persona.correos_personales}">${persona.correos_personales}</a></p>\n` +
+                        `                       <p class="card-text"><i class="icon-phone"></i> <a href="tel:${persona.telefonos}" title="Llamar al teléfono ${persona.telefonos}">${persona.telefonos} ${persona.extension}</a></p>\n`+
+                        `                       <p class="card-text"><i class="icon-diploma"></i><a href="#">${persona.ubicacion}</a></p>\n`+
+                        `                       <p class="card-text"><i class="icon-instagram"></i><a href="${persona.instagram}" title="Instagram"></a></p>\n`+
+                        `                       <p class="card-text"><i class="icon-linkedin"></i><a href="${persona.linkedin}" title="Linkedin"></a></p>\n`+
+                        `                       <p class="card-text"><i class="icon-twitter"></i><a href="${persona.twitter}" title="Twitter"></a></p>\n` +
+                        `                   </div>\n` +
+                        `               </div>\n` +
+                        `           </div>\n` +
+                        `       </div>\n` +
+                        `   </div>\n`);
 
                     $resultadosPersonal.append($card);
                 });
@@ -185,9 +227,10 @@
         });
     });
 </script>
+-->
 
 <!--Script para buscar departamentos-->
-
+<!--
 <script>
     $(document).ready(function() {
         var $busqueda = $('#busqueda2');
@@ -218,8 +261,9 @@
         });
     });
 </script>
-
+-->
 <!--Script para buscar publicaciones-->
+<!--
 <script>
     $(document).ready(function() {
         var $busqueda = $('#busqueda2');
@@ -248,5 +292,6 @@
         });
     });
 </script>
+-->
 </body>
 </html>
