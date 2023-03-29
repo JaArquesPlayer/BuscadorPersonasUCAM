@@ -8,17 +8,17 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
   <!-- Metadata -->
-  <title th:text="${nombre} + ' ' + ${apellidos} + ' | UCAM Universidad Católica de Murcia'"></title>
-  <meta property='og:title'  th:content="${nombre} + ' ' + ${apellidos} + ' | UCAM Universidad Católica de Murcia'">
-  <meta name='twitter:title' th:content="${nombre} + ' ' + ${apellidos} + ' | UCAM Universidad Católica de Murcia'">
+  <title th:text="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"></title>
+  <meta property='og:title'  th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'">
+  <meta name='twitter:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'">
 
-  <meta name='description'         th:content="${nombre} + ' ' + ${apellidos} + ' | ' + ${puesto}">
-  <meta name='description'         th:content="${nombre} + ' ' + ${apellidos} + ' | ' + ${departamento}">
+  <meta name='description'         th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}">
+  <meta name='description'         th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}">
 
-  <meta property='og:description'  th:content="${nombre} + ' ' + ${apellidos} + ' | ' + ${departamento}">
-  <meta property='og:description'  th:content="${nombre} + ' ' + ${apellidos} + ' | ' + ${puesto}">
+  <meta property='og:description'  th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}">
+  <meta property='og:description'  th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}">
 
-  <meta name='twitter:description' th:content="${nombre} + ' ' + ${apellidos} + ' | ' + ${puesto}">
+  <meta name='twitter:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}">
 
   <link rel='canonical'       th:href="@{https://personas.ucam.edu/personas/perfil/${id}}">
   <meta property='og:url'  th:content="@{https://personas.ucam.edu/personas/perfil/${id}}">
@@ -29,8 +29,8 @@
   <meta property="fb:app_id" content="501593976526558" />
   <!--End of constant metadata-->
 
-  <meta property="og:image" th:content="${imagen}">
-  <meta name="twitter:image" th:content="${imagen}">
+  <meta property="og:image" th:content="${persona.foto}">
+  <meta name="twitter:image" th:content="${persona.foto}">
   <!-- End of Metadata -->
 
   <link th:href="@{/assets/plugins/ucam-icons/styles.css}" rel="stylesheet"/>
@@ -357,7 +357,7 @@
 <script th:src="@{/assets/js/vendor/jquery.slim.min.js}"></script>
 <script th:src="@{/assets/js/vendor/popper.min.js}"></script>
 <script th:src="@{/assets/js/vendor/bootstrap.min.js}"></script>
-<script th:src="@{/assets/js/vendor/swiper.js}"></script>
+
 <script th:src="@{/assets/js/profile.scripts.js}"></script>
 </body>
 </html>

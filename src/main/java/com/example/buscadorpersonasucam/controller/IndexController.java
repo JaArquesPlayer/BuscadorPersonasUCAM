@@ -34,19 +34,17 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/perfil/{id}")
-    public String perfil(Model model, @PathVariable int id) {
-        //todo utilizar la busqueda por id para devolver una persona completa o lo necesario
+    public String perfil(Model model, @PathVariable int id) throws IOException {
 
-        //PersonaElastic persona = elasticsearchRepository.;
-        //model.addAttribute("nombre",);
-
+        PersonaDTO personaEncontrada = getPersonaById(id);
+        if (personaEncontrada != null) {
+            model.addAttribute("persona", personaEncontrada);
+        }
         return "profile";
     }
 
     @RequestMapping(value = "/searchPersonal")
     public String buscarPersonas(@RequestParam(name = "nombre", required = false) String busqueda, Model model) throws IOException{
-
-        System.out.println(busqueda);
 
         List<PersonaDTO> personasEncontradas = new ArrayList<>();
         if (busqueda != null) {
@@ -54,7 +52,11 @@ public class IndexController {
         }
         model.addAttribute("personasEncontradas", personasEncontradas);
 
+        System.out.println(busqueda);
         System.out.println("Se acciona el controlador");
+        //todo el controlador y el jquery qu lo accionan funcionan correctamente, falta que cuando se accione el controlador
+        //todo funcione el return de la vista. Al parecer la vista no cambia cuando se acciona
+
         return "search-results";
     }
 
@@ -110,5 +112,20 @@ public class IndexController {
         }
 
         return personasEncontradas;
+    }
+
+    public PersonaDTO getPersonaById(Integer id) throws IOException {
+
+        String result = String.valueOf(elasticsearchRepository.searchById(id));
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        JsonNode hitsNode = rootNode.get("hits").get("hits");
+        JsonNode hit = hitsNode.get(0);
+
+        JsonNode sourceNode = hit.get("_source");
+        PersonaDTO personaEncontrada = mapper.treeToValue(sourceNode, PersonaDTO.class);
+
+        return personaEncontrada;
     }
 }
