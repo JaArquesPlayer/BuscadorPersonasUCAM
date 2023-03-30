@@ -13,13 +13,14 @@
   <meta property='og:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
   <meta name='twitter:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
 
-  <meta th:if="${persona.cargos != null}" name='description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.cargos[0]}"/>
-  <meta th:if="${persona.ubicacion != null}" name='description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
+  <!--todo-->
+  <!--Funciona se ve sin salto de linea-->
+  <!--<meta th:if="${persona.cargos != null && persona.ubicacion != null}" name='description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.cargos[0].nombre} + ' ' + ${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/> -->
+  <!--No funciona se muestra solo 1-->
+  <!--<meta th:if="${persona.ubicacion != null}" name='description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>-->
 
-  <!--todo<meta th:if="${persona.cargos != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.cargos[0]}">-->
-
-  <meta th:if="${persona.ubicacion != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion} + '' + ${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
-  <!--<meta th:if="${persona.ubicacion != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>-->
+  <meta th:if="${persona.cargos != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
+  <meta th:if="${persona.ubicacion != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
 
   <meta name='twitter:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
 
@@ -63,11 +64,11 @@
             <img th:if="${persona.foto != null}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
           </div>
           <div class="col-12 col-md-6 col-lg-5 order-md-1 profile__contact-data d-flex flex-column">
-            <a th:href="@{/searchPersonal}" class="back-link mt-3 d-none d-md-block" title="Volver atrás">< Volver atrás</a>
+            <a th:href="@{/searchPersonal/}" class="back-link mt-3 d-none d-md-block" title="Volver atrás">< Volver atrás</a>
             <!-- datos escritorio -->
             <div class="data-wrapper flex-1 flex-column justify-content-center d-none d-md-flex">
               <h2 class="text-size-titulo1 font-weight-bold mt-5 mt-md-0" th:text="${persona.nombre_mostrar}"></h2>
-              <h4 class="text-size-subtitulo1"><i th:if="${persona.cargos != null}" th:text="${persona.cargos[0]}"></i>
+              <h4 class="text-size-subtitulo1"><i th:if="${persona.cargos != null}"></i> <!--todo th:text="${persona.cargos[0].nombre}"-->
               </h4>
 
               <p><i class="icon-email"></i>
@@ -116,7 +117,7 @@
       <div class="row">
         <div class="col-12 profile__contact-data">
           <h2 class="text-size-titulo1 font-weight-bold mt-4 mt-md-0" th:text="${persona.nombre_mostrar}"></h2>
-          <h4 class="text-size-subtitulo1"><i th:if="${persona.cargos != null}" th:text="${persona.cargos[0]}"></i></h4>
+          <h4 class="text-size-subtitulo1"><i th:if="${persona.cargos != null}"></i></h4> <!--todo-->
           <p><i class="icon-email"></i>
             <a th:if="${persona.correos_institucionales != null}" th:href="'mailto:' + ${persona.correos_institucionales[0]}" th:title="'Enviar correo a ' + ${persona.correos_institucionales[0]}" th:text="${persona.correos_institucionales[0]}">
             </a>
@@ -157,7 +158,6 @@
   <!-- end portada -->
 
   <!-- contenido -->
-
   <section class="profile__content">
 
     <div class="container">
@@ -198,16 +198,15 @@
 
               <h3 th:if="${persona.titulaciones_alumno != null}" class="text-size-subtitulo1">Formación</h3>
               <ul th:each="titulacion : ${persona.getTitulaciones_alumno()}">
-                <li th:text="${titulacion}"></li>
+                <li th:text="${titulacion.nombreEstudio}"></li>
               </ul>
               <h3 th:if="${persona.titulaciones_profesor != null}" class="text-size-subtitulo1">Formación</h3>
               <ul th:each="titulacion : ${persona.getTitulaciones_profesor()}">
-                <li th:text="${titulacion}"></li>
+                <li th:text="${titulacion.nombreEstudio}"></li>
               </ul>
 
               <!-- todo Preguntar como manejar esta informacion-->
-              <!--th:if="${grupoInvestigacion}"-->
-              <h3 class="text-size-subtitulo1">Grupos de investigación</h3>
+              <h3 th:if="${persona.grupos_investigacion != null}" class="text-size-subtitulo1">Grupos de investigación</h3>
               <ul>
                 <li><a></a></li>
               </ul>

@@ -68,31 +68,36 @@
 <script src="//code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
     $(document).ready(function() {
+        var timeout = null
         var $busqueda = $('#busqueda');
         var $sugerencias = $('#sugerencias');
 
-        $busqueda.on('input', function() {
+        $busqueda.on('keyup', function() {
 
-            if($(this).val().length > 0){
+            if($busqueda.val().length > 0){
                 $('.buscar').css('background-color', '#2d3d4a');
             }else{
                 $('.buscar').css('background-color', '#a8a8a8');
             }
 
-            $.getJSON('/searchNombres', { nombre: $busqueda.val()})
-                .done(function(personas) {
-                    $sugerencias.empty();
+            clearTimeout(timeout)
+            timeout = setTimeout(function() {
 
-                    personas.forEach(function(persona) {
-                        var $option = $('<a href="/perfil/'+persona.id+'" >'+persona.nombre_mostrar+'</a>')
+                $.getJSON('/searchNombres', { nombre: $busqueda.val()})
+                    .done(function(personas) {
+                        $sugerencias.empty();
 
-                        $sugerencias.append($option);
+                        personas.forEach(function(persona) {
+                            var $option = $('<a href="/perfil/'+persona.id+'" >'+persona.nombre_mostrar+'</a>')
+
+                            $sugerencias.append($option);
+                        });
+                    })
+                    .fail(function() {
+                        console.log('Error al buscar personas');
                     });
-                })
-                .fail(function() {
-                    console.log('Error al buscar personas');
-                });
-            });
+                }, 1000)
+            })
         });
 </script>
 

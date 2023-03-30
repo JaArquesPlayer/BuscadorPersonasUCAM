@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.text.Normalizer;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 import java.util.logging.Logger;
@@ -49,10 +48,13 @@ public class IndexController {
         return "profile";
     }
 
+    @RequestMapping(value = "/searchPersonal/")
+    public String buscarPersonas() {
+        return "search-results";
+    }
+
     @RequestMapping(value = "/searchPersonal/{busqueda}")
     public String buscarPersonasUrl(@PathVariable(required = false) String busqueda, Model model) throws IOException{
-
-        logger.info(busqueda);
 
         if (busqueda.length() >= 3){
             List<PersonaElastic> personasEncontradas = new ArrayList<>();
@@ -67,45 +69,10 @@ public class IndexController {
             }
 
             model.addAttribute("personasEncontradas", personasEncontradasDTO);
-
-            logger.info(busqueda);
-            logger.info(personasEncontradasDTO.toString());
-        }else{
-            logger.info("La palabra es demasiado corta");
         }
 
-        return "search-results";
+        return "plantillas/personal";
     }
-
-    /*
-    @RequestMapping(value = "/searchPersonalDepartamento/{busqueda}")
-    public String buscarPersonasDepartamentoUrl(@PathVariable(required = false) String busqueda, Model model) throws IOException{
-
-        logger.info(busqueda);
-
-        if (busqueda.length() >= 3){
-            List<PersonaElastic> personasEncontradas = new ArrayList<>();
-            if (busqueda != null) {
-                personasEncontradas = getPersonasByDepartamento(busqueda);
-            }
-
-            List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
-            for (int i=0; i<personasEncontradas.size(); i++){
-                PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
-                personasEncontradasDTO.add(personaDTO);
-            }
-
-            model.addAttribute("personasEncontradas", personasEncontradasDTO);
-
-            logger.info(busqueda);
-            logger.info(personasEncontradasDTO.toString());
-        }else{
-            logger.info("La palabra es demasiado corta");
-        }
-
-        return "search-results";
-    }
-*/
 
     @GetMapping("/searchNombres")
     public ResponseEntity<List<PersonaDTO>> buscarNombres(@RequestParam(name = "nombre", required = false) String busqueda) throws IOException {

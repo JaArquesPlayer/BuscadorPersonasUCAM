@@ -1,0 +1,24 @@
+<div th:each="persona : ${personasEncontradas}" class="row">
+
+    <!--item-->
+    <div class="col-12 col-md-6">
+        <div class="card mb-3">
+            <div class="col-auto p-3">
+                <img th:src="'data:image/jpeg;base64, ' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" width="86" height="105" class="img-fluid">
+            </div>
+            <div class="col">
+                <div class="card-body d-flex flex-column justify-content-end h-100">
+                    <p class="card-title flex-1"><a th:href="'/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" th:text="${persona.nombre_mostrar}"></a></p>
+                    <p class="card-text"><i class="icon-email"></i><a th:href="'mailto:'+${persona.correos_institucionales[0]}" th:title="'Enviar correo a '+${persona.correos_institucionales[0]}" th:text="${persona.correos_institucionales[0]}"></a></p>
+                    <p class="card-text"><i class="icon-email"></i><a th:href="'mailto:'+${persona.correos_personales}" th:title="'Enviar correo a '+${persona.correos_personales}" th:text="${persona.correos_personales}">${persona.correos_personales}</a></p>
+                    <p class="card-text"><i class="icon-phone"></i><a th:href="'tel:'+${persona.telefonos}" th:title="'Llamar al teléfono '+${persona.telefonos}" th:text="${persona.telefonos} + ' ' + ${persona.extension}"></a></p>
+                    <p class="card-text"><i class="icon-diploma"></i><a th:text="${persona.ubicacion}"></a></p>
+                    <p class="card-text"><i class="icon-instagram"></i><a th:href="${persona.instagram}" th:title="Instagram"></a></p>
+                    <p class="card-text"><i class="icon-linkedin"></i><a th:href="${persona.linkedin}" th:title="Linkedin"></a></p>
+                    <p class="card-text"><i class="icon-twitter"></i><a th:href="${persona.twitter}" th:title="Twitter"></a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end of item-->
+</div>
