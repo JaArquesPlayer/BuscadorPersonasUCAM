@@ -2,6 +2,7 @@ package com.example.buscadorpersonasucam.database.entity;
 
 import com.example.buscadorpersonasucam.beans.DTO.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -10,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import java.io.Serializable;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
@@ -20,9 +22,9 @@ public class PersonaElastic implements Serializable {
     @Id
     private Long id;
     @Field(name = "id_ucam")
-    private Long idUcam;
+    private Long id_ucam;
     @Field(name = "fecha_actualizacion", type = FieldType.Date)
-    private Long fechaActualizacion;
+    private Long fecha_actualizacion;
     @Field(name = "nombre")
     private String nombre;
     @Field(name = "apellido1")
@@ -30,15 +32,15 @@ public class PersonaElastic implements Serializable {
     @Field(name = "apellido2")
     private String apellido2;
     @Field(name = "fecha_nacimiento", type = FieldType.Date)
-    private Long fechaNacimiento;
+    private Long fecha_nacimiento;
     @Field(name = "numeroDocumento")
-    private String docId;
+    private String numeroDocumento;
     @Field(name = "tipo_documento")
-    private String tipoDocumento;
+    private String tipo_documento;
     @Field(name = "nombre_mostrar")
-    private String nombreMostrar;
+    private String nombre_mostrar;
     @Field(name = "nombre_completo")
-    private String nombreCompleto;
+    private String nombre_completo;
     @Field(name = "origenes")
     private List origenes;
     @Field(name = "colectivo")
@@ -46,23 +48,23 @@ public class PersonaElastic implements Serializable {
     @Field(name = "privacidad")
     private String privacidad;
     @Field(name = "titulaciones_alumno")
-    private List<PlanElasticDTO> titulacionesAlumno;
+    private List<PlanElasticDTO> titulaciones_alumno;
     @Field(name = "titulaciones_profesor")
-    private List<PlanElasticDTO> titulacionesProfesor;
+    private List<PlanElasticDTO> titulaciones_profesor;
     @Field(name = "niu")
     private Long niu;
     @Field(name = "codigo_asistencia")
-    private Long codigoAsistencia;
+    private Long codigo_asistencia;
     @Field(name = "fp_id")
-    private String fpId;
+    private String fp_id;
     @Field(name = "telefonos")
     private List<String> telefonos;
     @Field(name = "correos_personales")
-    private List<String> correosPersonales;
+    private List<String> correos_personales;
     @Field(name = "correos_institucionales")
-    private List<String> correosInstitucionales;
+    private List<String> correos_institucionales;
     @Field(name = "codigo_postal")
-    private String codigoPostal;
+    private String codigo_postal;
     @Field(name = "localidad")
     private String localidad;
     @Field(name = "provincia")
@@ -78,7 +80,7 @@ public class PersonaElastic implements Serializable {
     @Field(name = "departamentos")
     private List<DepartamentoElasticDTO> departamentos;
     @Field(name = "alias_web")
-    private String aliasWeb;
+    private String alias_web;
     @Field(name = "formacion")
     private List<String> formacion;
     @Field(name = "docencia")
@@ -86,9 +88,9 @@ public class PersonaElastic implements Serializable {
     @Field(name = "frase")
     private String frase;
     @Field(name = "autor_frase")
-    private String autorFrase;
+    private String autor_frase;
     @Field(name = "sobre_mi")
-    private String sobreMi;
+    private String sobre_mi;
     @Field(name = "extension")
     private String extension;
     @Field(name = "facebook")
@@ -104,25 +106,21 @@ public class PersonaElastic implements Serializable {
     @Field(name = "youtube")
     private String youtube;
     @Field(name = "grupos_investigacion")
-    private List<GrupoInvestigacionDTO> gruposInvestigacion;
+    private List<GrupoInvestigacionDTO> grupos_investigacion;
     @Field(name = "publicaciones")
     private List<PublicacionDTO> publicaciones;
     @Field(name = "proyectos")
     private List<ProyectoDTO> proyectos;
     @Field(name = "foto", index = false, type = FieldType.Binary)
-    private Byte[] foto;
+    private byte[] foto;
     @Field(name = "visitas_buscador")
-    private Long visitasBuscador;
+    private Long visitas_buscador;
     @Field(name = "telefono_ucam")
-    private String telefonoUcam;
+    private String telefono_ucam;
     @Field(name = "areas_conocimiento")
-    private List<String> areasConocimiento;
+    private List<String> areas_conocimiento;
     public String getDocId() {
-        return docId;
-    }
-
-    public void setDocId(String docId) {
-        this.docId = docId;
+        return numeroDocumento;
     }
 
     public Long getId() {
@@ -131,15 +129,23 @@ public class PersonaElastic implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-        this.idUcam = id;
+        this.id_ucam = id;
     }
 
-    public Long getIdUcam() {
-        return idUcam;
+    public Long getId_ucam() {
+        return id_ucam;
     }
 
-    public void setIdUcam(Long idUcam) {
-        this.idUcam = idUcam;
+    public void setId_ucam(Long id_ucam) {
+        this.id_ucam = id_ucam;
+    }
+
+    public Long getFecha_actualizacion() {
+        return fecha_actualizacion;
+    }
+
+    public void setFecha_actualizacion(Long fecha_actualizacion) {
+        this.fecha_actualizacion = fecha_actualizacion;
     }
 
     public String getNombre() {
@@ -166,41 +172,44 @@ public class PersonaElastic implements Serializable {
         this.apellido2 = apellido2;
     }
 
-    public Long getFechaNacimiento() {
-        return fechaNacimiento;
+    public Long getFecha_nacimiento() {
+        return fecha_nacimiento;
     }
 
-    public void setFechaNacimiento(Long fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
+    public void setFecha_nacimiento(Long fecha_nacimiento) {
+        this.fecha_nacimiento = fecha_nacimiento;
     }
 
-    public Date getFechaNacimientoFormateada() {
-        final PersonaElastic thisInstance = this;
-        if (thisInstance != null && thisInstance.getFechaNacimiento() != null) {
-            return new Date(thisInstance.getFechaNacimiento());
-        } else {
-            return null;
-        }
+    public String getNumeroDocumento() {
+        return numeroDocumento;
     }
 
-    public void setFechaNacimientoFormateada(Date date) {
-        this.fechaNacimiento = date.getTime();
+    public void setNumeroDocumento(String numeroDocumento) {
+        this.numeroDocumento = numeroDocumento;
     }
 
-    public String getNombreMostrar() {
-        return nombreMostrar;
+    public String getTipo_documento() {
+        return tipo_documento;
     }
 
-    public void setNombreMostrar(String nombreMostrar) {
-        this.nombreMostrar = nombreMostrar;
+    public void setTipo_documento(String tipo_documento) {
+        this.tipo_documento = tipo_documento;
     }
 
-    public String getNombreCompleto() {
-        return nombreCompleto;
+    public String getNombre_mostrar() {
+        return nombre_mostrar;
     }
 
-    public void setNombreCompleto(String nombreCompleto) {
-        this.nombreCompleto = nombreCompleto;
+    public void setNombre_mostrar(String nombre_mostrar) {
+        this.nombre_mostrar = nombre_mostrar;
+    }
+
+    public String getNombre_completo() {
+        return nombre_completo;
+    }
+
+    public void setNombre_completo(String nombre_completo) {
+        this.nombre_completo = nombre_completo;
     }
 
     public List getOrigenes() {
@@ -219,20 +228,28 @@ public class PersonaElastic implements Serializable {
         this.colectivo = colectivo;
     }
 
-    public List<PlanElasticDTO> getTitulacionesAlumno() {
-        return titulacionesAlumno;
+    public String getPrivacidad() {
+        return privacidad;
     }
 
-    public void setTitulacionesAlumno(List<PlanElasticDTO> titulacionesAlumno) {
-        this.titulacionesAlumno = titulacionesAlumno;
+    public void setPrivacidad(String privacidad) {
+        this.privacidad = privacidad;
     }
 
-    public List<PlanElasticDTO> getTitulacionesProfesor() {
-        return titulacionesProfesor;
+    public List<PlanElasticDTO> getTitulaciones_alumno() {
+        return titulaciones_alumno;
     }
 
-    public void setTitulacionesProfesor(List<PlanElasticDTO> titulacionesProfesor) {
-        this.titulacionesProfesor = titulacionesProfesor;
+    public void setTitulaciones_alumno(List<PlanElasticDTO> titulaciones_alumno) {
+        this.titulaciones_alumno = titulaciones_alumno;
+    }
+
+    public List<PlanElasticDTO> getTitulaciones_profesor() {
+        return titulaciones_profesor;
+    }
+
+    public void setTitulaciones_profesor(List<PlanElasticDTO> titulaciones_profesor) {
+        this.titulaciones_profesor = titulaciones_profesor;
     }
 
     public Long getNiu() {
@@ -243,20 +260,20 @@ public class PersonaElastic implements Serializable {
         this.niu = niu;
     }
 
-    public Long getCodigoAsistencia() {
-        return codigoAsistencia;
+    public Long getCodigo_asistencia() {
+        return codigo_asistencia;
     }
 
-    public void setCodigoAsistencia(Long codigoAsistencia) {
-        this.codigoAsistencia = codigoAsistencia;
+    public void setCodigo_asistencia(Long codigo_asistencia) {
+        this.codigo_asistencia = codigo_asistencia;
     }
 
-    public String getFpId() {
-        return fpId;
+    public String getFp_id() {
+        return fp_id;
     }
 
-    public void setFpId(String fpId) {
-        this.fpId = fpId;
+    public void setFp_id(String fp_id) {
+        this.fp_id = fp_id;
     }
 
     public List<String> getTelefonos() {
@@ -267,28 +284,28 @@ public class PersonaElastic implements Serializable {
         this.telefonos = telefonos;
     }
 
-    public List<String> getCorreosPersonales() {
-        return correosPersonales;
+    public List<String> getCorreos_personales() {
+        return correos_personales;
     }
 
-    public void setCorreosPersonales(List<String> correosPersonales) {
-        this.correosPersonales = correosPersonales;
+    public void setCorreos_personales(List<String> correos_personales) {
+        this.correos_personales = correos_personales;
     }
 
-    public List<String> getCorreosInstitucionales() {
-        return correosInstitucionales;
+    public List<String> getCorreos_institucionales() {
+        return correos_institucionales;
     }
 
-    public void setCorreosInstitucionales(List<String> correosInstitucionales) {
-        this.correosInstitucionales = correosInstitucionales;
+    public void setCorreos_institucionales(List<String> correos_institucionales) {
+        this.correos_institucionales = correos_institucionales;
     }
 
-    public String getCodigoPostal() {
-        return codigoPostal;
+    public String getCodigo_postal() {
+        return codigo_postal;
     }
 
-    public void setCodigoPostal(String codigoPostal) {
-        this.codigoPostal = codigoPostal;
+    public void setCodigo_postal(String codigo_postal) {
+        this.codigo_postal = codigo_postal;
     }
 
     public String getLocalidad() {
@@ -307,14 +324,6 @@ public class PersonaElastic implements Serializable {
         this.provincia = provincia;
     }
 
-    public String getSexo() {
-        return sexo;
-    }
-
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
-    }
-
     public String getDireccion() {
         return direccion;
     }
@@ -323,12 +332,20 @@ public class PersonaElastic implements Serializable {
         this.direccion = direccion;
     }
 
-    public String getTipoDocumento() {
-        return tipoDocumento;
+    public String getSexo() {
+        return sexo;
     }
 
-    public void setTipoDocumento(String tipoDocumento) {
-        this.tipoDocumento = tipoDocumento;
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
+    }
+
+    public String getUbicacion() {
+        return ubicacion;
+    }
+
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
     }
 
     public List<CargoElasticDTO> getCargos() {
@@ -347,12 +364,12 @@ public class PersonaElastic implements Serializable {
         this.departamentos = departamentos;
     }
 
-    public Byte[] getFoto() {
-        return foto;
+    public String getAlias_web() {
+        return alias_web;
     }
 
-    public void setFoto(Byte[] foto) {
-        this.foto = foto;
+    public void setAlias_web(String alias_web) {
+        this.alias_web = alias_web;
     }
 
     public List<String> getFormacion() {
@@ -379,20 +396,20 @@ public class PersonaElastic implements Serializable {
         this.frase = frase;
     }
 
-    public String getAutorFrase() {
-        return autorFrase;
+    public String getAutor_frase() {
+        return autor_frase;
     }
 
-    public void setAutorFrase(String autorFrase) {
-        this.autorFrase = autorFrase;
+    public void setAutor_frase(String autor_frase) {
+        this.autor_frase = autor_frase;
     }
 
-    public String getSobreMi() {
-        return sobreMi;
+    public String getSobre_mi() {
+        return sobre_mi;
     }
 
-    public void setSobreMi(String sobreMi) {
-        this.sobreMi = sobreMi;
+    public void setSobre_mi(String sobre_mi) {
+        this.sobre_mi = sobre_mi;
     }
 
     public String getExtension() {
@@ -451,12 +468,12 @@ public class PersonaElastic implements Serializable {
         this.youtube = youtube;
     }
 
-    public List<GrupoInvestigacionDTO> getGruposInvestigacion() {
-        return gruposInvestigacion;
+    public List<GrupoInvestigacionDTO> getGrupos_investigacion() {
+        return grupos_investigacion;
     }
 
-    public void setGruposInvestigacion(List<GrupoInvestigacionDTO> gruposInvestigacion) {
-        this.gruposInvestigacion = gruposInvestigacion;
+    public void setGrupos_investigacion(List<GrupoInvestigacionDTO> grupos_investigacion) {
+        this.grupos_investigacion = grupos_investigacion;
     }
 
     public List<PublicacionDTO> getPublicaciones() {
@@ -475,59 +492,62 @@ public class PersonaElastic implements Serializable {
         this.proyectos = proyectos;
     }
 
-    public String getPrivacidad() {
-        return privacidad;
+    public byte[] getFoto() {
+        return foto;
     }
 
-    public void setPrivacidad(String privacidad) {
-        this.privacidad = privacidad;
+    public void setFoto(byte[] foto) {
+        this.foto = foto;
     }
 
-    public String getAliasWeb() {
-        return aliasWeb;
+    public Long getVisitas_buscador() {
+        return visitas_buscador;
     }
 
-    public void setAliasWeb(String aliasWeb) {
-        this.aliasWeb = aliasWeb;
+    public void setVisitas_buscador(Long visitas_buscador) {
+        this.visitas_buscador = visitas_buscador;
     }
 
-    public String getUbicacion() {
-        return ubicacion;
+    public String getTelefono_ucam() {
+        return telefono_ucam;
     }
 
-    public void setUbicacion(String ubicacion) {
-        this.ubicacion = ubicacion;
+    public void setTelefono_ucam(String telefono_ucam) {
+        this.telefono_ucam = telefono_ucam;
     }
 
-    public Long getVisitasBuscador() {
-        return visitasBuscador;
+    public List<String> getAreas_conocimiento() {
+        return areas_conocimiento;
     }
 
-    public void setVisitasBuscador(Long visitasBuscador) {
-        this.visitasBuscador = visitasBuscador;
+    public void setAreas_conocimiento(List<String> areas_conocimiento) {
+        this.areas_conocimiento = areas_conocimiento;
     }
 
-    public Long getFechaActualizacion() {
-        return fechaActualizacion;
+    public PersonaDTO toDTO(){
+        PersonaDTO personaDTO = new PersonaDTO();
+
+        personaDTO.setId(this.id);
+        personaDTO.setNombre_completo(this.nombre_completo);
+        personaDTO.setNombre_mostrar(this.nombre_mostrar);
+        personaDTO.setCargos(this.cargos);
+        personaDTO.setFoto(fromByteToBase64(this.foto));
+        personaDTO.setExtension(this.extension);
+        personaDTO.setLinkedin(this.linkedin);
+        personaDTO.setInstagram(this.instagram);
+        personaDTO.setTwitter(this.twitter);
+        personaDTO.setCorreos_institucionales(this.correos_institucionales);
+        personaDTO.setCorreos_personales(this.correos_personales);
+        personaDTO.setTelefonos(this.telefonos);
+        personaDTO.setUbicacion(this.ubicacion);
+        personaDTO.setTitulaciones_alumno(this.titulaciones_alumno);
+        personaDTO.setTitulaciones_profesor(this.titulaciones_profesor);
+
+        return personaDTO;
     }
 
-    public void setFechaActualizacion(Long fechaActualizacion) {
-        this.fechaActualizacion = fechaActualizacion;
-    }
-
-    public String getTelefonoUcam() {
-        return telefonoUcam;
-    }
-
-    public void setTelefonoUcam(String telefonoUcam) {
-        this.telefonoUcam = telefonoUcam;
-    }
-
-    public List<String> getAreasConocimiento() {
-        return areasConocimiento;
-    }
-
-    public void setAreasConocimiento(List<String> areasConocimiento) {
-        this.areasConocimiento = areasConocimiento;
+    public String fromByteToBase64 (byte[] foto){
+        String imagenBase64 = Base64.getEncoder().encodeToString(foto);
+        return imagenBase64;
     }
 }

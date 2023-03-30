@@ -28,14 +28,14 @@
         <!-- buscador -->
         <div class="row">
             <div class="col">
-                <form action="#">
+                <form action="/searchPersonal/">
                     <div class="input-group">
                         <span class="input-group-prepend">
                             <div class="input-group-text bg-ucam-gray-lighter border-right-0">
                                 <i class="icon-lupa"></i>
                             </div>
                         </span>
-                        <input id="busqueda" type="text" class="form-control bg-ucam-gray-lighter py-2 border-left-0" name="search" placeholder="Nombre, apellidos, extensión, email...">
+                        <input id="busqueda" type="text" class="form-control bg-ucam-gray-lighter py-2 border-left-0" placeholder="Nombre, apellidos, extensión, email...">
                     </div>
                 </form>
             </div>
@@ -94,7 +94,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="card mb-3">
                                     <div class="col-auto p-3">
-                                        <img th:alt="${persona.nombre_mostrar}" width="86" height="105" class="img-fluid">
+                                        <img th:src="'data:image/jpeg;base64, ' + ${persona.getFoto()}" th:alt="${persona.nombre_mostrar}" width="86" height="105" class="img-fluid">
                                     </div>
                                     <div class="col">
                                         <div class="card-body d-flex flex-column justify-content-end h-100">
@@ -175,7 +175,12 @@
         var $busqueda = $('#busqueda');
 
         $busqueda.on('input', function() {
-            $.getJSON('/searchPersonal', {nombre: $busqueda.val()});
+            if ($busqueda.val().length >= 3) {
+                var $url = "/searchPersonal/" + $busqueda.val();
+                console.log($url);
+                $.getJSON($url)
+
+            }
         });
     });
 </script>

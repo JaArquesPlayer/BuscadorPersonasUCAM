@@ -8,7 +8,7 @@ public class PersonaDTO implements Serializable {
     public PersonaDTO() {
     }
 
-    private int id;
+    private Long id;
     private String nombre_completo;
     private String nombre_mostrar;
     private List<String> correos_institucionales;
@@ -19,13 +19,17 @@ public class PersonaDTO implements Serializable {
     private String linkedin;
     private String twitter;
     private String ubicacion;
-    private Byte[] foto;
+    private List<CargoElasticDTO> cargos;
+    private List<PlanElasticDTO> titulaciones_profesor;
+    private List<PlanElasticDTO> titulaciones_alumno;
+    private List<GrupoInvestigacionDTO> grupos_investigacion;
+    private String foto;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -105,15 +109,47 @@ public class PersonaDTO implements Serializable {
         return ubicacion;
     }
 
+    public List<CargoElasticDTO> getCargos() {
+        return cargos;
+    }
+
+    public void setCargos(List<CargoElasticDTO> cargos) {
+        this.cargos = cargos;
+    }
+
     public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
     }
 
-    public Byte[] getFoto() {
+    public List<PlanElasticDTO> getTitulaciones_profesor() {
+        return titulaciones_profesor;
+    }
+
+    public void setTitulaciones_profesor(List<PlanElasticDTO> titulaciones_profesor) {
+        this.titulaciones_profesor = titulaciones_profesor;
+    }
+
+    public List<PlanElasticDTO> getTitulaciones_alumno() {
+        return titulaciones_alumno;
+    }
+
+    public void setTitulaciones_alumno(List<PlanElasticDTO> titulaciones_alumno) {
+        this.titulaciones_alumno = titulaciones_alumno;
+    }
+
+    public String getFoto() {
         return foto;
     }
 
-    public void setFoto(Byte[] foto) {
+    public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public List<GrupoInvestigacionDTO> getGrupos_investigacion() {
+        return grupos_investigacion;
+    }
+
+    public void setGrupos_investigacion(List<GrupoInvestigacionDTO> grupos_investigacion) {
+        this.grupos_investigacion = grupos_investigacion;
     }
 }

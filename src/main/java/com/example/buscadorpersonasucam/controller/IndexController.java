@@ -5,7 +5,7 @@ import com.example.buscadorpersonasucam.database.entity.PersonaElastic;
 import com.example.buscadorpersonasucam.repository.ElasticsearchRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.elasticsearch.action.search.SearchResponse;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,10 +17,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+
+import java.util.logging.Logger;
 
 @Controller
 public class IndexController {
+
+    private final static Logger logger = Logger.getLogger("com.example.buscadorpersonasucam.controller.IndexController");
 
     private final ElasticsearchRepository elasticsearchRepository;
 
@@ -36,38 +41,87 @@ public class IndexController {
     @RequestMapping(value = "/perfil/{id}")
     public String perfil(Model model, @PathVariable int id) throws IOException {
 
-        PersonaDTO personaEncontrada = getPersonaById(id);
+        PersonaElastic personaEncontrada = getPersonaById(id);
         if (personaEncontrada != null) {
-            model.addAttribute("persona", personaEncontrada);
+            PersonaDTO personaEncontradaDTO = personaEncontrada.toDTO();
+            model.addAttribute("persona", personaEncontradaDTO);
         }
         return "profile";
     }
 
-    @RequestMapping(value = "/searchPersonal")
-    public String buscarPersonas(@RequestParam(name = "nombre", required = false) String busqueda, Model model) throws IOException{
+    @RequestMapping(value = "/searchPersonal/{busqueda}")
+    public String buscarPersonasUrl(@PathVariable(required = false) String busqueda, Model model) throws IOException{
 
-        List<PersonaDTO> personasEncontradas = new ArrayList<>();
-        if (busqueda != null) {
-            personasEncontradas = getPersonas(busqueda);
+        logger.info(busqueda);
+
+        if (busqueda.length() >= 3){
+            List<PersonaElastic> personasEncontradas = new ArrayList<>();
+            if (busqueda != null) {
+                personasEncontradas = getPersonas(busqueda);
+            }
+
+            List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
+            for (int i=0; i<personasEncontradas.size(); i++){
+                PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
+                personasEncontradasDTO.add(personaDTO);
+            }
+
+            model.addAttribute("personasEncontradas", personasEncontradasDTO);
+
+            logger.info(busqueda);
+            logger.info(personasEncontradasDTO.toString());
+        }else{
+            logger.info("La palabra es demasiado corta");
         }
-        model.addAttribute("personasEncontradas", personasEncontradas);
-
-        System.out.println(busqueda);
-        System.out.println("Se acciona el controlador");
-        //todo el controlador y el jquery qu lo accionan funcionan correctamente, falta que cuando se accione el controlador
-        //todo funcione el return de la vista. Al parecer la vista no cambia cuando se acciona
 
         return "search-results";
     }
 
+    /*
+    @RequestMapping(value = "/searchPersonalDepartamento/{busqueda}")
+    public String buscarPersonasDepartamentoUrl(@PathVariable(required = false) String busqueda, Model model) throws IOException{
+
+        logger.info(busqueda);
+
+        if (busqueda.length() >= 3){
+            List<PersonaElastic> personasEncontradas = new ArrayList<>();
+            if (busqueda != null) {
+                personasEncontradas = getPersonasByDepartamento(busqueda);
+            }
+
+            List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
+            for (int i=0; i<personasEncontradas.size(); i++){
+                PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
+                personasEncontradasDTO.add(personaDTO);
+            }
+
+            model.addAttribute("personasEncontradas", personasEncontradasDTO);
+
+            logger.info(busqueda);
+            logger.info(personasEncontradasDTO.toString());
+        }else{
+            logger.info("La palabra es demasiado corta");
+        }
+
+        return "search-results";
+    }
+*/
+
     @GetMapping("/searchNombres")
     public ResponseEntity<List<PersonaDTO>> buscarNombres(@RequestParam(name = "nombre", required = false) String busqueda) throws IOException {
 
-        List<PersonaDTO> personasEncontradas = new ArrayList<>();
+        List<PersonaElastic> personasEncontradas = new ArrayList<>();
         if (busqueda != null) {
             personasEncontradas = getPersonas(busqueda);
         }
-        return ResponseEntity.ok(personasEncontradas);
+
+        List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
+        for (int i=0; i<personasEncontradas.size(); i++){
+            PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
+            personasEncontradasDTO.add(personaDTO);
+        }
+
+        return ResponseEntity.ok(personasEncontradasDTO);
     }
 
     @GetMapping("/searchPublicaciones")
@@ -81,26 +135,22 @@ public class IndexController {
         return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
     }
 
-    public List<PersonaDTO> getPersonas(String busqueda) throws IOException {
-        if (busqueda.length() < 3){
-            List<PersonaDTO> emptyList = new ArrayList<>();
-            return emptyList;
-        }
+    public List<PersonaElastic> getPersonas(@NotNull String busqueda) throws IOException {
 
-        String result = String.valueOf(elasticsearchRepository.searchAllAndReturnFields());
+        String result = String.valueOf(elasticsearchRepository.searchAll());
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = mapper.readTree(result);
         JsonNode hitsNode = rootNode.get("hits").get("hits");
-        List<PersonaDTO> personas = new ArrayList<>();
+        List<PersonaElastic> personas = new ArrayList<>();
 
         for (JsonNode hit : hitsNode) {
             JsonNode sourceNode = hit.get("_source");
-            PersonaDTO personaDTO = mapper.treeToValue(sourceNode, PersonaDTO.class);
-            personas.add(personaDTO);
+            PersonaElastic personaElastic = mapper.treeToValue(sourceNode, PersonaElastic.class);
+            personas.add(personaElastic);
         }
 
-        List<PersonaDTO> personasEncontradas = new ArrayList<>();
+        List<PersonaElastic> personasEncontradas = new ArrayList<>();
 
         for (int i=0; i< personas.size(); i++){
             busqueda = normalize(busqueda).toLowerCase();
@@ -110,11 +160,38 @@ public class IndexController {
                 personasEncontradas.add(personas.get(i));
             }
         }
-
         return personasEncontradas;
     }
 
-    public PersonaDTO getPersonaById(Integer id) throws IOException {
+    public List<PersonaElastic> getPersonasByDepartamento(@NotNull String busqueda) throws IOException{
+
+        String result = String.valueOf(elasticsearchRepository.searchByDepartament(busqueda));
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        JsonNode hitsNode = rootNode.get("hits").get("hits");
+        List<PersonaElastic> personas = new ArrayList<>();
+
+        for (JsonNode hit : hitsNode) {
+            JsonNode sourceNode = hit.get("_source");
+            PersonaElastic personaElastic = mapper.treeToValue(sourceNode, PersonaElastic.class);
+            personas.add(personaElastic);
+        }
+
+        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+
+        for (int i=0; i< personas.size(); i++){
+            busqueda = normalize(busqueda).toLowerCase();
+            String nombre_completo = normalize(personas.get(i).getNombre_completo()).toLowerCase();
+
+            if (nombre_completo.contains(busqueda)){
+                personasEncontradas.add(personas.get(i));
+            }
+        }
+        return personasEncontradas;
+    }
+
+    public PersonaElastic getPersonaById(Integer id) throws IOException {
 
         String result = String.valueOf(elasticsearchRepository.searchById(id));
 
@@ -124,7 +201,7 @@ public class IndexController {
         JsonNode hit = hitsNode.get(0);
 
         JsonNode sourceNode = hit.get("_source");
-        PersonaDTO personaEncontrada = mapper.treeToValue(sourceNode, PersonaDTO.class);
+        PersonaElastic personaEncontrada = mapper.treeToValue(sourceNode, PersonaElastic.class);
 
         return personaEncontrada;
     }

@@ -30,20 +30,18 @@ public class ElasticsearchRepository {
         return client.search(searchRequest, RequestOptions.DEFAULT);
     }
 
-    public SearchResponse searchAllAndReturnFields() throws IOException {
-        SearchRequest searchRequest = new SearchRequest("personas");
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(QueryBuilders.matchAllQuery());
-        searchSourceBuilder.fetchSource(new String[] {"nombre_completo", "nombre_mostrar", "id", "correor_personales", "correos_institucionales", "telefonos", "extension", "instagram", "linkedin", "twitter", "ubicacion", "foto"}, null);
-        searchRequest.source(searchSourceBuilder);
-        return client.search(searchRequest, RequestOptions.DEFAULT);
-    }
-
     public SearchResponse searchById(Integer id) throws IOException {
         SearchRequest searchRequest = new SearchRequest("personas");
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(QueryBuilders.termQuery("id", id));
-        searchSourceBuilder.fetchSource(new String[]{"nombre_completo", "nombre_mostrar", "id", "correor_personales", "correos_institucionales", "telefonos", "extension", "instagram", "linkedin", "twitter", "ubicacion", "foto"}, null);
+        searchRequest.source(searchSourceBuilder);
+        return client.search(searchRequest, RequestOptions.DEFAULT);
+    }
+
+    public SearchResponse searchByDepartament(String departamento) throws IOException {
+        SearchRequest searchRequest = new SearchRequest("personas");
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(QueryBuilders.termQuery("departamentos", departamento));
         searchRequest.source(searchSourceBuilder);
         return client.search(searchRequest, RequestOptions.DEFAULT);
     }

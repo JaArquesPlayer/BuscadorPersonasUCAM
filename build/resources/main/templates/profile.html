@@ -8,29 +8,32 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
   <!-- Metadata -->
+
   <title th:text="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"></title>
-  <meta property='og:title'  th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'">
-  <meta name='twitter:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'">
+  <meta property='og:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
+  <meta name='twitter:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
 
-  <meta name='description'         th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}">
-  <meta name='description'         th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}">
+  <meta th:if="${persona.cargos != null}" name='description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.cargos[0]}"/>
+  <meta th:if="${persona.ubicacion != null}" name='description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
 
-  <meta property='og:description'  th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}">
-  <meta property='og:description'  th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}">
+  <!--todo<meta th:if="${persona.cargos != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.cargos[0]}">-->
 
-  <meta name='twitter:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}">
+  <meta th:if="${persona.ubicacion != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion} + '' + ${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
+  <!--<meta th:if="${persona.ubicacion != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>-->
 
-  <link rel='canonical'       th:href="@{https://personas.ucam.edu/personas/perfil/${id}}">
-  <meta property='og:url'  th:content="@{https://personas.ucam.edu/personas/perfil/${id}}">
-  <meta name='twitter:url' th:content="@{https://personas.ucam.edu/personas/perfil/${id}}">
+  <meta name='twitter:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
+
+  <link rel='canonical' th:href="@{https://personas.ucam.edu/personas/perfil/${persona.id}}"/>
+  <meta property='og:url' th:content="@{https://personas.ucam.edu/personas/perfil/${persona.id}}"/>
+  <meta name='twitter:url' th:content="@{https://personas.ucam.edu/personas/perfil/${persona.id}}"/>
 
   <!--Constant metadata-->
-  <meta property='og:type' content='website'>
+  <meta property='og:type' content='website'/>
   <meta property="fb:app_id" content="501593976526558" />
   <!--End of constant metadata-->
 
-  <meta property="og:image" th:content="${persona.foto}">
-  <meta name="twitter:image" th:content="${persona.foto}">
+  <meta property="og:image" th:content="'data:image/jpeg;base64,'  + ${persona.foto}"/>
+  <meta name="twitter:image" th:content="${persona.foto}"/>
   <!-- End of Metadata -->
 
   <link th:href="@{/assets/plugins/ucam-icons/styles.css}" rel="stylesheet"/>
@@ -57,37 +60,45 @@
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-12 col-md-6 col-lg-5 order-md-2 d-flex justify-content-center align-items-end">
-            <img th:if="${imagen != null}" th:src="${imagen}" th:alt="${nombre} + ' ' + ${apellidos}" class="img-fluid">
+            <img th:if="${persona.foto != null}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
           </div>
           <div class="col-12 col-md-6 col-lg-5 order-md-1 profile__contact-data d-flex flex-column">
-            <a th:href="@{/resultados}" class="back-link mt-3 d-none d-md-block" title="Volver atrás">< Volver atrás</a>
+            <a th:href="@{/searchPersonal}" class="back-link mt-3 d-none d-md-block" title="Volver atrás">< Volver atrás</a>
             <!-- datos escritorio -->
             <div class="data-wrapper flex-1 flex-column justify-content-center d-none d-md-flex">
-              <h2 class="text-size-titulo1 font-weight-bold mt-5 mt-md-0" th:if="${nombre != null && apellidos != null}" th:text="${nombre} + ' ' + ${apellidos}"></h2>
-              <h4 class="text-size-subtitulo1"><i th:if="${puesto != null}" th:text="${puesto}"></i>
+              <h2 class="text-size-titulo1 font-weight-bold mt-5 mt-md-0" th:text="${persona.nombre_mostrar}"></h2>
+              <h4 class="text-size-subtitulo1"><i th:if="${persona.cargos != null}" th:text="${persona.cargos[0]}"></i>
               </h4>
 
               <p><i class="icon-email"></i>
-                <a th:if="${mail != null}" th:href="'mailto:' + ${email}" th:title="'Enviar correo a ' + ${email}" th:text="${email}">
+                <a th:if="${persona.correos_institucionales != null}" th:href="'mailto:' + ${persona.correos_institucionales[0]}" th:title="'Enviar correo a ' + ${persona.correos_institucionales[0]}" th:text="${persona.correos_institucionales[0]}">
                 </a>
               </p>
 
-              <p><i class="icon-phone"></i>
-                <a th:if="${telefono != null}" th:href="'tel:' + ${telefono}" th:title="'Llamar al teléfono ' + ${telefono}" th:text="${extension}">
+              <p th:if="${persona.telefonos != null && persona.telefonos[0] != ''}"><i class="icon-phone"></i>
+                <a th:href="'tel:' + ${persona.telefonos[0]}" th:title="'Llamar al teléfono ' + ${persona.telefonos[0]}" th:text="${persona.telefonos[0]} + ' ' + ${persona.extension}">
                 </a>
               </p>
 
-              <p th:if="${departamento != null}" th:text="${departamento}"><i class="icon-room"></i></p>
+              <p th:if="${persona.ubicacion != null && persona.ubicacion != ''}"><i class="icon-briefcase"></i>
+                <a th:href="${persona.ubicacion}" th:title="${persona.ubicacion}" th:text="${persona.ubicacion}">
+                </a>
+              </p>
 
               <ul class="list-inline mt-2">
-                <li class="list-inline-item text-size-titulo2">
-                  <a class="decoration-none" th:if="${instagram != null}" th:href="${instagram}" title="Instagram">
+                <li th:if="${persona.instagram != null && persona.instagram != ''}" class="list-inline-item text-size-titulo2">
+                  <a class="decoration-none" th:href="${persona.instagram}" title="Instagram">
                     <i class="icon-instagram"></i>
                   </a>
                 </li>
-                <li class="list-inline-item text-size-titulo2">
-                  <a class="decoration-none" th:if="${linkedin != null}" th:href="${linkedin}" title="LinkedIn">
+                <li th:if="${persona.linkedin != null && persona.linkedin != ''}" class="list-inline-item text-size-titulo2">
+                  <a class="decoration-none" th:href="${persona.linkedin}" title="LinkedIn">
                     <i class="icon-linkedin"></i>
+                  </a>
+                </li>
+                <li th:if="${persona.twitter != null && persona.twitter != ''}"  class="list-inline-item text-size-titulo2">
+                  <a class="decoration-none" th:href="${persona.twitter}" title="LinkedIn">
+                    <i class="icon-twitter"></i>
                   </a>
                 </li>
               </ul>
@@ -104,28 +115,33 @@
     <div class="container d-block d-md-none">
       <div class="row">
         <div class="col-12 profile__contact-data">
-          <h2 class="text-size-titulo1 font-weight-bold mt-4 mt-md-0" th:if="${nombre != null && apellidos != null}" th:text="${nombre} + ' ' + ${apellidos}"></h2>
-          <h4 class="text-size-subtitulo1"><i th:if="${puesto != null}" th:text="${puesto}"></i></h4>
+          <h2 class="text-size-titulo1 font-weight-bold mt-4 mt-md-0" th:text="${persona.nombre_mostrar}"></h2>
+          <h4 class="text-size-subtitulo1"><i th:if="${persona.cargos != null}" th:text="${persona.cargos[0]}"></i></h4>
           <p><i class="icon-email"></i>
-            <a th:if="${mail != null}" th:href="'mailto:' + ${email}" th:title="'Enviar correo a ' + ${email}" th:text="${email}">
+            <a th:if="${persona.correos_institucionales != null}" th:href="'mailto:' + ${persona.correos_institucionales[0]}" th:title="'Enviar correo a ' + ${persona.correos_institucionales[0]}" th:text="${persona.correos_institucionales[0]}">
             </a>
           </p>
 
           <p><i class="icon-phone"></i>
-            <a th:if="${telefono != null}" th:href="'tel:' + ${telefono}" th:title="'Llamar al teléfono ' + ${telefono}" th:text="${extension}">
+            <a th:if="${persona.telefonos != null}" th:href="'tel:' + ${persona.telefonos[0]}" th:title="'Llamar al teléfono ' + ${persona.telefonos[0]}" th:text="${persona.telefonos[0]} + ' ' + ${persona.telefonos[0]}">
             </a>
           </p>
 
-          <p th:if="${departamento != null}" th:text="${departamento}"><i class="icon-room"></i></p>
+          <p th:if="${persona.ubicacion != null}" th:text="${persona.ubicacion}"><i class="icon-room"></i></p>
 
           <ul class="list-inline mt-2">
             <li class="list-inline-item text-size-titulo2">
-              <a class="decoration-none" th:if="${instagram != null}" th:href="${instagram}" title="Instagram">
+              <a class="decoration-none" th:if="${persona.instagram != null}" th:href="${persona.instagram}" title="Instagram">
                 <i class="icon-instagram"></i>
               </a>
             </li>
             <li class="list-inline-item text-size-titulo2">
-              <a class="decoration-none" th:if="${linkedin != null}" th:href="${linkedin}" title="LinkedIn">
+              <a class="decoration-none" th:if="${persona.linkedin != null}" th:href="${persona.linkedin}" title="LinkedIn">
+                <i class="icon-linkedin"></i>
+              </a>
+            </li>
+            <li class="list-inline-item text-size-titulo2">
+              <a class="decoration-none" th:if="${persona.twitter != null}" th:href="${persona.twitter}" title="LinkedIn">
                 <i class="icon-linkedin"></i>
               </a>
             </li>
@@ -151,19 +167,24 @@
           <!-- inicio tabs -->
           <div id="profile-tabs" class="swiper-container">
             <ul class="nav nav-tabs nav-justified swiper-wrapper" id="results" role="tablist">
-              <li th:if="${informacionGeneral != null}" class="nav-item swiper-slide">
+              <!--th:if="${informacionGeneral != null}"-->
+              <li class="nav-item swiper-slide">
                 <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="" aria-selected="true" id="informacion-tab" href="#informacion">Información general</a>
               </li>
-              <li th:if="${publicaciones != null}" class="nav-item swiper-slide">
+              <!--th:if="${publicaciones != null}" -->
+              <li class="nav-item swiper-slide">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="publicaciones-tab" href="#publicaciones">Publicaciones</a>
               </li>
-              <li th:if="${proyectosCompetitivos != null}" class="nav-item swiper-slide">
+              <!--th:if="${proyectosCompetitivos != null}" -->
+              <li class="nav-item swiper-slide">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="proyectos-competitivos-tab" href="#proyectos-competitivos">Proyectos Competitivos</a>
               </li>
-              <li th:if="${proyectosNoCompetitivos != null}" class="nav-item swiper-slide">
+              <!--th:if="${proyectosNoCompetitivos != null}" -->
+              <li class="nav-item swiper-slide">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="proyectos-no-competitivos-tab" href="#proyectos-no-competitivos">Proyectos Competitivos</a>
               </li>
-              <li th:if="${docenciaImpartida != null}" class="nav-item swiper-slide">
+              <!--th:if="${docenciaImpartida != null}" -->
+              <li class="nav-item swiper-slide">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="docencia-tab" href="#docencia">Docencia impartida en los últimos años</a>
               </li>
             </ul>
@@ -175,22 +196,26 @@
             <!--informacion general-->
             <div class="tab-pane fade show active" id="informacion" role="tabpanel" aria-labelledby="informacion-tab">
 
-              <h3 th:if="${formacion != null}" class="text-size-subtitulo1">Formación</h3>
-              <!-- todo Aqui va un for para recorrer toda la formacion que tenga y pintarla en un li-->
-              <ul>
-                <li th:text="${formacion}"></li>
+              <h3 th:if="${persona.titulaciones_alumno != null}" class="text-size-subtitulo1">Formación</h3>
+              <ul th:each="titulacion : ${persona.getTitulaciones_alumno()}">
+                <li th:text="${titulacion}"></li>
+              </ul>
+              <h3 th:if="${persona.titulaciones_profesor != null}" class="text-size-subtitulo1">Formación</h3>
+              <ul th:each="titulacion : ${persona.getTitulaciones_profesor()}">
+                <li th:text="${titulacion}"></li>
               </ul>
 
-              <h3 th:if="${grupoInvestigacion}" class="text-size-subtitulo1">Grupos de investigación</h3>
               <!-- todo Preguntar como manejar esta informacion-->
+              <!--th:if="${grupoInvestigacion}"-->
+              <h3 class="text-size-subtitulo1">Grupos de investigación</h3>
               <ul>
-                <li><a th:href="${grupoInvestigacion}"></a></li>
+                <li><a></a></li>
               </ul>
 
-              <h3 th:if="${personasRelacionadas != null}" class="text-size-subtitulo1">Personas relacionadas</h3>
+              <!-- todo Recorrer las personas relacionadas o las del departamento-->
               <!-- personas relacionadas -->
+              <h3 class="text-size-subtitulo1">Personas relacionadas</h3>
               <div id="related-profiles">
-                <!-- todo Recorrer las personas relacionadas o las del departamento-->
                   <!-- item -->
                   <a href="#" title="Samuel Ferrer García" class="related-profile__wrapper">
                     <div class="profile-card">
@@ -299,6 +324,7 @@
               </div>
               <!-- end personas relacionadas -->
 
+              <!--todo hacer qu efuncione el boton-->
               <!--Boton más resultados-->
               <div class="btn-div">
                 <button class="more-results">
@@ -357,7 +383,7 @@
 <script th:src="@{/assets/js/vendor/jquery.slim.min.js}"></script>
 <script th:src="@{/assets/js/vendor/popper.min.js}"></script>
 <script th:src="@{/assets/js/vendor/bootstrap.min.js}"></script>
-
+<script th:src="@{/assets/js/vendor/swiper.js}"></script>
 <script th:src="@{/assets/js/profile.scripts.js}"></script>
 </body>
 </html>
