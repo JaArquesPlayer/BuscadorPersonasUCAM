@@ -28,14 +28,14 @@
         <!-- buscador -->
         <div class="row">
             <div class="col">
-                <form action="/searchPersonal/">
+                <form th:action="@{/searchPersonal/}">
                     <div class="input-group">
                         <span class="input-group-prepend">
                             <div class="input-group-text bg-ucam-gray-lighter border-right-0">
                                 <i class="icon-lupa"></i>
                             </div>
                         </span>
-                        <input id="busqueda" type="text" class="form-control bg-ucam-gray-lighter py-2 border-left-0" placeholder="Nombre, apellidos, extensión, email...">
+                        <input id="busqueda" type="text" class="form-control bg-ucam-gray-lighter py-2 border-left-0" name="search" placeholder="Nombre, apellidos, extensión, email..." th:value="${nombre}">
                     </div>
                 </form>
             </div>
@@ -49,15 +49,15 @@
                 <div id="swiper-results-tabs" class="swiper-container">
                     <ul class="nav nav-tabs nav-justified swiper-wrapper" id="results" role="tablist">
 
-                        <li class="nav-item swiper-slide"><!-- todo th:if="${personal != null}" -->
+                        <li class="nav-item swiper-slide">
                             <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="" aria-selected="true"
                                id="personal-tab" href="#personal">Personal UCAM</a>
                         </li>
-                        <li class="nav-item swiper-slide"><!-- todo th:if="${facultadesDepartamentos != null}" -->
+                        <li class="nav-item swiper-slide">
                             <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
                                id="facultades-tab" href="#facultades">Facultades y Departamentos</a>
                         </li>
-                        <li class="nav-item swiper-slide"><!-- todo th:if="${publicaciones}" -->
+                        <li class="nav-item swiper-slide">
                             <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
                                id="publicaciones-tab" href="#publicaciones">Publicaciones</a>
                         </li>
@@ -66,7 +66,7 @@
                 <!-- end tabs -->
 
                 <!-- todo not found error -->
-                <div th:if="${personal != null && facultadesDepartamentos == null && publicaciones == null}" class="col-12">
+                <div th:if="${personasEncontradas != null && facultadesDepartamentos == null && publicaciones == null}" class="col-12">
                     <p class="text-size-subtitulo1 text-color-info">Lo sentimos, no hemos encontrado ningún resultado para la búsqueda. </p>
                     <p>Te sugerimos que:</p>
                     <ul class="marker-secondary">
@@ -82,13 +82,12 @@
         <div class="row justify-content-center">
             <div class="col-12 col-lg-10">
 
-                <!-- tabs content th:each="persona : ${personalEncontrado}"-->
+                <!-- tabs content-->
                 <div class="tab-content" id="results-content">
 
                     <!--Personal-->
                     <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
-                        <div id="resultados-personal">
-                        </div>
+                        <div id="resultados-personal" class="row"></div>
                     </div>
                     <!--End of personal-->
 
@@ -151,6 +150,23 @@
         var timeout = null;
         var $busqueda = $('#busqueda');
 
+        if ($busqueda.val() !== '') {
+            var $url = "/searchPersonal/" + $busqueda.val();
+
+            $.ajax({
+                type: 'GET',
+                url: $url,
+                dataType: 'html'
+            })
+                .done(function(data) {
+                    $('#resultados-personal').html(data);
+                    console.log('Personas encontradas correctamente');
+                })
+                .fail(function() {
+                    console.log('Error al buscar personas');
+                });
+        }
+
         $busqueda.on('keyup', function() {
             clearTimeout(timeout);
             timeout = setTimeout(function() {
@@ -173,118 +189,5 @@
     });
 </script>
 
-<!--Script para buscar personal-->
-<!--todo añadir el enlace al departamento-->
-<!--
-<script>
-    $(document).ready(function() {
-        var $busqueda = $('#busqueda2');
-        var $resultadosPersonal = $('#resultados-personal');
-
-        $busqueda.on('input', function() {
-
-        $.getJSON('/searchPersonal', {nombre: $busqueda.val()})
-            .done(function(personasEncontradas) {
-                $resultadosPersonal.empty();
-
-                personasEncontradas.forEach(function(persona) {
-
-                    var $card = $(
-                        `    <div class="col-12 col-md-6">\n` +
-                        `       <div class="card mb-3">\n`+
-                        `               <div class="col-auto p-3">\n` +
-                        `                   <img src="${persona.foto}" alt="${persona.nombre_mostrar}" width="86" height="105" class="img-fluid">\n` +
-                        `               </div>\n` +
-                        `               <div class="col">\n` +
-                        `                   <div class="card-body d-flex flex-column justify-content-end h-100">\n` +
-                        `                       <p class="card-title flex-1"><a href="/perfil/${persona.id}" title="${persona.nombre_mostrar}"> ${persona.nombre_mostrar}</a></p>\n`+
-                        `                       <p class="card-text"><i class="icon-email"></i> <a href="mailto:${persona.correos_institucionales[0]}" title="Enviar correo a ${persona.correos_institucionales[0]}">${persona.correos_institucionales[0]}</a></p>\n` +
-                        `                       <p class="card-text"><i class="icon-email"></i> <a href="mailto:${persona.correos_personales}" title="Enviar correo a ${persona.correos_personales}">${persona.correos_personales}</a></p>\n` +
-                        `                       <p class="card-text"><i class="icon-phone"></i> <a href="tel:${persona.telefonos}" title="Llamar al teléfono ${persona.telefonos}">${persona.telefonos} ${persona.extension}</a></p>\n`+
-                        `                       <p class="card-text"><i class="icon-diploma"></i><a href="#">${persona.ubicacion}</a></p>\n`+
-                        `                       <p class="card-text"><i class="icon-instagram"></i><a href="${persona.instagram}" title="Instagram"></a></p>\n`+
-                        `                       <p class="card-text"><i class="icon-linkedin"></i><a href="${persona.linkedin}" title="Linkedin"></a></p>\n`+
-                        `                       <p class="card-text"><i class="icon-twitter"></i><a href="${persona.twitter}" title="Twitter"></a></p>\n` +
-                        `                   </div>\n` +
-                        `               </div>\n` +
-                        `           </div>\n` +
-                        `       </div>\n` +
-                        `   </div>\n`);
-
-                    $resultadosPersonal.append($card);
-                });
-            })
-            .fail(function() {
-                console.log('Error al buscar personas');
-            });
-        });
-    });
-</script>
--->
-
-<!--Script para buscar departamentos-->
-<!--
-<script>
-    $(document).ready(function() {
-        var $busqueda = $('#busqueda2');
-        var $resultadosDepartamentos = $('#related-profiles');
-
-        $busqueda.on('input', function() {
-
-        $.getJSON('/searchPersonal', {nombre: $busqueda.val()})
-            .done(function(personasEncontradas) {
-                $resultadosDepartamentos.empty();
-
-                personasEncontradas.forEach(function(persona) {
-                    var nombre = persona.nombre + ' ' + persona.apellidos;
-                    var $card = $(
-                        '<a href="/perfil/'+persona.id+'" title="'+nombre+'" class="related-profile__wrapper">\n' +
-                        '   <div class="profile-card">\n' +
-                        '       <img class="img-fluid" src="'+persona.image+'" alt="'+nombre+'">\n' +
-                        '       <p class="related-profile__caption">'+nombre+'</p>\n' +
-                        '   </div>\n' +
-                        '</a>\n');
-
-                    $resultadosDepartamentos.append($card);
-                });
-            })
-            .fail(function() {
-                console.log('Error al buscar personas');
-            });
-        });
-    });
-</script>
--->
-<!--Script para buscar publicaciones-->
-<!--
-<script>
-    $(document).ready(function() {
-        var $busqueda = $('#busqueda2');
-        var $resultadosPublicaciones = $('#resultados-publicaciones');
-
-        $busqueda.on('input', function() {
-
-        $.getJSON('/searchPublicaciones', { publicacion: $busqueda.val()})
-            .done(function(publicacionesEncontradas) {
-                $resultadosPublicaciones.empty();
-
-                publicacionesEncontradas.forEach(function(publicacion) {
-                    var $card = $(
-                        '<div class="col-12">\n' +
-                        '   <a href="#" class="text-color-info font-weight-bold mb-3">'+publicacion.titulo+'</a>\n' +
-                        '       <p class="mt-3">'+publicacion.contenido+'</p>\n' +
-                        '       <hr>\n' +
-                        '</div>\n');
-
-                    $resultadosPublicaciones.append($card);
-                });
-            })
-            .fail(function() {
-                console.log('Error al buscar personas');
-            });
-        });
-    });
-</script>
--->
 </body>
 </html>
