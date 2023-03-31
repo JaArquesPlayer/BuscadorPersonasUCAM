@@ -1,5 +1,12 @@
 package com.example.buscadorpersonasucam.controller;
 
+import com.example.buscadorpersonasucam.beans.DTO.PersonaDTO;
+import com.example.buscadorpersonasucam.database.entity.PersonaElastic;
+import com.example.buscadorpersonasucam.repository.ElasticsearchRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,111 +15,187 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.logging.Logger;
+
 @Controller
 public class IndexController {
+
+    private final static Logger logger = Logger.getLogger("com.example.buscadorpersonasucam.controller.IndexController");
+
+    private final ElasticsearchRepository elasticsearchRepository;
+
+    public IndexController(ElasticsearchRepository elasticsearchRepository) {
+        this.elasticsearchRepository = elasticsearchRepository;
+    }
 
     @RequestMapping(value = "/personas")
     public String index() {
         return "index";
     }
 
-    @RequestMapping(value = "/resultados")
-    public String resultados() {
-        return "search-results";
-    }
-
     @RequestMapping(value = "/perfil/{id}")
-    public String perfil(Model model, @PathVariable int id) {
+    public String perfil(Model model, @PathVariable int id) throws IOException {
 
-        //todo Aqui hace el pedido al backend con la id que se le pasa {id}
-        //devuelde una persona completa con todos los datos para usarlos en el frontend
-        List<Persona> personas = new ArrayList<>();
-        personas.add(new Persona(1, "Jose Ángel", "Alcolea Arques"));
-        personas.add(new Persona(2, "Jose Manuel", "Martín Melero"));
-        personas.add(new Persona(3, "Joselito", "Jiménez Fernández"));
-        personas.add(new Persona(4, "Laura", "Martínez Ortega"));
-        personas.add(new Persona(5, "María", "Caldel García"));
-        personas.add(new Persona(6, "María del Carmen", "Astero Martín"));
+        PersonaElastic personaEncontrada = getPersonaById(id);
+        PersonaDTO personaEncontradaDTO = new PersonaDTO();
 
-        for (int i=0; i<personas.size(); i++){
-            if(personas.get(i).getId() == id){
-                model.addAttribute("nombre", personas.get(i).getNombre());
-                model.addAttribute("apellidos", personas.get(i).getApellidos());
+        if (personaEncontrada != null) {
+            personaEncontradaDTO = personaEncontrada.toDTO();
+        }
+
+        List<PersonaElastic> personasEncontradasDepartamento = getPersonasByDepartamento(personaEncontradaDTO.getUbicacion());
+        List<PersonaDTO> personasEncontradasDepartamentoDTO = new ArrayList<>();
+
+        if (personasEncontradasDepartamento != null) {
+            for (int i=0; i<personasEncontradasDepartamento.size(); i++){
+                PersonaDTO personaDTO = personasEncontradasDepartamento.get(i).toDTO();
+                personasEncontradasDepartamentoDTO.add(personaDTO);
             }
         }
-        return "profile";
+
+        model.addAttribute("persona", personaEncontradaDTO);
+        model.addAttribute("personasEncontradasDepartamento", personasEncontradasDepartamentoDTO);
+
+        return "perfil";
     }
 
-    @GetMapping("/searchPersonal")
-    public ResponseEntity<List<Persona>> buscarPersonas(@RequestParam("nombre") String busqueda) {
+    @RequestMapping(value = "/searchPersonal/")
+    public String buscarPersonas(HttpServletRequest request, @RequestParam(name = "search") String busqueda, Model model) {
 
-        if(busqueda.length() < 3){
-            List<Persona> emptyList = new ArrayList<>();
-            return ResponseEntity.ok(emptyList);
+        String nombre = request.getParameter("search");
+        model.addAttribute("nombre", nombre);
+
+        return "resultados";
+    }
+
+    @RequestMapping(value = "/searchPersonal/{busqueda}")
+    public String buscarPersonasUrl(@PathVariable(required = false) String busqueda, Model model) throws IOException{
+
+        if (busqueda.length() >= 3){
+            List<PersonaElastic> personasEncontradas = new ArrayList<>();
+            if (busqueda != null) {
+                personasEncontradas = getPersonas(busqueda);
+            }
+
+            List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
+            for (int i=0; i<personasEncontradas.size(); i++){
+                PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
+                personasEncontradasDTO.add(personaDTO);
+            }
+
+            model.addAttribute("personasEncontradas", personasEncontradasDTO);
+        }
+        return "plantillas/personal";
+    }
+
+    @RequestMapping(value = "/searchNombres/{busqueda}")
+    public String buscarNombresUrl(@PathVariable(required = false) String busqueda, Model model) throws IOException{
+
+        if (busqueda.length() >= 3){
+            List<PersonaElastic> personasEncontradas = new ArrayList<>();
+            if (busqueda != null) {
+                personasEncontradas = getPersonas(busqueda);
+            }
+
+            List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
+            for (int i=0; i<personasEncontradas.size(); i++){
+                PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
+                personasEncontradasDTO.add(personaDTO);
+
+                if (i >= 4){break;}
+            }
+
+            model.addAttribute("personasEncontradas", personasEncontradasDTO);
         }
 
-        //todo Datos de llegada, son ficticios pero deben de ser los reales.
-        List<Persona> personas = new ArrayList<>();
+        return "plantillas/nombres";
+    }
 
-        personas.add(new Persona(1, "Jose Ángel", "Alcolea Arques"));
-        personas.add(new Persona(2, "Jose Manuel", "Martín Melero"));
-        personas.add(new Persona(3, "Joselito", "Jiménez Fernández"));
-        personas.add(new Persona(4, "Laura", "Martínez Ortega"));
-        personas.add(new Persona(5, "María", "Caldel García"));
-        personas.add(new Persona(6, "María del Carmen", "Astero Martín"));
+    @GetMapping("/searchPublicaciones")
+    public ResponseEntity<List<PersonaElastic>> buscarPublicaciones(@RequestParam("publicacion") String busqueda) {
+        //todo buscar publicaciones
+        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+        return ResponseEntity.ok(personasEncontradas);
+    }
 
-        List<Persona> personasEncontradas = new ArrayList<>();
+    public String normalize(String string) {
+        return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
+    }
 
-        for(int i=0; i<personas.size(); i++){
-            String nombreCompleto = personas.get(i).getNombre() + " " + personas.get(i).getApellidos();
+    public List<PersonaElastic> getPersonas(@NotNull String busqueda) throws IOException {
 
+        String result = String.valueOf(elasticsearchRepository.searchAll());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        JsonNode hitsNode = rootNode.get("hits").get("hits");
+        List<PersonaElastic> personas = new ArrayList<>();
+
+        for (JsonNode hit : hitsNode) {
+            JsonNode sourceNode = hit.get("_source");
+            PersonaElastic personaElastic = mapper.treeToValue(sourceNode, PersonaElastic.class);
+            personas.add(personaElastic);
+        }
+
+        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+
+        for (int i=0; i< personas.size(); i++){
             busqueda = normalize(busqueda).toLowerCase();
-            nombreCompleto = normalize(nombreCompleto).toLowerCase();
+            String nombre_completo = normalize(personas.get(i).getNombre_completo()).toLowerCase();
 
-            if(nombreCompleto.contains(busqueda)){
+            if (nombre_completo.contains(busqueda)){
+                personasEncontradas.add(personas.get(i));
+            }
+        }
+        return personasEncontradas;
+    }
+
+    public List<PersonaElastic> getPersonasByDepartamento(@NotNull String busqueda) throws IOException{
+
+        String result = String.valueOf(elasticsearchRepository.searchAll());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        JsonNode hitsNode = rootNode.get("hits").get("hits");
+        List<PersonaElastic> personas = new ArrayList<>();
+
+        for (JsonNode hit : hitsNode) {
+            JsonNode sourceNode = hit.get("_source");
+            PersonaElastic personaElastic = mapper.treeToValue(sourceNode, PersonaElastic.class);
+            personas.add(personaElastic);
+        }
+
+        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+
+        for (int i=0; i< personas.size(); i++){
+            busqueda = normalize(busqueda).toLowerCase();
+            String ubicacion = normalize(personas.get(i).getUbicacion()).toLowerCase();
+
+            if (ubicacion.equalsIgnoreCase(busqueda)){
                 personasEncontradas.add(personas.get(i));
             }
         }
 
-        return ResponseEntity.ok(personasEncontradas);
+        return personasEncontradas;
     }
 
-    @GetMapping("/searchPublicaciones")
-    public ResponseEntity<List<Publicacion>> buscarPublicaciones(@RequestParam("publicacion") String busqueda) {
+    public PersonaElastic getPersonaById(Integer id) throws IOException {
 
-        if(busqueda.length() < 3){
-            List<Publicacion> emptyList = new ArrayList<>();
-            return ResponseEntity.ok(emptyList);
-        }
+        String result = String.valueOf(elasticsearchRepository.searchById(id));
 
-        //todo Datos de llegada, son ficticios pero deben de ser los reales.
-        List<Publicacion> publicaciones = new ArrayList<>();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        JsonNode hitsNode = rootNode.get("hits").get("hits");
+        JsonNode hit = hitsNode.get(0);
 
-        publicaciones.add(new Publicacion(1, "Organizaciones nativas responsables: la RSC en la cultura de las startups digitales españolas", "María Dolores Gil , Margarita Capdepón , Miguel Ángel Beltrán , Francisco José Noguera , Ginesa Martinez , María Dolores García , Jorge López , María Fernández , Victoria Pérez , Mario Cava (2015)"));
-        publicaciones.add(new Publicacion(2, "Propuesta de diseño claro y transparente para la factura eléctrica regulada en España", "Blas José Subiela , María Ascensión Miralles , David Sánchez (2018)"));
-        publicaciones.add(new Publicacion(3, "Influencia del diseño periodístico en la comprensión de la información", "Blas José Subiela , Ariana Gómez (2018)"));
+        JsonNode sourceNode = hit.get("_source");
+        PersonaElastic personaEncontrada = mapper.treeToValue(sourceNode, PersonaElastic.class);
 
-        List<Publicacion> publicacionesEncontradas = new ArrayList<>();
-
-        for (int i=0; i<publicaciones.size(); i++){
-            busqueda = normalize(busqueda).toLowerCase();
-            String titulo = normalize(publicaciones.get(i).getTitulo());
-            String contenido = normalize(publicaciones.get(i).getContenido());
-
-            if(titulo.contains(busqueda) || contenido.contains(busqueda)){
-                publicacionesEncontradas.add(publicaciones.get(i));
-            }
-        }
-
-        return ResponseEntity.ok(publicacionesEncontradas);
-    }
-
-
-    public String normalize(String string) {
-        return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
+        return personaEncontrada;
     }
 }

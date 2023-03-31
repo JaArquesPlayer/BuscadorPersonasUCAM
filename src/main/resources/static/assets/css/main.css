@@ -148,4 +148,20 @@ html{
     transform: scale(2);
 }
 
+.card{
+    display: flex;
+    flex-direction: row;
+}
 
+.card-body{
+    font-size: 14px;
+}
+
+.redes{
+    display: flex;
+    flex-direction: row;
+}
+
+#btn-back:hover {
+    cursor: pointer;
+}
