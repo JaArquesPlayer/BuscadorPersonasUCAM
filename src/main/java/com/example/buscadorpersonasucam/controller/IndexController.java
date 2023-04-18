@@ -67,11 +67,11 @@ public class IndexController {
             }
         }
         model.addAttribute("cargos", cargos);
-        logger.info(cargos);
 
-        //todo
         List<PublicacionDTO> publicacionesEncontradasDTO = new ArrayList<>();
         model.addAttribute("publicaciones", publicacionesEncontradasDTO);
+
+        //todo debe devolverse los datos correctos
         model.addAttribute("proyectosCompetitivos", personasEncontradasDepartamentoDTO);
         model.addAttribute("proyectosNoCompetitivos", personasEncontradasDepartamentoDTO);
         model.addAttribute("docencia", personasEncontradasDepartamentoDTO);
