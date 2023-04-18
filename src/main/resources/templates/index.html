@@ -68,6 +68,14 @@
 <script src="//code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
     $(document).ready(function() {
+        $('#busqueda').on('input', function() {
+            if ($(this).val() != '') {
+                $('.buscar').css('background-color', '#2d3d4a');
+            } else {
+                $('.buscar').css('background-color', '#a8a8a8');
+            }
+        });
+
         var timeout = null;
         var $busqueda = $('#busqueda');
         var $sugerencias = $('#sugerencias');

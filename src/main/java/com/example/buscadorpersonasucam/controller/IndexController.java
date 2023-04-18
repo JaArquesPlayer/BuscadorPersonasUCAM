@@ -65,16 +65,14 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/searchPersonal/")
-    public String buscarPersonas(HttpServletRequest request, @RequestParam(name = "search") String busqueda, Model model) {
-
-        String nombre = request.getParameter("search");
-        model.addAttribute("nombre", nombre);
+    public String buscarPersonas( @RequestParam(name = "search") String busqueda, Model model) {
+        model.addAttribute("nombre", busqueda);
 
         return "resultados";
     }
 
     @RequestMapping(value = "/searchPersonal/{busqueda}")
-    public String buscarPersonasUrl(@PathVariable(required = false) String busqueda, Model model) throws IOException{
+    public String buscarPersonasUrl(@PathVariable String busqueda, Model model) throws IOException{
 
         if (busqueda.length() >= 3){
             List<PersonaElastic> personasEncontradas = new ArrayList<>();

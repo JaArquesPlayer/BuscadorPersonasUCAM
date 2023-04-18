@@ -128,7 +128,8 @@
       <div class="row">
         <div class="col-12 profile__contact-data">
           <h2 class="text-size-titulo1 font-weight-bold mt-4 mt-md-0" th:text="${persona.nombre_mostrar}"></h2>
-          <h4 class="text-size-subtitulo1"><i th:if="${persona.cargos != null}"></i></h4> <!--todo-->
+          <!--todo mostrar cargos-->
+          <h4 class="text-size-subtitulo1"><i th:if="${persona.cargos != null}"></i></h4>
 
           <p th:if="${persona.correos_institucionales != null}">
             <span th:each="c_institucional : ${persona.correos_institucionales}" th:if="${c_institucional != ''}" class="icon-email">

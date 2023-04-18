@@ -268,33 +268,37 @@
             <!--todo formatear y preparar el resto de tabs-->
             <!--publicaciones-->
             <div class="tab-pane fade" id="publicaciones" role="tabpanel" aria-labelledby="publicaciones-tab">
-
-              <h6>Aplicación de la metodología del Aula Inversa en asignaturas del Grado en Turismo</h6>
-              <p>María Dolores Gil , Margarita Capdepón , Miguel Ángel Beltrán , Francisco José Noguera ,
-                Ginesa Martinez , María Dolores García , Jorge López , María Fernández , Victoria Pérez
-                , Mario Cava (2015)
-              </p>
-              <p class="text-color-ucam-gray-medium">Publicado en: <strong>La Universidad como comunidad
-                de innovación y cambio</strong>, 112, 120
-              </p>
+              <div th:if="${not #lists.isEmpty(persona.publicaciones)}">
+                <h6>Aplicación de la metodología del Aula Inversa en asignaturas del Grado en Turismo</h6>
+                <p>María Dolores Gil , Margarita Capdepón , Miguel Ángel Beltrán , Francisco José Noguera ,
+                  Ginesa Martinez , María Dolores García , Jorge López , María Fernández , Victoria Pérez
+                  , Mario Cava (2015)
+                </p>
+                <p class="text-color-ucam-gray-medium">Publicado en: <strong>La Universidad como comunidad
+                  de innovación y cambio</strong>, 112, 120
+                </p>
+              </div>
             </div>
             <!--End of publicaciones-->
 
             <!--Proyectos competitivos-->
             <div class="tab-pane fade" id="proyectos-competitivos" role="tabpanel" aria-labelledby="proyectos-competitivos-tab">
-
+              <div th:if="${not #lists.isEmpty(persona.proyectosCompetitivos)}">
+              </div>
             </div>
             <!--End of proyectos competitivos-->
 
             <!--Proyectos no competitivos-->
             <div  class="tab-pane fade" id="proyectos-no-competitivos" role="tabpanel" aria-labelledby="proyectos-no-competitivos-tab">
-
+              <div th:if="${not #lists.isEmpty(persona.proyectosCompetitivos)}">
+              </div>
             </div>
             <!--End of proyectos competitivos-->
 
             <!--Docencia impartida-->
             <div class="tab-pane fade" id="docencia" role="tabpanel" aria-labelledby="docencia-tab">
-
+              <div th:if="${not #lists.isEmpty(persona.docenciaImpartida)}">
+              </div>
             </div>
             <!--End of docencia impartida-->
 
