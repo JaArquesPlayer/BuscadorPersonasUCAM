@@ -87,6 +87,12 @@ public class IndexController {
             }
 
             model.addAttribute("personasEncontradas", personasEncontradasDTO);
+
+            //todo que devuelva personas ordenadas por departamentos
+            model.addAttribute("facultadesDepartamentos", personasEncontradasDTO);
+
+            //todo que devuelva publicaciones
+            model.addAttribute("publicaciones", personasEncontradasDTO);
         }
         return "plantillas/personal";
     }
@@ -112,13 +118,6 @@ public class IndexController {
         }
 
         return "plantillas/nombres";
-    }
-
-    @GetMapping("/searchPublicaciones")
-    public ResponseEntity<List<PersonaElastic>> buscarPublicaciones(@RequestParam("publicacion") String busqueda) {
-        //todo buscar publicaciones
-        List<PersonaElastic> personasEncontradas = new ArrayList<>();
-        return ResponseEntity.ok(personasEncontradas);
     }
 
     public String normalize(String string) {

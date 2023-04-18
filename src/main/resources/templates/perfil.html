@@ -189,24 +189,28 @@
           <!-- inicio tabs -->
           <div id="profile-tabs" class="swiper-container">
             <ul class="nav nav-tabs nav-justified swiper-wrapper" id="results" role="tablist">
-              <!--th:if="${informacionGeneral != null}"-->
-              <li class="nav-item swiper-slide">
+
+              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(personasEncontradasDepartamento)}">
                 <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="" aria-selected="true" id="informacion-tab" href="#informacion">Información general</a>
               </li>
-              <!--th:if="${publicaciones != null}" -->
-              <li class="nav-item swiper-slide">
+
+              <!--todo condicion -->
+              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(condicion)}">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="publicaciones-tab" href="#publicaciones">Publicaciones</a>
               </li>
-              <!--th:if="${proyectosCompetitivos != null}" -->
-              <li class="nav-item swiper-slide">
+
+              <!--todo condicion-->
+              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(condicion)}">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="proyectos-competitivos-tab" href="#proyectos-competitivos">Proyectos Competitivos</a>
               </li>
-              <!--th:if="${proyectosNoCompetitivos != null}" -->
-              <li class="nav-item swiper-slide">
+
+              <!--todo condicion-->
+              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(condicion)}">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="proyectos-no-competitivos-tab" href="#proyectos-no-competitivos">Proyectos Competitivos</a>
               </li>
-              <!--th:if="${docenciaImpartida != null}" -->
-              <li class="nav-item swiper-slide">
+
+              <!--todo condicion-->
+              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(condicion)}">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="docencia-tab" href="#docencia">Docencia impartida en los últimos años</a>
               </li>
             </ul>
@@ -243,17 +247,23 @@
               <!--personas relacionadas-->
               <h3 class="text-size-subtitulo1">Personas relacionadas</h3>
               <div id="related-profiles" th:if="${not #lists.isEmpty(personasEncontradasDepartamento)}">
-                  <a th:each="persona, iter : ${personasEncontradasDepartamento}" th:if="${iter.index < 6}" th:href="'/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper">
-                    <div class="profile-card">
-                      <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
-                      <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
-                      <p class="related-profile__caption" th:text="${persona.nombre_mostrar}"></p>
-                    </div>
-                  </a>
+                <a th:each="persona, iter : ${personasEncontradasDepartamento}" th:if="${iter.index < 6}" th:href="'/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper">
+                  <div class="profile-card">
+                    <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
+                    <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
+                    <p class="related-profile__caption" th:text="${persona.nombre_mostrar}"></p>
+                  </div>
+                </a>
+                <a th:each="persona, iter : ${personasEncontradasDepartamento}" th:if="${iter.index >= 6}" th:href="'/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper d-none ver-mas">
+                  <div class="profile-card">
+                    <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
+                    <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
+                    <p class="related-profile__caption" th:text="${persona.nombre_mostrar}"></p>
+                  </div>
+                </a>
               </div>
               <!--end personas relacionadas-->
 
-              <!--todo hacer que funcione el boton-->
               <!--Boton más resultados-->
               <div class="btn-div">
                 <button id="showMore" class="more-results">
@@ -265,40 +275,41 @@
             </div>
             <!--end of informacion general-->
 
-            <!--todo formatear y preparar el resto de tabs-->
             <!--publicaciones-->
             <div class="tab-pane fade" id="publicaciones" role="tabpanel" aria-labelledby="publicaciones-tab">
-              <div th:if="${not #lists.isEmpty(persona.publicaciones)}">
-                <h6>Aplicación de la metodología del Aula Inversa en asignaturas del Grado en Turismo</h6>
-                <p>María Dolores Gil , Margarita Capdepón , Miguel Ángel Beltrán , Francisco José Noguera ,
-                  Ginesa Martinez , María Dolores García , Jorge López , María Fernández , Victoria Pérez
-                  , Mario Cava (2015)
-                </p>
-                <p class="text-color-ucam-gray-medium">Publicado en: <strong>La Universidad como comunidad
-                  de innovación y cambio</strong>, 112, 120
-                </p>
-              </div>
+              <!--todo
+              <h6>Aplicación de la metodología del Aula Inversa en asignaturas del Grado en Turismo</h6>
+              <p>María Dolores Gil , Margarita Capdepón , Miguel Ángel Beltrán , Francisco José Noguera ,
+                Ginesa Martinez , María Dolores García , Jorge López , María Fernández , Victoria Pérez
+                , Mario Cava (2015)
+              </p>
+              <p class="text-color-ucam-gray-medium">Publicado en: <strong>La Universidad como comunidad
+                de innovación y cambio</strong>, 112, 120
+              </p>
+              -->
             </div>
             <!--End of publicaciones-->
 
             <!--Proyectos competitivos-->
             <div class="tab-pane fade" id="proyectos-competitivos" role="tabpanel" aria-labelledby="proyectos-competitivos-tab">
-              <div th:if="${not #lists.isEmpty(persona.proyectosCompetitivos)}">
-              </div>
+              <!--todo
+              -->
             </div>
             <!--End of proyectos competitivos-->
 
             <!--Proyectos no competitivos-->
-            <div  class="tab-pane fade" id="proyectos-no-competitivos" role="tabpanel" aria-labelledby="proyectos-no-competitivos-tab">
-              <div th:if="${not #lists.isEmpty(persona.proyectosCompetitivos)}">
+            <div class="tab-pane fade" id="proyectos-no-competitivos" role="tabpanel" aria-labelledby="proyectos-no-competitivos-tab">
+              <!--todo
               </div>
+              -->
             </div>
             <!--End of proyectos competitivos-->
 
             <!--Docencia impartida-->
             <div class="tab-pane fade" id="docencia" role="tabpanel" aria-labelledby="docencia-tab">
-              <div th:if="${not #lists.isEmpty(persona.docenciaImpartida)}">
+              <!--todo
               </div>
+              -->
             </div>
             <!--End of docencia impartida-->
 
@@ -319,49 +330,17 @@
 <script th:src="@{/assets/js/vendor/swiper.js}"></script>
 <script th:src="@{/assets/js/profile.scripts.js}"></script>
 
-<!--Script para ocultar los divs-->
 <script src="//code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
-  $(document).ready(function() {
-/*
-    var numPersonasMostradas = 6;
-    $("#showMore").click(function() {
-      var numPersonas = $("#related-profiles > div").length;
-
-      if (numPersonasMostradas < numPersonas) {
-        $("#related-profiles > div").slice(numPersonasMostradas, numPersonasMostradas + 6).show();
-        numPersonasMostradas += 6;
+  document.getElementById("showMore").addEventListener("click", function() {
+    var personasMostradas = document.getElementsByClassName("ver-mas");
+    for (var i = 0; i < 6; i++) {
+      if (personasMostradas[i]) {
+        personasMostradas[i].classList.remove("d-none");
       }
-      if (numPersonasMostradas >= numPersonas) {
-        $("#showMore").hide();
-      }
-    });
- */
-
-    if ($("#imformacion").children().length == 0) {
-      $("#imformacion-tab").hide();
-    }else {
-      $("#imformacion-tab").show();
     }
-    if ($("#publicaciones").children().length == 0) {
-      $("#publicaciones-tab").hide();
-    }else {
-      $("#publicaciones-tab").show();
-    };
-    if ($("#proyectos-competitivos").children().length == 0) {
-      $("#proyectos-competitivos-tab").hide();
-    }else {
-      $("#proyectos-competitivos-tab").show();
-    }
-    if ($("#proyectos-no-competitivos").children().length == 0) {
-      $("#proyectos-no-competitivos-tab").hide();
-    }else {
-      $("#proyectos-no-competitivos-tab").show();
-    }
-    if ($("#docencia").children().length == 0) {
-      $("#docencia-tab").hide();
-    }else {
-      $("#docencia-tab").show();
+    if (personasMostradas.length <= 6) {
+      document.getElementById("showMore").classList.add("d-none");
     }
   });
 </script>

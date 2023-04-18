@@ -165,3 +165,7 @@ html{
 #btn-back:hover {
     cursor: pointer;
 }
+
+#not-found{
+    display: none;
+}
