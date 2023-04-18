@@ -8,19 +8,19 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
   <!-- Metadata -->
-
   <title th:text="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"></title>
   <meta property='og:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
   <meta name='twitter:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
 
   <!--todo mostrar y manejar cargos-->
-  <!--<meta th:if="${persona.cargos != null && persona.ubicacion != null}" name='description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.cargos[0].nombre} + ' ' + ${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>-->
-  <meta th:if="${persona.ubicacion != null}" name='description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
+  <meta th:if="${cargos != null}" name='description' th:content="${persona.nombre_mostrar} + ' | ' + ${cargos}"/>
 
-  <meta th:if="${persona.cargos != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
+  <!--
+  <meta th:if="${persona.ubicacion != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
   <meta th:if="${persona.ubicacion != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
 
   <meta name='twitter:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
+  -->
 
   <link rel='canonical' th:href="@{https://personas.ucam.edu/personas/perfil/${persona.id}}"/>
   <meta property='og:url' th:content="@{https://personas.ucam.edu/personas/perfil/${persona.id}}"/>
@@ -32,7 +32,7 @@
   <!--End of constant metadata-->
 
   <meta property="og:image" th:content="'data:image/jpeg;base64,'  + ${persona.foto}"/>
-  <meta name="twitter:image" th:content="${persona.foto}"/>
+  <meta name="twitter:image" th:content="'data:image/jpeg;base64,' + ${persona.foto}"/>
   <!-- End of Metadata -->
 
   <link th:href="@{/assets/plugins/ucam-icons/styles.css}" rel="stylesheet"/>
@@ -60,7 +60,7 @@
         <div class="row justify-content-center">
           <div class="col-12 col-md-6 col-lg-5 order-md-2 d-flex justify-content-center align-items-end">
             <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
-            <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
+            <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" class="img-fluid h-100">
           </div>
           <div class="col-12 col-md-6 col-lg-5 order-md-1 profile__contact-data d-flex flex-column">
             <a id="btn-back" onclick="history.back()" class="back-link mt-3 d-none d-md-block" title="Volver atrás">< Volver atrás</a>
@@ -75,19 +75,19 @@
 
               <p th:if="${persona.correos_institucionales != null}">
                 <span th:each="c_institucional : ${persona.correos_institucionales}" th:if="${c_institucional != ''}" class="icon-email">
-                  <a th:href="'mailto:' + ${c_institucional}" th:title="'Enviar correo a ' + ${c_institucional}" th:text="${c_institucional}"></a>
+                  <a th:href="'mailto:' + ${c_institucional}" th:title="'Enviar correo a ' + ${c_institucional}" th:text="${c_institucional}"></a><br>
                 </span>
               </p>
 
               <p th:if="${persona.correos_personales != null}">
                 <span th:each="c_personal : ${persona.correos_personales}" th:if="${c_personal != ''}" class="icon-email">
-                  <a th:href="'mailto:' + ${c_personal}" th:title="'Enviar correo a ' + ${c_personal}" th:text="${c_personal}"></a>
+                  <a th:href="'mailto:' + ${c_personal}" th:title="'Enviar correo a ' + ${c_personal}" th:text="${c_personal}"></a><br>
                 </span>
               </p>
 
               <p th:if="${persona.telefonos != null}">
                 <span th:each="telefono : ${persona.telefonos}" th:if="${telefono != ''}" class="icon-phone">
-                  <a th:href="'tel:' + ${telefono}" th:title="'Llamar al teléfono ' + ${telefono}" th:text="${telefono} + ' ' + ${persona.extension}"></a>
+                  <a th:href="'tel:' + ${telefono}" th:title="'Llamar al teléfono ' + ${telefono}" th:text="${telefono} + ' ' + ${persona.extension}"></a><br>
                 </span>
               </p>
 
@@ -194,24 +194,20 @@
                 <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="" aria-selected="true" id="informacion-tab" href="#informacion">Información general</a>
               </li>
 
-              <!--todo condicion -->
-              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(condicion)}">
+              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(publicaciones)}">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="publicaciones-tab" href="#publicaciones">Publicaciones</a>
               </li>
 
-              <!--todo condicion-->
-              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(condicion)}">
-                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="proyectos-competitivos-tab" href="#proyectos-competitivos">Proyectos Competitivos</a>
+              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(proyectosCompetitivos)}">
+                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="proyectos-competitivos-tab" href="#proyectos-competitivos">Proyectos competitivos</a>
               </li>
 
-              <!--todo condicion-->
-              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(condicion)}">
-                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="proyectos-no-competitivos-tab" href="#proyectos-no-competitivos">Proyectos Competitivos</a>
+              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(proyectosNoCompetitivos)}">
+                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="proyectos-no-competitivos-tab" href="#proyectos-no-competitivos">Proyectos no competitivos</a>
               </li>
 
-              <!--todo condicion-->
-              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(condicion)}">
-                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="docencia-tab" href="#docencia">Docencia impartida en los últimos años</a>
+              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(docencia)}">
+                <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="docencia-tab" href="#docencia">Docencia</a>
               </li>
             </ul>
           </div>

@@ -1,19 +1,15 @@
 package com.example.buscadorpersonasucam.controller;
 
 import com.example.buscadorpersonasucam.beans.DTO.PersonaDTO;
+import com.example.buscadorpersonasucam.beans.DTO.PublicacionDTO;
 import com.example.buscadorpersonasucam.database.entity.PersonaElastic;
 import com.example.buscadorpersonasucam.repository.ElasticsearchRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.text.Normalizer;
@@ -61,6 +57,25 @@ public class IndexController {
         model.addAttribute("persona", personaEncontradaDTO);
         model.addAttribute("personasEncontradasDepartamento", personasEncontradasDepartamentoDTO);
 
+        String cargos = "";
+        for (int i=0; i<personaEncontradaDTO.getCargos().size(); i++){
+            cargos += personaEncontradaDTO.getCargos().get(i).getNombre();
+            //cargos += "\n"; el salto de linea se ve como un espacio simple
+
+            if(i != (personaEncontradaDTO.getCorreos_personales().size() - 1)){
+                cargos += " - ";
+            }
+        }
+        model.addAttribute("cargos", cargos);
+        logger.info(cargos);
+
+        //todo
+        List<PublicacionDTO> publicacionesEncontradasDTO = new ArrayList<>();
+        model.addAttribute("publicaciones", publicacionesEncontradasDTO);
+        model.addAttribute("proyectosCompetitivos", personasEncontradasDepartamentoDTO);
+        model.addAttribute("proyectosNoCompetitivos", personasEncontradasDepartamentoDTO);
+        model.addAttribute("docencia", personasEncontradasDepartamentoDTO);
+
         return "perfil";
     }
 
@@ -87,14 +102,25 @@ public class IndexController {
             }
 
             model.addAttribute("personasEncontradas", personasEncontradasDTO);
-
-            //todo que devuelva personas ordenadas por departamentos
-            model.addAttribute("facultadesDepartamentos", personasEncontradasDTO);
-
-            //todo que devuelva publicaciones
-            model.addAttribute("publicaciones", personasEncontradasDTO);
         }
         return "plantillas/personal";
+    }
+
+    @RequestMapping(value = "/searchDepartamentos/{busqueda}")
+    public String buscarDepartamentosUrl(@PathVariable String busqueda, Model model) throws IOException{
+        logger.info("llega a departamentos");
+        //todo devolver personas por departamento model.addAttribute("persoansEncontradas", personasEncontradasDTO);
+
+        return "plantillas/departamentos";
+    }
+
+    @RequestMapping(value = "/searchPublicaciones/{busqueda}")
+    public String buscarPublicaciones(@PathVariable String busqueda, Model model) throws IOException{
+
+        logger.info("llega a publicaciones");
+        //todo devolver publicaciones model.addAttribute("publicaciones", publicacionesEncontradasDTO);
+
+        return "plantillas/publicaciones";
     }
 
     @RequestMapping(value = "/searchNombres/{busqueda}")
