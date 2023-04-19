@@ -13,7 +13,10 @@
   <meta name='twitter:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
 
   <!--todo mostrar y manejar cargos-->
-  <meta th:if="${cargos != null}" name='description' th:content="${persona.nombre_mostrar} + ' | ' + ${cargos}"/>
+  <!--Cargos mostrados con " - " -->
+  <meta th:if="${cargos != null}" name='description' th:content="${persona.nombre_mostrar} +  ${cargos}"/>
+  <!--Cargos mostrados con "\n" -->
+  <meta th:if="${cargos != null}" name='description' th:content="${persona.nombre_mostrar} +  ${cargos2}"/>
 
   <!--
   <meta th:if="${persona.ubicacion != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
@@ -31,8 +34,11 @@
   <meta property="fb:app_id" content="501593976526558" />
   <!--End of constant metadata-->
 
-  <meta property="og:image" th:content="'data:image/jpeg;base64,'  + ${persona.foto}"/>
+  <meta property="og:image" th:content="${fotoSrc}"/>
+
+  <!--
   <meta name="twitter:image" th:content="'data:image/jpeg;base64,' + ${persona.foto}"/>
+  -->
   <!-- End of Metadata -->
 
   <link th:href="@{/assets/plugins/ucam-icons/styles.css}" rel="stylesheet"/>
@@ -98,6 +104,11 @@
               </p>
 
               <ul class="list-inline mt-2">
+                <li th:if="${persona.web != null && persona.web != ''}" class="list-inline-item text-size-titulo2">
+                  <a class="decoration-none" th:href="${persona.web}" title="Web">
+                    <i class="icon-web-2"></i>
+                  </a>
+                </li>
                 <li th:if="${persona.instagram != null && persona.instagram != ''}" class="list-inline-item text-size-titulo2">
                   <a class="decoration-none" th:href="${persona.instagram}" title="Instagram">
                     <i class="icon-instagram"></i>
@@ -218,16 +229,19 @@
 
             <!--informacion general-->
             <div class="tab-pane fade show active" id="informacion" role="tabpanel" aria-labelledby="informacion-tab">
+              <!--areas de conocimiento-->
+              <h3 th:if="${not #lists.isEmpty(persona.areas_conocimiento)}" class="text-size-subtitulo1">Áreas de conocimiento</h3>
+              <ul th:each="area_conocimiento : ${persona.areas_conocimiento}">
+                <li th:text="${area_conocimiento}"><a th:text="${area_conocimiento}"></a></li>
+              </ul>
+              <!--end fo mareas de conocimiento-->
 
               <!--formacion-->
-              <div th:if="${not #lists.isEmpty(persona.titulaciones_profesor)}">
+              <div th:if="${not #lists.isEmpty(persona.titulaciones_profesor) || not #lists.isEmpty(persona.titulaciones_alumno)}">
                 <h3 class="text-size-subtitulo1" th:text="'Formación'"></h3>
 
-                <ul th:if="${persona.titulaciones_alumno != null} " th:each="titulacion_alumno : ${persona.titulaciones_alumno}" th:text="Formación como alumno">
-                  <li th:text="${titulacion_alumno.nombreEstudio}"></li>
-                </ul>
-                <ul th:if="${persona.titulaciones_profesor != null} " th:each="titulacion_profesor : ${persona.titulaciones_profesor}" th:text="Formación como profesor">
-                  <li th:text="${titulacion_profesor.nombreEstudio}"></li>
+                <ul th:if="${persona.titulaciones_alumno != null}" th:text="Formación como alumno">
+                  <li th:each="titulacion_alumno : ${persona.titulaciones_alumno}" th:text="${titulacion_alumno.nombreEstudio}"></li>
                 </ul>
               </div>
               <!--end of formacion-->

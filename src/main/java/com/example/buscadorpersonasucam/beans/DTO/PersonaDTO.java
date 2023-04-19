@@ -11,10 +11,12 @@ public class PersonaDTO implements Serializable {
     private Long id;
     private String nombre_completo;
     private String nombre_mostrar;
+    private List<String> areas_conocimiento;
     private List<String> correos_institucionales;
     private List<String> correos_personales;
     private List<String> telefonos;
     private String extension;
+    private String web;
     private String instagram;
     private String linkedin;
     private String twitter;
@@ -79,6 +81,14 @@ public class PersonaDTO implements Serializable {
 
     public void setExtension(String extension) {
         this.extension = extension;
+    }
+
+    public String getWeb() {
+        return web;
+    }
+
+    public void setWeb(String web) {
+        this.web = web;
     }
 
     public String getInstagram() {
@@ -151,5 +161,13 @@ public class PersonaDTO implements Serializable {
 
     public void setGrupos_investigacion(List<GrupoInvestigacionDTO> grupos_investigacion) {
         this.grupos_investigacion = grupos_investigacion;
+    }
+
+    public List<String> getAreas_conocimiento() {
+        return areas_conocimiento;
+    }
+
+    public void setAreas_conocimiento(List<String> areas_conocimiento) {
+        this.areas_conocimiento = areas_conocimiento;
     }
 }

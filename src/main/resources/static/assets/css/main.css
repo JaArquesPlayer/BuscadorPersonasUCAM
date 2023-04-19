@@ -153,8 +153,8 @@ html{
     flex-direction: row;
 }
 
-.card-body{
-    font-size: 14px;
+.col{
+    font-size: 16px;
 }
 
 .redes{

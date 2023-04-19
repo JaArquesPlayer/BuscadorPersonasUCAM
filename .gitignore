@@ -16,6 +16,7 @@ bin/
 *.iml
 *.ipr
 *.lock
+.gradle
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/

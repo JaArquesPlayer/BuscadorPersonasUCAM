@@ -11,9 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import java.util.logging.Logger;
@@ -57,16 +60,29 @@ public class IndexController {
         model.addAttribute("persona", personaEncontradaDTO);
         model.addAttribute("personasEncontradasDepartamento", personasEncontradasDepartamentoDTO);
 
-        String cargos = "";
+        String cargos = " | ";
         for (int i=0; i<personaEncontradaDTO.getCargos().size(); i++){
             cargos += personaEncontradaDTO.getCargos().get(i).getNombre();
-            //cargos += "\n"; el salto de linea se ve como un espacio simple
 
-            if(i != (personaEncontradaDTO.getCorreos_personales().size() - 1)){
+            if(i != (personaEncontradaDTO.getCargos().size() - 1)){
                 cargos += " - ";
             }
         }
         model.addAttribute("cargos", cargos);
+
+        String cargos2 = " | ";
+        for (int i=0; i<personaEncontradaDTO.getCargos().size(); i++){
+            cargos2 += personaEncontradaDTO.getCargos().get(i).getNombre();
+
+            if(i != (personaEncontradaDTO.getCargos().size() - 1)){
+                cargos2 += "\n";
+            }
+        }
+        model.addAttribute("cargos2", cargos2);
+
+        //Todo la imagen del meta debe ser una url absoluta
+        String imageUrl = "data:image/jpeg;base64,"+ personaEncontradaDTO.getFoto();
+        model.addAttribute("fotoSrc", imageUrl);
 
         List<PublicacionDTO> publicacionesEncontradasDTO = new ArrayList<>();
         model.addAttribute("publicaciones", publicacionesEncontradasDTO);
@@ -108,7 +124,6 @@ public class IndexController {
 
     @RequestMapping(value = "/searchDepartamentos/{busqueda}")
     public String buscarDepartamentosUrl(@PathVariable String busqueda, Model model) throws IOException{
-        logger.info("llega a departamentos");
         //todo devolver personas por departamento model.addAttribute("persoansEncontradas", personasEncontradasDTO);
 
         return "plantillas/departamentos";
@@ -116,9 +131,8 @@ public class IndexController {
 
     @RequestMapping(value = "/searchPublicaciones/{busqueda}")
     public String buscarPublicaciones(@PathVariable String busqueda, Model model) throws IOException{
-
-        logger.info("llega a publicaciones");
         //todo devolver publicaciones model.addAttribute("publicaciones", publicacionesEncontradasDTO);
+        //recorrer todas las personas y comparar todas las publicaciones con lo introducido
 
         return "plantillas/publicaciones";
     }
