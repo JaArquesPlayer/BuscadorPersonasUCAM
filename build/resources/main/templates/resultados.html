@@ -64,7 +64,6 @@
                     </ul>
                 </div>
                 <!-- end tabs -->
-
             </div>
         </div>
 
@@ -82,7 +81,7 @@
 
                     <!--Departamentos-->
                     <div class="tab-pane fade" id="departamentos" role="tabpanel" aria-labelledby="facultades-tab">
-                        <div id="related-profiles" class="row"></div>
+                        <div id="resultados-departamentos" class="row"></div>
                     </div>
                     <!--End of departamentos-->
 
@@ -93,20 +92,8 @@
                     <!--End of publicaciones-->
                 </div>
                 <!-- end tabs content -->
-
                 </div>
             </div>
-
-            <div id="not-found">
-                <p class="text-size-subtitulo1 text-color-info">Lo sentimos, no hemos encontrado ningún resultado para la búsqueda. </p>
-                <p>Te sugerimos que:</p>
-                <ul class="marker-secondary">
-                    <li>Compruebes que las palabras que buscas están escritas correctmente</li>
-                    <li>Intentes usar otras palabras</li>
-                    <li>Pruebes con palabras más generales</li>
-                </ul>
-            </div>
-            <!-- end of not found error -->
         </div>
     </div>
     <!-- fin resultados de búsqueda -->
@@ -150,12 +137,6 @@
         var timeout = null;
         var $busqueda = $('#busqueda');
 
-        if($busqueda.val().length < 3){
-            $('#not-found').show();
-        }else{
-            $('#not-found').hide();
-        }
-
         if ($busqueda.val() !== '' && $busqueda.val().length >= 3) {
             var $url = "/searchPersonal/" + $busqueda.val();
             var $url2 = "/searchDepartamentos/" + $busqueda.val();
@@ -168,7 +149,7 @@
             })
             .done(function(data) {
                 $('#resultados-personal').html(data);
-                console.log('Personas encontradas correctamente');
+                console.log('Personas encontrados correctamente');
             })
             .fail(function() {
                 console.log('Error al buscar personas');
@@ -179,18 +160,13 @@
                 url: $url2,
                 dataType: 'html'
             })
-                .done(function(data) {
-                    $('#related-profiles').html(data);
-                    if($busqueda.val().length < 3){
-                        $('#not-found').show();
-                    }else{
-                        $('#not-found').hide();
-                    }
-                    console.log('Departamentos encontrados correctamente');
-                })
-                .fail(function() {
-                    console.log('Error al buscar departamentos');
-                });
+            .done(function(data) {
+                $('#resultados-departamentos').html(data);
+                console.log('Departamentos encontrados correctamente');
+            })
+            .fail(function() {
+                console.log('Error al buscar departamentos');
+            });
 
             $.ajax({
                 type: 'GET',
@@ -199,11 +175,6 @@
             })
                 .done(function(data) {
                     $('#resultados-publicaciones').html(data);
-                    if($busqueda.val().length < 3){
-                        $('#not-found').show();
-                    }else{
-                        $('#not-found').hide();
-                    }
                     console.log('Publicaciones encontradas correctamente');
                 })
                 .fail(function() {
@@ -212,8 +183,6 @@
         }
 
         $busqueda.on('keyup', function() {
-            $('#not-found').hide();
-
             clearTimeout(timeout);
             timeout = setTimeout(function() {
                 var $url = "";
@@ -237,11 +206,6 @@
                 })
                 .done(function(data) {
                     $('#resultados-personal').html(data);
-                    if($busqueda.val().length < 3){
-                        $('#not-found').show();
-                    }else{
-                        $('#not-found').hide();
-                    }
                     console.log('Personas encontradas correctamente');
                 })
                 .fail(function() {
@@ -254,12 +218,7 @@
                     dataType: 'html'
                 })
                 .done(function(data) {
-                    $('#related-profiles').html(data);
-                    if($busqueda.val().length < 3){
-                        $('#not-found').show();
-                    }else{
-                        $('#not-found').hide();
-                    }
+                    $('#resultados-departamentos').html(data);
                     console.log('Departamentos encontrados correctamente');
                 })
                 .fail(function() {
@@ -273,11 +232,6 @@
                 })
                 .done(function(data) {
                     $('#resultados-publicaciones').html(data);
-                    if($busqueda.val().length < 3){
-                        $('#not-found').show();
-                    }else{
-                        $('#not-found').hide();
-                    }
                     console.log('Publicaciones encontradas correctamente');
                 })
                 .fail(function() {

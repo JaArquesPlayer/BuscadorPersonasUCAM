@@ -1,8 +1,10 @@
 package com.example.buscadorpersonasucam.controller;
 
+import com.example.buscadorpersonasucam.beans.DTO.AutorDTO;
 import com.example.buscadorpersonasucam.beans.DTO.PersonaDTO;
 import com.example.buscadorpersonasucam.beans.DTO.PublicacionDTO;
 import com.example.buscadorpersonasucam.database.entity.PersonaElastic;
+import com.example.buscadorpersonasucam.database.entity.PublicacionElastic;
 import com.example.buscadorpersonasucam.repository.ElasticsearchRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,20 +67,10 @@ public class IndexController {
             cargos += personaEncontradaDTO.getCargos().get(i).getNombre();
 
             if(i != (personaEncontradaDTO.getCargos().size() - 1)){
-                cargos += " - ";
+                cargos += " | ";
             }
         }
         model.addAttribute("cargos", cargos);
-
-        String cargos2 = " | ";
-        for (int i=0; i<personaEncontradaDTO.getCargos().size(); i++){
-            cargos2 += personaEncontradaDTO.getCargos().get(i).getNombre();
-
-            if(i != (personaEncontradaDTO.getCargos().size() - 1)){
-                cargos2 += "\n";
-            }
-        }
-        model.addAttribute("cargos2", cargos2);
 
         //Todo la imagen del meta debe ser una url absoluta
         String imageUrl = "data:image/jpeg;base64,"+ personaEncontradaDTO.getFoto();
@@ -105,36 +97,88 @@ public class IndexController {
     @RequestMapping(value = "/searchPersonal/{busqueda}")
     public String buscarPersonasUrl(@PathVariable String busqueda, Model model) throws IOException{
 
+        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+        List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
+
         if (busqueda.length() >= 3){
-            List<PersonaElastic> personasEncontradas = new ArrayList<>();
             if (busqueda != null) {
-                personasEncontradas = getPersonas(busqueda);
+                personasEncontradas = getPersonasByBusqueda(busqueda);
             }
 
-            List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
             for (int i=0; i<personasEncontradas.size(); i++){
                 PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
                 personasEncontradasDTO.add(personaDTO);
             }
-
-            model.addAttribute("personasEncontradas", personasEncontradasDTO);
         }
-        return "plantillas/personal";
+
+        if (personasEncontradasDTO.isEmpty()){
+            return "plantillas/sinResultado";
+        }else{
+            model.addAttribute("personasEncontradas", personasEncontradasDTO);
+            return "plantillas/personal";
+        }
     }
 
     @RequestMapping(value = "/searchDepartamentos/{busqueda}")
     public String buscarDepartamentosUrl(@PathVariable String busqueda, Model model) throws IOException{
         //todo devolver personas por departamento model.addAttribute("persoansEncontradas", personasEncontradasDTO);
 
-        return "plantillas/departamentos";
+        //return "plantillas/departamentos";
+        return "plantillas/sinResultado";
     }
 
     @RequestMapping(value = "/searchPublicaciones/{busqueda}")
     public String buscarPublicaciones(@PathVariable String busqueda, Model model) throws IOException{
-        //todo devolver publicaciones model.addAttribute("publicaciones", publicacionesEncontradasDTO);
-        //recorrer todas las personas y comparar todas las publicaciones con lo introducido
 
-        return "plantillas/publicaciones";
+        List<PublicacionDTO> publicacionesEncontradasDTO = new ArrayList<>();
+
+        if (busqueda.length() >= 3){
+            busqueda = normalize(busqueda).toLowerCase();
+            List<PersonaElastic> personasEncontradas = getPersonas();
+
+            for (int i=0; i<personasEncontradas.size(); i++){
+                PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
+                List<PublicacionDTO> publicacionesTmpDTO = personaDTO.getPublicaciones();
+
+                for(int z=0; z<publicacionesTmpDTO.size(); z++){
+                    String titulo = normalize(publicacionesTmpDTO.get(z).getTitulo()).toLowerCase();
+
+                    boolean autorEncontrado = false;
+                    List<AutorDTO> autores = publicacionesTmpDTO.get(z).getAutores();
+
+                    for(int k=0; k<autores.size(); k++){
+                        String nombre = normalize(autores.get(k).getNombre()).toLowerCase();
+                        String primerApellido = "";
+                        String segundoApellido = "";
+                        String nombreCompleto = "";
+
+                        if (autores.get(k).getPrimerApellido() != null){
+                            primerApellido = normalize(autores.get(k).getPrimerApellido()).toLowerCase();
+                        }
+                        if (autores.get(k).getSegundoApellido() != null){
+                            segundoApellido = normalize(autores.get(k).getSegundoApellido()).toLowerCase();
+                        }
+                        if (autores.get(k).getNombreCompleto() != null){
+                            nombreCompleto = normalize(autores.get(k).getNombreCompleto()).toLowerCase();
+                        }
+                        if (nombre.contains(busqueda) || primerApellido.contains(busqueda) || segundoApellido.contains(busqueda) || nombreCompleto.contains(busqueda)){
+                            autorEncontrado = true;
+                        }
+                    }
+
+                    if (autorEncontrado == true || titulo.contains(busqueda)){
+                        publicacionesEncontradasDTO.add(publicacionesTmpDTO.get(z));
+                    }
+                }
+            }
+        }
+
+        if (publicacionesEncontradasDTO.isEmpty()){
+            return "plantillas/sinResultado";
+        }else{
+            model.addAttribute("publicacionesEncontradas", publicacionesEncontradasDTO);
+            return "plantillas/publicaciones";
+        }
     }
 
     @RequestMapping(value = "/searchNombres/{busqueda}")
@@ -143,14 +187,13 @@ public class IndexController {
         if (busqueda.length() >= 3){
             List<PersonaElastic> personasEncontradas = new ArrayList<>();
             if (busqueda != null) {
-                personasEncontradas = getPersonas(busqueda);
+                personasEncontradas = getPersonasByBusqueda(busqueda);
             }
 
             List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
             for (int i=0; i<personasEncontradas.size(); i++){
                 PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
                 personasEncontradasDTO.add(personaDTO);
-
                 if (i >= 4){break;}
             }
 
@@ -164,7 +207,30 @@ public class IndexController {
         return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
     }
 
-    public List<PersonaElastic> getPersonas(@NotNull String busqueda) throws IOException {
+    public List<PersonaElastic> getPersonas() throws IOException {
+
+        String result = String.valueOf(elasticsearchRepository.searchAll());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        JsonNode hitsNode = rootNode.get("hits").get("hits");
+        List<PersonaElastic> personas = new ArrayList<>();
+
+        for (JsonNode hit : hitsNode) {
+            JsonNode sourceNode = hit.get("_source");
+            PersonaElastic personaElastic = mapper.treeToValue(sourceNode, PersonaElastic.class);
+            personas.add(personaElastic);
+        }
+
+        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+
+        for (int i=0; i< personas.size(); i++){
+            personasEncontradas.add(personas.get(i));
+        }
+        return personasEncontradas;
+    }
+
+    public List<PersonaElastic> getPersonasByBusqueda(@NotNull String busqueda) throws IOException {
 
         String result = String.valueOf(elasticsearchRepository.searchAll());
 

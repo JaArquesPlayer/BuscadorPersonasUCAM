@@ -22,6 +22,8 @@ public class PersonaDTO implements Serializable {
     private String twitter;
     private String ubicacion;
     private List<CargoElasticDTO> cargos;
+    private List<PublicacionDTO> publicaciones;
+    private List<ProyectoDTO> proyectos;
     private List<PlanElasticDTO> titulaciones_profesor;
     private List<PlanElasticDTO> titulaciones_alumno;
     private List<GrupoInvestigacionDTO> grupos_investigacion;
@@ -169,5 +171,21 @@ public class PersonaDTO implements Serializable {
 
     public void setAreas_conocimiento(List<String> areas_conocimiento) {
         this.areas_conocimiento = areas_conocimiento;
+    }
+
+    public List<PublicacionDTO> getPublicaciones() {
+        return publicaciones;
+    }
+
+    public void setPublicaciones(List<PublicacionDTO> publicaciones) {
+        this.publicaciones = publicaciones;
+    }
+
+    public List<ProyectoDTO> getProyectos() {
+        return proyectos;
+    }
+
+    public void setProyectos(List<ProyectoDTO> proyectos) {
+        this.proyectos = proyectos;
     }
 }

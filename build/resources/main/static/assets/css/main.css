@@ -166,6 +166,6 @@ html{
     cursor: pointer;
 }
 
-#not-found{
-    display: none;
+.autor{
+    font-size: 14px;
 }

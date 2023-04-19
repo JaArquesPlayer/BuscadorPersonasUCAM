@@ -12,11 +12,7 @@
   <meta property='og:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
   <meta name='twitter:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
 
-  <!--todo mostrar y manejar cargos-->
-  <!--Cargos mostrados con " - " -->
   <meta th:if="${cargos != null}" name='description' th:content="${persona.nombre_mostrar} +  ${cargos}"/>
-  <!--Cargos mostrados con "\n" -->
-  <meta th:if="${cargos != null}" name='description' th:content="${persona.nombre_mostrar} +  ${cargos2}"/>
 
   <!--
   <meta th:if="${persona.ubicacion != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
@@ -106,7 +102,7 @@
               <ul class="list-inline mt-2">
                 <li th:if="${persona.web != null && persona.web != ''}" class="list-inline-item text-size-titulo2">
                   <a class="decoration-none" th:href="${persona.web}" title="Web">
-                    <i class="icon-web-1"></i>
+                    <i class="icon-web-2"></i>
                   </a>
                 </li>
                 <li th:if="${persona.instagram != null && persona.instagram != ''}" class="list-inline-item text-size-titulo2">
@@ -156,7 +152,7 @@
 
           <p th:if="${persona.telefonos != null}">
             <span th:each="telefono : ${persona.telefonos}" th:if="${telefono != ''}" class="icon-phone">
-              <a th:href="'tel:' + ${telefono}" th:title="'Llamar al teléfono ' + ${telefono}" th:text="${telefono} + ' ' + ${persona.extension}"></a>
+              <a th:href="'tel:' + ${telefono}" th:title="'Llamar al teléfono ' + ${telefono}" th:text="${telefono} + ${persona.extension} + ' - Ext.'"></a>
             </span>
           </p>
 
@@ -205,7 +201,7 @@
                 <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="" aria-selected="true" id="informacion-tab" href="#informacion">Información general</a>
               </li>
 
-              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(publicaciones)}">
+              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(persona.publicaciones)}">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="publicaciones-tab" href="#publicaciones">Publicaciones</a>
               </li>
 
@@ -287,16 +283,19 @@
 
             <!--publicaciones-->
             <div class="tab-pane fade" id="publicaciones" role="tabpanel" aria-labelledby="publicaciones-tab">
-              <!--todo
-              <h6>Aplicación de la metodología del Aula Inversa en asignaturas del Grado en Turismo</h6>
-              <p>María Dolores Gil , Margarita Capdepón , Miguel Ángel Beltrán , Francisco José Noguera ,
-                Ginesa Martinez , María Dolores García , Jorge López , María Fernández , Victoria Pérez
-                , Mario Cava (2015)
-              </p>
-              <p class="text-color-ucam-gray-medium">Publicado en: <strong>La Universidad como comunidad
-                de innovación y cambio</strong>, 112, 120
-              </p>
-              -->
+              <!--todo publicaciones-->
+              <!--item
+              <div class="col-12 ng-tns-c11-32 ng-star-inserted" th:each="publicacion : ${publicacionesEncontradas}">
+                <div class="titulo_publicacion mb-3">
+                  <a class="font-weight-bold ng-tns-c11-32 ng-star-inserted" target="_blank" th:href="${publicacion.getUrl()}" th:text="${publicacion.getTitulo()}"></a>
+                </div>
+                <div class="resultados_autores">
+                  <p th:each="autor, status : ${publicacion.autores}" th:if="${autor.nombreCompleto != null}" style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombreCompleto} + ${status.last ? '' : ',&nbsp;'}"></p>
+                  <p th:each="autor, status : ${publicacion.autores}" th:unless="${autor.nombreCompleto != null}" style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombre} + ${status.last ? '' : ',&nbsp;'}"></p>
+                </div>
+                <hr class="ng-tns-c11-32">
+              </div>
+              end of item-->
             </div>
             <!--End of publicaciones-->
 
