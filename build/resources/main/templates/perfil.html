@@ -74,19 +74,19 @@
               </h4>
 
               <p th:if="${persona.correos_institucionales != null}">
-                <span th:each="c_institucional : ${persona.correos_institucionales}" th:if="${c_institucional != ''}" class="icon-email">
+                <span th:each="c_institucional, iter : ${persona.correos_institucionales}" th:if="${c_institucional != '' && iter.index == 0}" class="icon-email">
                   <a th:href="'mailto:' + ${c_institucional}" th:title="'Enviar correo a ' + ${c_institucional}" th:text="${c_institucional}"></a><br>
                 </span>
               </p>
 
               <p th:if="${persona.correos_personales != null}">
-                <span th:each="c_personal : ${persona.correos_personales}" th:if="${c_personal != ''}" class="icon-email">
+                <span th:each="c_personal, iter : ${persona.correos_personales}" th:if="${c_personal != '' && iter.index == 0}" class="icon-email">
                   <a th:href="'mailto:' + ${c_personal}" th:title="'Enviar correo a ' + ${c_personal}" th:text="${c_personal}"></a><br>
                 </span>
               </p>
 
               <p th:if="${persona.telefonos != null}">
-                <span th:each="telefono : ${persona.telefonos}" th:if="${telefono != ''}" class="icon-phone">
+                <span th:each="telefono, iter : ${persona.telefonos}" th:if="${telefono != '' && iter.index == 0}" class="icon-phone">
                   <a th:href="'tel:' + ${telefono}" th:title="'Llamar al teléfono ' + ${telefono}" th:text="${telefono} + ' ' + ${persona.extension}"></a><br>
                 </span>
               </p>
@@ -138,19 +138,19 @@
           </h4>
 
           <p th:if="${persona.correos_institucionales != null}">
-            <span th:each="c_institucional : ${persona.correos_institucionales}" th:if="${c_institucional != ''}" class="icon-email">
+            <span th:each="c_institucional, iter : ${persona.correos_institucionales}" th:if="${c_institucional != '' && iter.index == 0}" class="icon-email">
               <a th:href="'mailto:' + ${c_institucional}" th:title="'Enviar correo a ' + ${c_institucional}" th:text="${c_institucional}"></a>
             </span>
           </p>
 
           <p th:if="${persona.correos_personales != null}">
-            <span th:each="c_personal : ${persona.correos_personales}" th:if="${c_personal != ''}" class="icon-email">
+            <span th:each="c_personal, iter : ${persona.correos_personales}" th:if="${c_personal != '' && iter.index == 0}" class="icon-email">
               <a th:href="'mailto:' + ${c_personal}" th:title="'Enviar correo a ' + ${c_personal}" th:text="${c_personal}"></a>
             </span>
           </p>
 
           <p th:if="${persona.telefonos != null}">
-            <span th:each="telefono : ${persona.telefonos}" th:if="${telefono != ''}" class="icon-phone">
+            <span th:each="telefono, iter : ${persona.telefonos}" th:if="${telefono != '' && iter.index == 0}" class="icon-phone">
               <a th:href="'tel:' + ${telefono}" th:title="'Llamar al teléfono ' + ${telefono}" th:text="${telefono} + ${persona.extension} + ' - Ext.'"></a>
             </span>
           </p>
@@ -315,6 +315,7 @@
                 <hr class="ng-tns-c11-32">
               </div>
               <!--end of item-->
+
             </div>
             <!--End of publicaciones-->
 

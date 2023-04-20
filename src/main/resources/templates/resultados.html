@@ -28,7 +28,7 @@
         <!-- buscador -->
         <div class="row">
             <div class="col">
-                <form th:action="@{/searchPersonal/}">
+                <form id="busqueda-form" th:action="@{/searchPersonal/}">
                     <div class="input-group">
                         <span class="input-group-prepend">
                             <div class="input-group-text bg-ucam-gray-lighter border-right-0">
@@ -137,54 +137,57 @@
         var timeout = null;
         var $busqueda = $('#busqueda');
 
-        if ($busqueda.val() !== '' && $busqueda.val().length >= 3) {
-            var $url = "/searchPersonal/" + $busqueda.val();
-            var $url2 = "/searchDepartamentos/" + $busqueda.val();
-            var $url3 = "/searchPublicaciones/" + $busqueda.val();
+        var $url = "/searchPersonal/" + $busqueda.val();
+        var $url2 = "/searchDepartamentos/" + $busqueda.val();
+        var $url3 = "/searchPublicaciones/" + $busqueda.val();
 
-            $.ajax({
-                type: 'GET',
-                url: $url,
-                dataType: 'html'
-            })
-            .done(function(data) {
-                $('#resultados-personal').html(data);
-                console.log('Personas encontrados correctamente');
-            })
-            .fail(function() {
-                console.log('Error al buscar personas');
-            });
+        $.ajax({
+            type: 'GET',
+            url: $url,
+            dataType: 'html'
+        })
+        .done(function(data) {
+            $('#resultados-personal').html(data);
+            console.log('Personas encontrados correctamente');
+        })
+        .fail(function() {
+            console.log('Error al buscar personas');
+        });
 
-            $.ajax({
-                type: 'GET',
-                url: $url2,
-                dataType: 'html'
-            })
-            .done(function(data) {
-                $('#resultados-departamentos').html(data);
-                console.log('Departamentos encontrados correctamente');
-            })
-            .fail(function() {
-                console.log('Error al buscar departamentos');
-            });
+        $.ajax({
+            type: 'GET',
+            url: $url2,
+            dataType: 'html'
+        })
+        .done(function(data) {
+            $('#resultados-departamentos').html(data);
+            console.log('Departamentos encontrados correctamente');
+        })
+        .fail(function() {
+            console.log('Error al buscar departamentos');
+        });
 
-            $.ajax({
-                type: 'GET',
-                url: $url3,
-                dataType: 'html'
-            })
-                .done(function(data) {
-                    $('#resultados-publicaciones').html(data);
-                    console.log('Publicaciones encontradas correctamente');
-                })
-                .fail(function() {
-                    console.log('Error al buscar publicaciones');
-                });
-        }
+        $.ajax({
+            type: 'GET',
+            url: $url3,
+            dataType: 'html'
+        })
+        .done(function(data) {
+            $('#resultados-publicaciones').html(data);
+            console.log('Publicaciones encontradas correctamente');
+        })
+        .fail(function() {
+            console.log('Error al buscar publicaciones');
+        });
+
 
         $busqueda.on('keyup', function() {
             clearTimeout(timeout);
             timeout = setTimeout(function() {
+                $('#busqueda-form').submit(function (){
+                    $(this).find("input:first").focus();
+                });
+
                 var $url = "";
                 var $url2 = "";
                 var $url3 = "";

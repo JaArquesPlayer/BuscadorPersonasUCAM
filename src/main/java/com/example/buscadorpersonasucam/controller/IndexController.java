@@ -2,7 +2,6 @@ package com.example.buscadorpersonasucam.controller;
 
 import com.example.buscadorpersonasucam.beans.DTO.*;
 import com.example.buscadorpersonasucam.database.entity.PersonaElastic;
-import com.example.buscadorpersonasucam.database.entity.PublicacionElastic;
 import com.example.buscadorpersonasucam.repository.ElasticsearchRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,12 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.Normalizer;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 import java.util.logging.Logger;
@@ -38,7 +34,9 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/perfil/{id}")
-    public String perfil(Model model, @PathVariable int id) throws IOException {
+    public String perfil(@RequestParam(defaultValue = "0") int page, Model model, @PathVariable int id) throws IOException {
+
+        int pageSize = 10;
 
         PersonaElastic personaEncontrada = getPersonaById(id);
         PersonaDTO personaEncontradaDTO = new PersonaDTO();
@@ -126,7 +124,8 @@ public class IndexController {
 
         List<PersonaElastic> personasEncontradas = new ArrayList<>();
         List<String> departamentosEncontrados = new ArrayList<>();
-        List<PersonaElastic> personasEncontradasDepartamento = new ArrayList<>();
+
+        List<PersonaElastic> personasEncontradasDepartamento;
         List<DepartamentoDTO> departamentosEncontradosAgrupados = new ArrayList<>();
 
         if (busqueda.length() >= 3){
@@ -166,6 +165,8 @@ public class IndexController {
             departamentoDTO.setPersonas(personasDelDepartamento);
             departamentosEncontradosAgrupados.add(departamentoDTO);
         }
+
+        logger.info(departamentosEncontradosAgrupados.toString());
 
         if (departamentosEncontradosAgrupados.isEmpty()){
             return "plantillas/sinResultado";

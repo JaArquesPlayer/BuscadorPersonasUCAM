@@ -52,6 +52,12 @@ html{
     justify-content: center;
 }
 
+.related-profiles-departamento{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
 .profile-card{
     position: relative;
     margin: 10px;
