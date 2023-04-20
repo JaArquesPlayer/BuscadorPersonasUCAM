@@ -1,8 +1,6 @@
 package com.example.buscadorpersonasucam.controller;
 
-import com.example.buscadorpersonasucam.beans.DTO.AutorDTO;
-import com.example.buscadorpersonasucam.beans.DTO.PersonaDTO;
-import com.example.buscadorpersonasucam.beans.DTO.PublicacionDTO;
+import com.example.buscadorpersonasucam.beans.DTO.*;
 import com.example.buscadorpersonasucam.database.entity.PersonaElastic;
 import com.example.buscadorpersonasucam.database.entity.PublicacionElastic;
 import com.example.buscadorpersonasucam.repository.ElasticsearchRepository;
@@ -44,9 +42,23 @@ public class IndexController {
 
         PersonaElastic personaEncontrada = getPersonaById(id);
         PersonaDTO personaEncontradaDTO = new PersonaDTO();
+        List<ProyectoDTO> proyectosCompetitivosDTO = new ArrayList<>();
+        List<ProyectoDTO> proyectosNoCompetitivosDTO = new ArrayList<>();
 
         if (personaEncontrada != null) {
             personaEncontradaDTO = personaEncontrada.toDTO();
+
+            if (personaEncontradaDTO.getProyectos() != null) {
+
+                for (int i = 0; i < personaEncontradaDTO.getProyectos().size(); i++) {
+                    if (personaEncontradaDTO.getProyectos().get(i).getTipoProyecto().equalsIgnoreCase("COMPETITIVO")) {
+                        proyectosCompetitivosDTO.add(personaEncontradaDTO.getProyectos().get(i));
+
+                    } else if (personaEncontradaDTO.getProyectos().get(i).getTipoProyecto().equalsIgnoreCase("NO COMPETITIVO")) {
+                        proyectosNoCompetitivosDTO.add(personaEncontradaDTO.getProyectos().get(i));
+                    }
+                }
+            }
         }
 
         List<PersonaElastic> personasEncontradasDepartamento = getPersonasByDepartamento(personaEncontradaDTO.getUbicacion());
@@ -61,6 +73,8 @@ public class IndexController {
 
         model.addAttribute("persona", personaEncontradaDTO);
         model.addAttribute("personasEncontradasDepartamento", personasEncontradasDepartamentoDTO);
+        model.addAttribute("proyectosCompetitivos", proyectosCompetitivosDTO);
+        model.addAttribute("proyectosNoCompetitivos", proyectosNoCompetitivosDTO);
 
         String cargos = " | ";
         for (int i=0; i<personaEncontradaDTO.getCargos().size(); i++){
@@ -70,20 +84,8 @@ public class IndexController {
                 cargos += " | ";
             }
         }
+
         model.addAttribute("cargos", cargos);
-
-        //Todo la imagen del meta debe ser una url absoluta
-        String imageUrl = "data:image/jpeg;base64,"+ personaEncontradaDTO.getFoto();
-        model.addAttribute("fotoSrc", imageUrl);
-
-        List<PublicacionDTO> publicacionesEncontradasDTO = new ArrayList<>();
-        model.addAttribute("publicaciones", publicacionesEncontradasDTO);
-
-        //todo debe devolverse los datos correctos
-        model.addAttribute("proyectosCompetitivos", personasEncontradasDepartamentoDTO);
-        model.addAttribute("proyectosNoCompetitivos", personasEncontradasDepartamentoDTO);
-        model.addAttribute("docencia", personasEncontradasDepartamentoDTO);
-
         return "perfil";
     }
 
@@ -121,10 +123,56 @@ public class IndexController {
 
     @RequestMapping(value = "/searchDepartamentos/{busqueda}")
     public String buscarDepartamentosUrl(@PathVariable String busqueda, Model model) throws IOException{
-        //todo devolver personas por departamento model.addAttribute("persoansEncontradas", personasEncontradasDTO);
 
-        //return "plantillas/departamentos";
-        return "plantillas/sinResultado";
+        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+        List<String> departamentosEncontrados = new ArrayList<>();
+        List<PersonaElastic> personasEncontradasDepartamento = new ArrayList<>();
+        List<DepartamentoDTO> departamentosEncontradosAgrupados = new ArrayList<>();
+
+        if (busqueda.length() >= 3){
+            if (busqueda != null) {
+                personasEncontradas = getPersonasByBusqueda(busqueda);
+            }
+
+            for (int i=0; i<personasEncontradas.size(); i++){
+                PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
+
+                for (int z=0; z<personaDTO.getDepartamentos().size(); z++){
+                    boolean repetido = false;
+
+                    for (int k=0; k<departamentosEncontrados.size(); k++){
+                        if (departamentosEncontrados.get(k).equalsIgnoreCase(personaDTO.getDepartamentos().get(z).getNombre())){
+                            repetido = true;
+                        }
+                    }
+
+                    if (repetido == false){
+                        departamentosEncontrados.add(personaDTO.getDepartamentos().get(z).getNombre());
+                    }
+                }
+            }
+        }
+
+        for (int i=0; i<departamentosEncontrados.size(); i++){
+            List<PersonaDTO> personasDelDepartamento = new ArrayList<>();
+            DepartamentoDTO departamentoDTO = new DepartamentoDTO();
+            departamentoDTO.setNombre(departamentosEncontrados.get(i));
+
+            personasEncontradasDepartamento = getPersonasByDepartamento(departamentosEncontrados.get(i));
+            for (int z=0; z<personasEncontradasDepartamento.size(); z++){
+                personasDelDepartamento.add(personasEncontradasDepartamento.get(z).toDTO());
+            }
+
+            departamentoDTO.setPersonas(personasDelDepartamento);
+            departamentosEncontradosAgrupados.add(departamentoDTO);
+        }
+
+        if (departamentosEncontradosAgrupados.isEmpty()){
+            return "plantillas/sinResultado";
+        }else{
+            model.addAttribute("departamentosEncontrados", departamentosEncontradosAgrupados);
+            return "plantillas/departamentos";
+        }
     }
 
     @RequestMapping(value = "/searchPublicaciones/{busqueda}")
@@ -140,34 +188,36 @@ public class IndexController {
                 PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
                 List<PublicacionDTO> publicacionesTmpDTO = personaDTO.getPublicaciones();
 
-                for(int z=0; z<publicacionesTmpDTO.size(); z++){
-                    String titulo = normalize(publicacionesTmpDTO.get(z).getTitulo()).toLowerCase();
+                if (publicacionesTmpDTO != null) {
+                    for (int z = 0; z < publicacionesTmpDTO.size(); z++) {
+                        String titulo = normalize(publicacionesTmpDTO.get(z).getTitulo()).toLowerCase();
 
-                    boolean autorEncontrado = false;
-                    List<AutorDTO> autores = publicacionesTmpDTO.get(z).getAutores();
+                        boolean autorEncontrado = false;
+                        List<AutorDTO> autores = publicacionesTmpDTO.get(z).getAutores();
 
-                    for(int k=0; k<autores.size(); k++){
-                        String nombre = normalize(autores.get(k).getNombre()).toLowerCase();
-                        String primerApellido = "";
-                        String segundoApellido = "";
-                        String nombreCompleto = "";
+                        for (int k = 0; k < autores.size(); k++) {
+                            String nombre = normalize(autores.get(k).getNombre()).toLowerCase();
+                            String primerApellido = "";
+                            String segundoApellido = "";
+                            String nombreCompleto = "";
 
-                        if (autores.get(k).getPrimerApellido() != null){
-                            primerApellido = normalize(autores.get(k).getPrimerApellido()).toLowerCase();
+                            if (autores.get(k).getPrimerApellido() != null) {
+                                primerApellido = normalize(autores.get(k).getPrimerApellido()).toLowerCase();
+                            }
+                            if (autores.get(k).getSegundoApellido() != null) {
+                                segundoApellido = normalize(autores.get(k).getSegundoApellido()).toLowerCase();
+                            }
+                            if (autores.get(k).getNombreCompleto() != null) {
+                                nombreCompleto = normalize(autores.get(k).getNombreCompleto()).toLowerCase();
+                            }
+                            if (nombre.contains(busqueda) || primerApellido.contains(busqueda) || segundoApellido.contains(busqueda) || nombreCompleto.contains(busqueda)) {
+                                autorEncontrado = true;
+                            }
                         }
-                        if (autores.get(k).getSegundoApellido() != null){
-                            segundoApellido = normalize(autores.get(k).getSegundoApellido()).toLowerCase();
-                        }
-                        if (autores.get(k).getNombreCompleto() != null){
-                            nombreCompleto = normalize(autores.get(k).getNombreCompleto()).toLowerCase();
-                        }
-                        if (nombre.contains(busqueda) || primerApellido.contains(busqueda) || segundoApellido.contains(busqueda) || nombreCompleto.contains(busqueda)){
-                            autorEncontrado = true;
-                        }
-                    }
 
-                    if (autorEncontrado == true || titulo.contains(busqueda)){
-                        publicacionesEncontradasDTO.add(publicacionesTmpDTO.get(z));
+                        if (autorEncontrado == true || titulo.contains(busqueda)) {
+                            publicacionesEncontradasDTO.add(publicacionesTmpDTO.get(z));
+                        }
                     }
                 }
             }
@@ -277,10 +327,13 @@ public class IndexController {
 
         for (int i=0; i< personas.size(); i++){
             busqueda = normalize(busqueda).toLowerCase();
-            String ubicacion = normalize(personas.get(i).getUbicacion()).toLowerCase();
 
-            if (ubicacion.equalsIgnoreCase(busqueda)){
-                personasEncontradas.add(personas.get(i));
+            for(int z=0; z<personas.get(i).getDepartamentos().size(); z++){
+                String departamento = normalize(personas.get(i).getDepartamentos().get(z).getNombre());
+
+                if (departamento.equalsIgnoreCase(busqueda)){
+                    personasEncontradas.add(personas.get(i));
+                }
             }
         }
 

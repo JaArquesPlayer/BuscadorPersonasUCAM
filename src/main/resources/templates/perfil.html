@@ -30,11 +30,9 @@
   <meta property="fb:app_id" content="501593976526558" />
   <!--End of constant metadata-->
 
+  <!--Todo la imagen del meta debe ser una url absoluta-->
   <meta property="og:image" th:content="${fotoSrc}"/>
 
-  <!--
-  <meta name="twitter:image" th:content="'data:image/jpeg;base64,' + ${persona.foto}"/>
-  -->
   <!-- End of Metadata -->
 
   <link th:href="@{/assets/plugins/ucam-icons/styles.css}" rel="stylesheet"/>
@@ -71,8 +69,8 @@
             <div class="data-wrapper flex-1 flex-column justify-content-center d-none d-md-flex">
               <h2 class="text-size-titulo1 font-weight-bold mt-5 mt-md-0" th:text="${persona.nombre_mostrar}"></h2>
 
-              <!--todo mostrar cargos-->
-              <h4 class="text-size-subtitulo1"><i th:if="${persona.cargos != null}"></i>
+              <h4 class="text-size-subtitulo1" th:if="${persona.cargos != null}">
+                <i class="ng-tns-c7-14" th:each="cargo : ${persona.cargos}" th:text="${cargo.nombre}"></i>
               </h4>
 
               <p th:if="${persona.correos_institucionales != null}">
@@ -123,7 +121,6 @@
               </ul>
             </div>
             <!-- end datos escritorio -->
-
           </div>
         </div>
       </div>
@@ -135,8 +132,10 @@
       <div class="row">
         <div class="col-12 profile__contact-data">
           <h2 class="text-size-titulo1 font-weight-bold mt-4 mt-md-0" th:text="${persona.nombre_mostrar}"></h2>
-          <!--todo mostrar cargos-->
-          <h4 class="text-size-subtitulo1"><i th:if="${persona.cargos != null}"></i></h4>
+
+          <h4 class="text-size-subtitulo1" th:if="${persona.cargos != null}">
+            <i class="ng-tns-c7-14" th:each="cargo : ${persona.cargos}" th:text="${cargo.nombre}"></i>
+          </h4>
 
           <p th:if="${persona.correos_institucionales != null}">
             <span th:each="c_institucional : ${persona.correos_institucionales}" th:if="${c_institucional != ''}" class="icon-email">
@@ -201,19 +200,19 @@
                 <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="" aria-selected="true" id="informacion-tab" href="#informacion">Información general</a>
               </li>
 
-              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(persona.publicaciones)}">
+              <li class="nav-item swiper-slide" th:if="${persona.publicaciones != null}">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="publicaciones-tab" href="#publicaciones">Publicaciones</a>
               </li>
 
-              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(proyectosCompetitivos)}">
+              <li class="nav-item swiper-slide" th:if="${persona.proyectos != null}">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="proyectos-competitivos-tab" href="#proyectos-competitivos">Proyectos competitivos</a>
               </li>
 
-              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(proyectosNoCompetitivos)}">
+              <li class="nav-item swiper-slide" th:if="${persona.proyectos != null}">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="proyectos-no-competitivos-tab" href="#proyectos-no-competitivos">Proyectos no competitivos</a>
               </li>
 
-              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(docencia)}">
+              <li class="nav-item swiper-slide" th:if="${persona.docencia != null}">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false" id="docencia-tab" href="#docencia">Docencia</a>
               </li>
             </ul>
@@ -232,23 +231,39 @@
               </ul>
               <!--end fo mareas de conocimiento-->
 
+              <!--sobre mi-->
+              <div th:if="${not #lists.isEmpty(persona.frase) || not #lists.isEmpty(persona.sobre_mi)}">
+                <h3 class="text-size-subtitulo1" th:text="'Sobre mi'"></h3>
+                <p class="ng-tns-c3-4" th:text="${persona.sobre_mi}"></p>
+
+                <div class="sobremi_frase ng-tns-c3-4 ng-star-inserted">
+                  <div class=" comillas_frase_start" style="display: inline-block">"</div>
+                  <div class="frase" th:text="${persona.frase}" style="display: inline-block"></div>
+                  <div class="comillas_frase_end" style="display: inline-block">"</div>
+                  <div class="autor ng-tns-c3-4 ng-star-inserted">
+                    <p class="ng-tns-c3-4" th:text="' - ' + ${persona.autor_frase} + ' - '"></p></div>
+                </div>
+              </div>
+              <!--end of sobre mi-->
+
               <!--formacion-->
-              <div th:if="${not #lists.isEmpty(persona.titulaciones_profesor) || not #lists.isEmpty(persona.titulaciones_alumno)}">
+              <div th:if="${not #lists.isEmpty(persona.formacion)}">
                 <h3 class="text-size-subtitulo1" th:text="'Formación'"></h3>
 
-                <ul th:if="${persona.titulaciones_alumno != null}" th:text="Formación como alumno">
-                  <li th:each="titulacion_alumno : ${persona.titulaciones_alumno}" th:text="${titulacion_alumno.nombreEstudio}"></li>
+                <ul th:if="${persona.formacion != null}">
+                  <li th:each="formacion : ${persona.formacion}" th:text="${formacion}"></li>
                 </ul>
               </div>
               <!--end of formacion-->
 
               <!--grupos de investigacion-->
-              <h3 th:if="${not #lists.isEmpty(persona.grupos_investigacion)}" class="text-size-subtitulo1">Grupos de investigación</h3>
+              <h3 th:if="${persona.grupos_investigacion != null}" class="text-size-subtitulo1">Grupos de investigación</h3>
               <ul th:each="grupo_investigacion : ${persona.grupos_investigacion}">
-                <li th:text="${grupo_investigacion.nombre}">
-                  <a th:href="${grupo_investigacion.url}" th:text="${grupo_investigacion.url}"></a>
+                <li>
+                  <a th:href="${grupo_investigacion.url}" th:text="${grupo_investigacion.nombre}"></a>
                 </li>
               </ul>
+              <!--end of grupos de investigacion-->
 
               <!--personas relacionadas-->
               <h3 class="text-size-subtitulo1">Personas relacionadas</h3>
@@ -271,7 +286,7 @@
               <!--end personas relacionadas-->
 
               <!--Boton más resultados-->
-              <div class="btn-div">
+              <div class="btn-div" th:if="${#lists.size(personasEncontradasDepartamento) > 6}">
                 <button id="showMore" class="more-results">
                   <p>Ver más resultados</p>
                   <span class="material-symbols-outlined">expand_more</span>
@@ -283,45 +298,76 @@
 
             <!--publicaciones-->
             <div class="tab-pane fade" id="publicaciones" role="tabpanel" aria-labelledby="publicaciones-tab">
-              <!--todo publicaciones-->
-              <!--item
-              <div class="col-12 ng-tns-c11-32 ng-star-inserted" th:each="publicacion : ${publicacionesEncontradas}">
+              <!--item-->
+              <div class="col-12 ng-tns-c11-32 ng-star-inserted" th:each="publicacion : ${persona.publicaciones}">
                 <div class="titulo_publicacion mb-3">
-                  <a class="font-weight-bold ng-tns-c11-32 ng-star-inserted" target="_blank" th:href="${publicacion.getUrl()}" th:text="${publicacion.getTitulo()}"></a>
+                  <a class="font-weight-bold ng-tns-c11-32 ng-star-inserted" target="_blank" th:href="${publicacion.url}" th:text="${publicacion.titulo}"></a>
                 </div>
+
                 <div class="resultados_autores">
                   <p th:each="autor, status : ${publicacion.autores}" th:if="${autor.nombreCompleto != null}" style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombreCompleto} + ${status.last ? '' : ',&nbsp;'}"></p>
                   <p th:each="autor, status : ${publicacion.autores}" th:unless="${autor.nombreCompleto != null}" style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombre} + ${status.last ? '' : ',&nbsp;'}"></p>
                 </div>
+
+                <p class="text-color-ucam-gray-medium revista ng-tns-c3-4 ng-star-inserted" th:text="'Publicado en: ' + ${publicacion.editorial} + ', ' +${publicacion.paginaInicio} + ', ' + ${publicacion.paginaFinal}">
+                  <strong class="ng-tns-c3-4" th:text="' ' + ${publicacion.editorial}"></strong>
+                </p>
                 <hr class="ng-tns-c11-32">
               </div>
-              end of item-->
+              <!--end of item-->
             </div>
             <!--End of publicaciones-->
 
             <!--Proyectos competitivos-->
             <div class="tab-pane fade" id="proyectos-competitivos" role="tabpanel" aria-labelledby="proyectos-competitivos-tab">
-              <!--todo
-              -->
+              <!--item-->
+              <div class="col-12 ng-tns-c11-32 ng-star-inserted" th:each="proyecto : ${proyectosCompetitivos}">
+                <div class="titulo_publicacion mb-3">
+                  <p class="font-weight-bold ng-tns-c11-32 ng-star-inserted" target="_blank" th:text="${proyecto.titulo}"></p>
+                </div>
+
+                <div class="resultados_autores">
+                  <p style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:if="${proyecto.entidad != null}" th:text="${proyecto.entidad} + '.'"></p>
+                  <p style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:if="${proyecto.fechaInicio != null && proyecto.fechaFin != null}" th:text="${proyecto.fechaInicio} + ', ' + ${proyecto.fechaFin} + '.'"></p>
+                </div>
+                <hr class="ng-tns-c11-32">
+              </div>
+              <!--end of item-->
             </div>
             <!--End of proyectos competitivos-->
 
             <!--Proyectos no competitivos-->
             <div class="tab-pane fade" id="proyectos-no-competitivos" role="tabpanel" aria-labelledby="proyectos-no-competitivos-tab">
-              <!--todo
+              <!--item-->
+              <div class="col-12 ng-tns-c11-32 ng-star-inserted" th:each="proyecto : ${proyectosNoCompetitivos}">
+                <div class="titulo_publicacion mb-3">
+                  <p class="font-weight-bold ng-tns-c11-32 ng-star-inserted" target="_blank" th:text="${proyecto.titulo}"></p>
+                </div>
+
+                <div class="resultados_autores">
+                  <p style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:if="${proyecto.entidad != null}" th:text="${proyecto.entidad} + '.'"></p>
+                  <p style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:if="${proyecto.fechaInicio != null && proyecto.fechaFin != null}" th:text="${proyecto.fechaInicio} + ', ' + ${proyecto.fechaFin} + '.'"></p>
+                </div>
+                <hr class="ng-tns-c11-32">
               </div>
-              -->
+              <!--end of item-->
             </div>
             <!--End of proyectos competitivos-->
 
             <!--Docencia impartida-->
             <div class="tab-pane fade" id="docencia" role="tabpanel" aria-labelledby="docencia-tab">
-              <!--todo
-              </div>
-              -->
+              <!--item-->
+              <ul class="ng-tns-c3-4 ng-star-inserted" th:each="docencia : ${persona.docencia}">
+                <li class="ng-tns-c3-4 ng-star-inserted">
+                  <b class="ng-tns-c3-4" th:text="${docencia.titulacion}"></b>
+                  <ul class="ng-tns-c3-4" th:each="asignatura : ${docencia.asignaturas}">
+                    <li class="ng-tns-c3-4 ng-star-inserted" th:text="${asignatura.nombreAsignatura}"></li>
+                  </ul>
+                </li>
+              </ul>
+              <!--end of item-->
             </div>
-            <!--End of docencia impartida-->
-
+            <!--end of docencia impartida-->
           </div>
           <!-- end content tabs -->
         </div>

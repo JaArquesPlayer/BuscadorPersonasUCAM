@@ -1,0 +1,35 @@
+<!--item-->
+<div th:each="departamento : ${departamentosEncontrados}" class="swiper-departamentos ng-tns-c3-17 ng-star-inserted" fxlayout="column" ng-reflect-fx-layout="column" style="flex-direction: column; box-sizing: border-box; display: flex;">
+    <div class="ng-tns-c3-17" fxflex="100" fxlayoutalign.lt-lg="center" ng-reflect-fx-layout-align.lt-lg="center" ng-reflect-fx-flex="100" style="flex: 1 1 100%; box-sizing: border-box; place-content: stretch center; align-items: stretch; flex-direction: row; display: flex; max-height: 100%;">
+        <h2 class="text-size-subtitulo1" style="margin-bottom: 25px">
+            <a class="ng-tns-c3-17" th:text="${departamento.nombre}"></a>
+        </h2>
+    </div>
+
+    <div id="related-profiles" th:each="personas : ${departamento.personas}">
+        <a th:each="persona, iter : ${personas}" th:if="${iter.index < 6}" th:href="'/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper">
+            <div class="profile-card">
+                <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
+                <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
+                <p class="related-profile__caption" th:text="${persona.nombre_mostrar}"></p>
+            </div>
+        </a>
+        <a th:each="persona, iter : ${personas}" th:if="${iter.index >= 6}" th:href="'/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper d-none ver-mas">
+            <div class="profile-card">
+                <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
+                <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
+                <p class="related-profile__caption" th:text="${persona.nombre_mostrar}"></p>
+            </div>
+        </a>
+
+        <!--boton mostrar mas-->
+        <div class="btn-div" th:if="${#lists.size(personas) > 6}">
+            <button id="showMore" class="more-results">
+                <p>Ver más resultados</p>
+                <span class="material-symbols-outlined">expand_more</span>
+            </button>
+        </div>
+        <!--end of boton mostrar mas-->
+    </div>
+</div>
+<!--end of item-->

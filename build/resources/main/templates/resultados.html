@@ -142,6 +142,10 @@
             var $url2 = "/searchDepartamentos/" + $busqueda.val();
             var $url3 = "/searchPublicaciones/" + $busqueda.val();
 
+            console.log($url);
+            console.log($url2);
+            console.log($url3);
+
             $.ajax({
                 type: 'GET',
                 url: $url,
