@@ -28,7 +28,7 @@
         <!-- buscador -->
         <div class="row">
             <div class="col">
-                <form id="busqueda-form" th:action="@{/searchPersonal/}">
+                <form id="busqueda-form">
                     <div class="input-group">
                         <span class="input-group-prepend">
                             <div class="input-group-text bg-ucam-gray-lighter border-right-0">
@@ -81,7 +81,7 @@
 
                     <!--Departamentos-->
                     <div class="tab-pane fade" id="departamentos" role="tabpanel" aria-labelledby="facultades-tab">
-                        <div id="resultados-departamentos" class="row"></div>
+                        <div id="resultados-departamentos" class="col"></div>
                     </div>
                     <!--End of departamentos-->
 
@@ -128,6 +128,15 @@
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
     };
+
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            var input = document.getElementById('busqueda');
+            var length = input.value.length;
+            input.focus();
+            input.setSelectionRange(length, length);
+        }, 500);
+    });
 </script>
 
 <!--Script para la busqueda en tiempo real del buscador-->
@@ -184,62 +193,9 @@
         $busqueda.on('keyup', function() {
             clearTimeout(timeout);
             timeout = setTimeout(function() {
-                $('#busqueda-form').submit(function (){
-                    $(this).find("input:first").focus();
-                });
 
-                var $url = "";
-                var $url2 = "";
-                var $url3 = "";
+                $('#busqueda-form').submit();
 
-                if($busqueda.val() == ""){
-                    $url = "/searchPersonal/" + "a";
-                    $url2 = "/searchDepartamentos/" + "a";
-                    $url3 = "/searchPublicaciones/" + "a";
-                }else{
-                    $url = "/searchPersonal/" + $busqueda.val();
-                    $url2 = "/searchDepartamentos/" + $busqueda.val();
-                    $url3 = "/searchPublicaciones/" + $busqueda.val();
-                }
-
-                $.ajax({
-                    type: 'GET',
-                    url: $url,
-                    dataType: 'html'
-                })
-                .done(function(data) {
-                    $('#resultados-personal').html(data);
-                    console.log('Personas encontradas correctamente');
-                })
-                .fail(function() {
-                    console.log('Error al buscar personas');
-                });
-
-                $.ajax({
-                    type: 'GET',
-                    url: $url2,
-                    dataType: 'html'
-                })
-                .done(function(data) {
-                    $('#resultados-departamentos').html(data);
-                    console.log('Departamentos encontrados correctamente');
-                })
-                .fail(function() {
-                    console.log('Error al buscar departamentos');
-                });
-
-                $.ajax({
-                    type: 'GET',
-                    url: $url3,
-                    dataType: 'html'
-                })
-                .done(function(data) {
-                    $('#resultados-publicaciones').html(data);
-                    console.log('Publicaciones encontradas correctamente');
-                })
-                .fail(function() {
-                    console.log('Error al buscar publicaciones');
-                });
             }, 1000);
         });
     });

@@ -31,7 +31,8 @@
   <!--End of constant metadata-->
 
   <!--Todo la imagen del meta debe ser una url absoluta-->
-  <meta property="og:image" th:content="${fotoSrc}"/>
+  <!--<meta property="og:image" th:content="'data:image/jpeg;base64,' + ${persona.foto}"/>-->
+  <meta property="og:image" th:content="'https://d57e-193-147-25-105.ngrok-free.app/foto/'+${persona.id}"/>
 
   <!-- End of Metadata -->
 
@@ -69,8 +70,11 @@
             <div class="data-wrapper flex-1 flex-column justify-content-center d-none d-md-flex">
               <h2 class="text-size-titulo1 font-weight-bold mt-5 mt-md-0" th:text="${persona.nombre_mostrar}"></h2>
 
-              <h4 class="text-size-subtitulo1" th:if="${persona.cargos != null}">
-                <i class="ng-tns-c7-14" th:each="cargo : ${persona.cargos}" th:text="${cargo.nombre}"></i>
+              <!--todo saber si mostrar todos los cargos o con un limite para no descuadrar-->
+              <h4 class="text-size-subtitulo1 mb-0" th:if="${persona.cargos != null}">
+                <i class="ng-tns-c7-14">
+                  <p th:each="cargo, iter : ${persona.cargos}" th:if="${iter.index <= 3}" th:text="${cargo.nombre}"></p>
+                </i>
               </h4>
 
               <p th:if="${persona.correos_institucionales != null}">
@@ -85,10 +89,10 @@
                 </span>
               </p>
 
-              <p th:if="${persona.telefonos != null}">
-                <span th:each="telefono, iter : ${persona.telefonos}" th:if="${telefono != '' && iter.index == 0}" class="icon-phone">
-                  <a th:href="'tel:' + ${telefono}" th:title="'Llamar al teléfono ' + ${telefono}" th:text="${telefono} + ' ' + ${persona.extension}"></a><br>
-                </span>
+              <p class="ng-tns-c10-22 ng-star-inserted" th:if="${persona.telefonos != null || persona.extension != null}">
+                <i th:if="${persona.telefonos != null && persona.telefonos[0] != ''}" class="icon-phone"></i>
+                <a th:if="${persona.telefonos != null && persona.telefonos[0] != ''}" class="ng-tns-c10-22" th:href="'tel:' + ${persona.telefonos[0]}" th:title="${'Llamar al teléfono ' + persona.telefonos[0]}" th:text="${persona.telefonos[0]}"></a>
+                <a th:if="${persona.extension != null && persona.extension != ''}" class="ng-tns-c10-22" th:href="'tel:' + ${persona.extension}" th:title="${'Llamar a la extensión ' + persona.extension}" th:text="${' - Ext. ' + persona.extension}"></a>
               </p>
 
               <p th:if="${persona.ubicacion != null && persona.ubicacion != ''}">
@@ -99,22 +103,22 @@
 
               <ul class="list-inline mt-2">
                 <li th:if="${persona.web != null && persona.web != ''}" class="list-inline-item text-size-titulo2">
-                  <a class="decoration-none" th:href="${persona.web}" title="Web">
+                  <a class="decoration-none" target="_blank" th:href="${persona.web}" title="Web">
                     <i class="icon-web-2"></i>
                   </a>
                 </li>
                 <li th:if="${persona.instagram != null && persona.instagram != ''}" class="list-inline-item text-size-titulo2">
-                  <a class="decoration-none" th:href="${persona.instagram}" title="Instagram">
+                  <a class="decoration-none" target="_blank" th:href="${persona.instagram}" title="Instagram">
                     <i class="icon-instagram"></i>
                   </a>
                 </li>
                 <li th:if="${persona.linkedin != null && persona.linkedin != ''}" class="list-inline-item text-size-titulo2">
-                  <a class="decoration-none" th:href="${persona.linkedin}" title="LinkedIn">
+                  <a class="decoration-none" target="_blank" th:href="${persona.linkedin}" title="LinkedIn">
                     <i class="icon-linkedin"></i>
                   </a>
                 </li>
                 <li th:if="${persona.twitter != null && persona.twitter != ''}"  class="list-inline-item text-size-titulo2">
-                  <a class="decoration-none" th:href="${persona.twitter}" title="LinkedIn">
+                  <a class="decoration-none" target="_blank" th:href="${persona.twitter}" title="LinkedIn">
                     <i class="icon-twitter"></i>
                   </a>
                 </li>
@@ -133,8 +137,11 @@
         <div class="col-12 profile__contact-data">
           <h2 class="text-size-titulo1 font-weight-bold mt-4 mt-md-0" th:text="${persona.nombre_mostrar}"></h2>
 
-          <h4 class="text-size-subtitulo1" th:if="${persona.cargos != null}">
-            <i class="ng-tns-c7-14" th:each="cargo : ${persona.cargos}" th:text="${cargo.nombre}"></i>
+          <!--todo saber si mostrar todos los cargos o con un limite para no descuadrar-->
+          <h4 class="text-size-subtitulo1 mb-0" th:if="${persona.cargos != null}">
+            <i class="ng-tns-c7-14">
+              <p th:each="cargo, iter : ${persona.cargos}" th:if="${iter.index <= 3}" th:text="${cargo.nombre}"></p>
+            </i>
           </h4>
 
           <p th:if="${persona.correos_institucionales != null}">
@@ -149,10 +156,10 @@
             </span>
           </p>
 
-          <p th:if="${persona.telefonos != null}">
-            <span th:each="telefono, iter : ${persona.telefonos}" th:if="${telefono != '' && iter.index == 0}" class="icon-phone">
-              <a th:href="'tel:' + ${telefono}" th:title="'Llamar al teléfono ' + ${telefono}" th:text="${telefono} + ${persona.extension} + ' - Ext.'"></a>
-            </span>
+          <p class="ng-tns-c10-22 ng-star-inserted" th:if="${persona.telefonos != null || persona.extension != null}">
+            <i th:if="${persona.telefonos != null && persona.telefonos[0] != ''}" class="icon-phone"></i>
+            <a th:if="${persona.telefonos != null && persona.telefonos[0] != ''}" class="ng-tns-c10-22" th:href="'tel:' + ${persona.telefonos[0]}" th:title="${'Llamar al teléfono ' + persona.telefonos[0]}" th:text="${persona.telefonos[0]}"></a>
+            <a th:if="${persona.extension != null && persona.extension != ''}" class="ng-tns-c10-22" th:href="'tel:' + ${persona.extension}" th:title="${'Llamar a la extensión ' + persona.extension}" th:text="${' - Ext. ' + persona.extension}"></a>
           </p>
 
           <p th:if="${persona.ubicacion != null && persona.ubicacion != ''}">
@@ -163,17 +170,17 @@
 
           <ul class="list-inline mt-2">
             <li th:if="${persona.instagram != null && persona.instagram != ''}" class="list-inline-item text-size-titulo2">
-              <a class="decoration-none" th:if="${persona.instagram != null}" th:href="${persona.instagram}" title="Instagram">
+              <a class="decoration-none" th:if="${persona.instagram != null}" target="_blank" th:href="${persona.instagram}" title="Instagram">
                 <i class="icon-instagram"></i>
               </a>
             </li>
             <li th:if="${persona.linkedin != null && persona.linkedin != ''}" class="list-inline-item text-size-titulo2">
-              <a class="decoration-none" th:if="${persona.linkedin != null}" th:href="${persona.linkedin}" title="LinkedIn">
+              <a class="decoration-none" th:if="${persona.linkedin != null}" target="_blank" th:href="${persona.linkedin}" title="LinkedIn">
                 <i class="icon-linkedin"></i>
               </a>
             </li>
             <li th:if="${persona.twitter != null && persona.twitter != ''}" class="list-inline-item text-size-titulo2">
-              <a class="decoration-none" th:if="${persona.twitter != null}" th:href="${persona.twitter}" title="LinkedIn">
+              <a class="decoration-none" th:if="${persona.twitter != null}" target="_blank" th:href="${persona.twitter}" title="LinkedIn">
                 <i class="icon-linkedin"></i>
               </a>
             </li>

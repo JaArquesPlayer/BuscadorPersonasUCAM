@@ -13,8 +13,11 @@
             <p th:if="${persona.correos_personales != null && iter.index == 0}" class="card-text" th:each="c_personal, iter : ${persona.correos_personales}">
                 <i th:if="${persona.correos_personales[0] != ''}" class="icon-email"></i><a th:href="'mailto:'+${c_personal}" th:title="'Enviar correo a '+${c_personal}" th:text="${c_personal}"></a></p>
 
-            <p th:if="${persona.telefonos != null && iter.index == 0}" class="card-text" th:each="telefono, iter : ${persona.telefonos}">
-                <i th:if="${persona.telefonos[0] != ''}" class="icon-phone"></i><a th:href="'tel:'+${telefono}" th:title="'Llamar al teléfono '+${telefono}" th:text="${telefono} + ' ' + ${persona.extension}"></a></p>
+            <p class="card-text" th:if="${persona.telefonos != null || persona.extension != null}">
+                <i th:if="${persona.telefonos != null && persona.telefonos[0] != ''}" class="icon-phone"></i>
+                <a th:if="${persona.telefonos != null && persona.telefonos[0] != ''}" th:href="'tel:' + ${persona.telefonos[0]}" th:title="${'Llamar al teléfono ' + persona.telefonos[0]}" th:text="${persona.telefonos[0]}"></a>
+                <a th:if="${persona.extension != null && persona.extension != ''}" th:href="'tel:' + ${persona.extension}" th:title="${'Llamar a la extensión ' + persona.extension}" th:text="${' - Ext. ' + persona.extension}"></a>
+            </p>
 
             <p th:if="${persona.ubicacion != null && persona.ubicacion != ''}" class="card-text"><i class="icon-diploma"></i><a th:text="${persona.ubicacion}"></a></p>
             <div class="redes">

@@ -34,9 +34,7 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/perfil/{id}")
-    public String perfil(@RequestParam(defaultValue = "0") int page, Model model, @PathVariable int id) throws IOException {
-
-        int pageSize = 10;
+    public String perfil(Model model, @PathVariable int id) throws IOException {
 
         PersonaElastic personaEncontrada = getPersonaById(id);
         PersonaDTO personaEncontradaDTO = new PersonaDTO();
@@ -122,7 +120,10 @@ public class IndexController {
     @RequestMapping(value = "/searchDepartamentos/{busqueda}")
     public String buscarDepartamentosUrl(@PathVariable String busqueda, Model model) throws IOException{
 
+        busqueda = normalize(busqueda).toLowerCase();
+
         List<PersonaElastic> personasEncontradas = new ArrayList<>();
+        List<PersonaElastic> personasEncontradasPorDepartamento = new ArrayList<>();
         List<String> departamentosEncontrados = new ArrayList<>();
 
         List<PersonaElastic> personasEncontradasDepartamento;
@@ -131,10 +132,29 @@ public class IndexController {
         if (busqueda.length() >= 3){
             if (busqueda != null) {
                 personasEncontradas = getPersonasByBusqueda(busqueda);
+                personasEncontradasPorDepartamento = getPersonasByDepartamento(busqueda);
             }
 
             for (int i=0; i<personasEncontradas.size(); i++){
                 PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
+
+                for (int z=0; z<personaDTO.getDepartamentos().size(); z++){
+                    boolean repetido = false;
+
+                    for (int k=0; k<departamentosEncontrados.size(); k++){
+                        if (departamentosEncontrados.get(k).equalsIgnoreCase(personaDTO.getDepartamentos().get(z).getNombre())){
+                            repetido = true;
+                        }
+                    }
+
+                    if (repetido == false){
+                        departamentosEncontrados.add(personaDTO.getDepartamentos().get(z).getNombre());
+                    }
+                }
+            }
+
+            for (int i=0; i<personasEncontradasPorDepartamento.size(); i++){
+                PersonaDTO personaDTO = personasEncontradasPorDepartamento.get(i).toDTO();
 
                 for (int z=0; z<personaDTO.getDepartamentos().size(); z++){
                     boolean repetido = false;
@@ -159,14 +179,18 @@ public class IndexController {
 
             personasEncontradasDepartamento = getPersonasByDepartamento(departamentosEncontrados.get(i));
             for (int z=0; z<personasEncontradasDepartamento.size(); z++){
-                personasDelDepartamento.add(personasEncontradasDepartamento.get(z).toDTO());
+
+                if (personasEncontradas.size()==0){
+                    personasDelDepartamento.add(personasEncontradasDepartamento.get(z).toDTO());
+
+                }else if (normalize(personasEncontradasDepartamento.get(z).getNombre_completo()).toLowerCase().contains(busqueda)){
+                    personasDelDepartamento.add(personasEncontradasDepartamento.get(z).toDTO());
+                }
             }
 
             departamentoDTO.setPersonas(personasDelDepartamento);
             departamentosEncontradosAgrupados.add(departamentoDTO);
         }
-
-        logger.info(departamentosEncontradosAgrupados.toString());
 
         if (departamentosEncontradosAgrupados.isEmpty()){
             return "plantillas/sinResultado";
@@ -300,9 +324,9 @@ public class IndexController {
 
         for (int i=0; i< personas.size(); i++){
             busqueda = normalize(busqueda).toLowerCase();
-            String nombre_completo = normalize(personas.get(i).getNombre_completo()).toLowerCase();
+            String nombre_completo = personas.get(i).getNombre_completo();
 
-            if (nombre_completo.contains(busqueda)){
+            if (normalize(nombre_completo).toLowerCase().contains(busqueda)){
                 personasEncontradas.add(personas.get(i));
             }
         }
@@ -330,9 +354,9 @@ public class IndexController {
             busqueda = normalize(busqueda).toLowerCase();
 
             for(int z=0; z<personas.get(i).getDepartamentos().size(); z++){
-                String departamento = normalize(personas.get(i).getDepartamentos().get(z).getNombre());
+                String departamento = normalize(personas.get(i).getDepartamentos().get(z).getNombre()).toLowerCase();
 
-                if (departamento.equalsIgnoreCase(busqueda)){
+                if (departamento.contains(busqueda)){
                     personasEncontradas.add(personas.get(i));
                 }
             }
