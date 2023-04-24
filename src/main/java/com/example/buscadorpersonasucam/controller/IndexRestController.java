@@ -5,17 +5,12 @@ import com.example.buscadorpersonasucam.database.entity.PersonaElastic;
 import com.example.buscadorpersonasucam.repository.ElasticsearchRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.Resource;
 import jakarta.servlet.ServletContext;
-import org.apache.commons.io.IOUtils;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.support.ServletContextResource;
 
-import java.io.File;
-import java.io.FileInputStream;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Base64;
 import java.util.logging.Logger;
 
@@ -50,9 +45,9 @@ public class IndexRestController {
         byte[] bytes = Base64.getDecoder().decode(foto);
 
         //prueba
-        File fichero = new File("C:/11.jpg");
-        InputStream in = new FileInputStream(fichero);
-        byte[] media = IOUtils.toByteArray(in);
+        //File fichero = new File("C:/11.jpg");
+        //InputStream in = new FileInputStream(fichero);
+        //byte[] media = IOUtils.toByteArray(in);
         //prueba
 
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());

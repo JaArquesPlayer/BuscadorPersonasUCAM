@@ -5,7 +5,9 @@ import com.example.buscadorpersonasucam.database.entity.PersonaElastic;
 import com.example.buscadorpersonasucam.repository.ElasticsearchRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,9 @@ public class IndexController {
     public IndexController(ElasticsearchRepository elasticsearchRepository) {
         this.elasticsearchRepository = elasticsearchRepository;
     }
+
+    @Value("${meta_imagen_controller_call}")
+    private String ruta_controller_imagen;
 
     @RequestMapping(value = "/personas")
     public String index() {
@@ -71,6 +76,7 @@ public class IndexController {
         model.addAttribute("personasEncontradasDepartamento", personasEncontradasDepartamentoDTO);
         model.addAttribute("proyectosCompetitivos", proyectosCompetitivosDTO);
         model.addAttribute("proyectosNoCompetitivos", proyectosNoCompetitivosDTO);
+        model.addAttribute( "ruta_controller_imagen", ruta_controller_imagen);
 
         String cargos = " | ";
         for (int i=0; i<personaEncontradaDTO.getCargos().size(); i++){
@@ -175,7 +181,7 @@ public class IndexController {
         for (int i=0; i<departamentosEncontrados.size(); i++){
             List<PersonaDTO> personasDelDepartamento = new ArrayList<>();
             DepartamentoDTO departamentoDTO = new DepartamentoDTO();
-            departamentoDTO.setNombre(departamentosEncontrados.get(i));
+            departamentoDTO.setNombre(WordUtils.capitalizeFully(departamentosEncontrados.get(i)));
 
             personasEncontradasDepartamento = getPersonasByDepartamento(departamentosEncontrados.get(i));
             for (int z=0; z<personasEncontradasDepartamento.size(); z++){

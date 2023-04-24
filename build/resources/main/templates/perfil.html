@@ -9,10 +9,16 @@
 
   <!-- Metadata -->
   <title th:text="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"></title>
-  <meta property='og:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
-  <meta name='twitter:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
 
+  <meta name="twitter:title" th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
+  <meta name="twitter:description" th:if="${cargos != null}" th:content="${persona.nombre_mostrar} + ${cargos}"/>
+  <meta name="twitter:image" th:content="${ruta_controller_imagen} + ${persona.id}"/>
+  <meta name="twitter:site_name" content="personas.ucam" />
+
+  <meta property='og:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
   <meta property="og:description" th:if="${cargos != null}" th:content="${persona.nombre_mostrar} + ${cargos}"/>
+  <meta property="og:image" th:content="${ruta_controller_imagen} + ${persona.id}"/>
+  <meta property="og:site_name" content="personas.ucam"/>
 
   <link rel='canonical' th:href="@{https://personas.ucam.edu/personas/perfil/${persona.id}}"/>
   <meta property='og:url' th:content="@{https://personas.ucam.edu/personas/perfil/${persona.id}}"/>
@@ -22,11 +28,6 @@
   <meta property='og:type' content='website'/>
   <meta property="fb:app_id" content="501593976526558" />
   <!--End of constant metadata-->
-
-  <!--Todo la imagen del meta debe ser una url absoluta-->
-  <!--<meta property="og:image" th:content="'data:image/jpeg;base64,' + ${persona.foto}"/>-->
-  <meta property="og:image" th:content="'http://d889-193-147-25-105.ngrok-free.app/prueba/image-response-entity/' + ${persona.id}"/>
-  <!-- End of Metadata -->
 
   <link th:href="@{/assets/plugins/ucam-icons/styles.css}" rel="stylesheet"/>
   <link th:href="@{/assets/css/swiper.min.css}" rel="stylesheet"/>
