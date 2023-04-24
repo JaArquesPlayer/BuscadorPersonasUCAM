@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.support.ServletContextResource;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 import java.util.logging.Logger;
 
 @RestController
@@ -39,16 +41,22 @@ public class IndexRestController {
         return foto;
     }
 
-    @RequestMapping(value = "/image-response-entity", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> getImageAsResponseEntity() throws IOException {
+    @RequestMapping(value = "/image-response-entity/{id}", method = RequestMethod.GET, consumes = MediaType.ALL_VALUE, produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getImageAsResponseEntity(@PathVariable int id) throws IOException {
         HttpHeaders headers = new HttpHeaders();
 
+        PersonaDTO persona = getPersonaById(id).toDTO();
+        String foto = persona.getFoto();
+        byte[] bytes = Base64.getDecoder().decode(foto);
+
+        //prueba
         File fichero = new File("C:/11.jpg");
-        InputStream in = servletContext.getResourceAsStream("");
+        InputStream in = new FileInputStream(fichero);
         byte[] media = IOUtils.toByteArray(in);
+        //prueba
 
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());
-        ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(media, headers, HttpStatus.OK);
+        ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(bytes, headers, HttpStatus.OK);
         return responseEntity;
     }
 

@@ -12,14 +12,7 @@
   <meta property='og:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
   <meta name='twitter:title' th:content="${persona.nombre_mostrar} + ' | UCAM Universidad Católica de Murcia'"/>
 
-  <meta th:if="${cargos != null}" name='description' th:content="${persona.nombre_mostrar} +  ${cargos}"/>
-
-  <!--
-  <meta th:if="${persona.ubicacion != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
-  <meta th:if="${persona.ubicacion != null}" property='og:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
-
-  <meta name='twitter:description' th:content="${persona.nombre_mostrar} + ' | ' + ${persona.ubicacion}"/>
-  -->
+  <meta property="og:description" th:if="${cargos != null}" th:content="${persona.nombre_mostrar} + ${cargos}"/>
 
   <link rel='canonical' th:href="@{https://personas.ucam.edu/personas/perfil/${persona.id}}"/>
   <meta property='og:url' th:content="@{https://personas.ucam.edu/personas/perfil/${persona.id}}"/>
@@ -32,8 +25,7 @@
 
   <!--Todo la imagen del meta debe ser una url absoluta-->
   <!--<meta property="og:image" th:content="'data:image/jpeg;base64,' + ${persona.foto}"/>-->
-  <meta property="og:image" th:content="'https://d57e-193-147-25-105.ngrok-free.app/foto/'+${persona.id}"/>
-
+  <meta property="og:image" th:content="'http://d889-193-147-25-105.ngrok-free.app/prueba/image-response-entity/' + ${persona.id}"/>
   <!-- End of Metadata -->
 
   <link th:href="@{/assets/plugins/ucam-icons/styles.css}" rel="stylesheet"/>
@@ -45,7 +37,7 @@
 
 <header>
   <nav class="navbar navbar-light bg-info justify-content-end">
-    <a class="navbar-brand mr-auto" href="/">
+    <a class="navbar-brand mr-auto" th:href="@{/personas}">
       <img class="img-fluid" th:src="@{/assets/img/logo.svg}" width="200" height="50" alt="Logo UCAM Personas">
     </a>
   </nav>
@@ -275,14 +267,14 @@
               <!--personas relacionadas-->
               <h3 class="text-size-subtitulo1">Personas relacionadas</h3>
               <div id="related-profiles" th:if="${not #lists.isEmpty(personasEncontradasDepartamento)}">
-                <a th:each="persona, iter : ${personasEncontradasDepartamento}" th:if="${iter.index < 6}" th:href="'/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper">
+                <a th:each="persona, iter : ${personasEncontradasDepartamento}" th:if="${iter.index < 6}" th:href="'/prueba/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper">
                   <div class="profile-card">
                     <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
                     <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
                     <p class="related-profile__caption" th:text="${persona.nombre_mostrar}"></p>
                   </div>
                 </a>
-                <a th:each="persona, iter : ${personasEncontradasDepartamento}" th:if="${iter.index >= 6}" th:href="'/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper d-none ver-mas">
+                <a th:each="persona, iter : ${personasEncontradasDepartamento}" th:if="${iter.index >= 6}" th:href="'/prueba/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper d-none ver-mas">
                   <div class="profile-card">
                     <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
                     <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" class="img-fluid">

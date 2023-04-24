@@ -5,7 +5,7 @@
             <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" width="86" height="105" class="img-fluid">
         </div>
         <div class="col mt-3 mb-5">
-            <p class="card-title flex-1"><a th:href="'/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" th:text="${persona.nombre_mostrar}"></a></p>
+            <p class="card-title flex-1"><a th:href="'/prueba/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" th:text="${persona.nombre_mostrar}"></a></p>
 
             <p th:if="${persona.correos_institucionales != null && iter.index == 0}" class="card-text" th:each="c_institucional, iter : ${persona.correos_institucionales}">
                 <i th:if="${persona.correos_institucionales[0] != ''}" class="icon-email"></i><a th:href="'mailto:'+${c_institucional}" th:title="'Enviar correo a '+${c_institucional}" th:text="${c_institucional}"></a></p>

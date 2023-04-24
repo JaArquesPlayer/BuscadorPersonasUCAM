@@ -8,14 +8,14 @@
 
     <div id="related-profiles" style="justify-content: flex-start">
         <div th:each="personas : ${departamento.personas}">
-            <a th:each="persona, iter : ${personas}" th:if="${iter.index < 6}" th:href="'/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper">
+            <a th:each="persona, iter : ${personas}" th:if="${iter.index < 6}" th:href="'/prueba/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper">
                 <div class="profile-card">
                     <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
                     <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
                     <p class="related-profile__caption" th:text="${persona.nombre_mostrar}"></p>
                 </div>
             </a>
-            <a th:each="persona, iter : ${personas}" th:if="${iter.index >= 6}" th:href="'/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper d-none ver-mas">
+            <a th:each="persona, iter : ${personas}" th:if="${iter.index >= 6}" th:href="'/prueba/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper d-none ver-mas">
                 <div class="profile-card">
                     <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
                     <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
