@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<!--item-->
+<div class="col-12 ng-tns-c11-32 ng-star-inserted" th:each="publicacion : ${publicacionesEncontradas}">
+    <div class="titulo_publicacion mb-3">
+        <a class="font-weight-bold ng-tns-c11-32 ng-star-inserted" target="_blank" th:href="${publicacion.getUrl()}" th:text="${publicacion.getTitulo()}"></a>
+    </div>
+    <div class="resultados_autores">
+        <p th:each="autor, status : ${publicacion.autores}" th:if="${autor.nombreCompleto != null}" style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombreCompleto} + ${status.last ? '' : ',&nbsp;'}"></p>
+        <p th:each="autor, status : ${publicacion.autores}" th:unless="${autor.nombreCompleto != null}" style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombre} + ${status.last ? '' : ',&nbsp;'}"></p>
+    </div>
+    <hr class="ng-tns-c11-32">
+</div>
+<!--end of item-->

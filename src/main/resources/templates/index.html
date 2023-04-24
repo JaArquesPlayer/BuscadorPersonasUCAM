@@ -83,7 +83,7 @@
         $busqueda.on('keyup', function() {
             clearTimeout(timeout);
             timeout = setTimeout(function() {
-                var $url = "/searchNombres/" + $busqueda.val();
+                var $url = "/prueba/searchNombres/" + $busqueda.val();
 
                 $.ajax({
                     type: 'GET',

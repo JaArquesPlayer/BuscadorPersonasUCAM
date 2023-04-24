@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.715s</div>
+<div class="counter">0.840s</div>
 <p>duration</p>
 </div>
 </td>
@@ -79,7 +79,7 @@
 </thead>
 <tr>
 <td class="success">contextLoads()</td>
-<td class="success">0.715s</td>
+<td class="success">0.840s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -87,14 +87,14 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>10:53:52.712 [Test worker] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [BuscadorPersonasUcamApplicationTests]: using SpringBootContextLoader
-10:53:52.721 [Test worker] DEBUG org.springframework.test.context.support.AbstractContextLoader - Could not detect default resource locations for test class [com.example.buscadorpersonasucam.BuscadorPersonasUcamApplicationTests]: no resource found for suffixes {-context.xml, Context.groovy}.
-10:53:52.722 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.example.buscadorpersonasucam.BuscadorPersonasUcamApplicationTests]: BuscadorPersonasUcamApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-10:53:52.758 [Test worker] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Using ContextCustomizers for test class [BuscadorPersonasUcamApplicationTests]: [DisableObservabilityContextCustomizer, PropertyMappingContextCustomizer, Customizer, ExcludeFilterContextCustomizer, DuplicateJsonObjectContextCustomizer, MockitoContextCustomizer, TestRestTemplateContextCustomizer]
-10:53:52.863 [Test worker] DEBUG org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider - Identified candidate component class: file [C:\Spring\BuscadorPersonasUCAM\build\classes\java\main\com\example\buscadorpersonasucam\BuscadorPersonasUcamApplication.class]
-10:53:52.866 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.example.buscadorpersonasucam.BuscadorPersonasUcamApplication for test class com.example.buscadorpersonasucam.BuscadorPersonasUcamApplicationTests
-10:53:53.024 [Test worker] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Using TestExecutionListeners for test class [BuscadorPersonasUcamApplicationTests]: [ServletTestExecutionListener, DirtiesContextBeforeModesTestExecutionListener, ApplicationEventsTestExecutionListener, MockitoTestExecutionListener, DependencyInjectionTestExecutionListener, DirtiesContextTestExecutionListener, TransactionalTestExecutionListener, SqlScriptsTestExecutionListener, EventPublishingTestExecutionListener, RestDocsTestExecutionListener, MockRestServiceServerResetTestExecutionListener, MockMvcPrintOnlyOnFailureTestExecutionListener, WebDriverTestExecutionListener, MockWebServiceServerTestExecutionListener, ResetMocksTestExecutionListener]
-10:53:53.026 [Test worker] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener - Before test class: class [BuscadorPersonasUcamApplicationTests], class annotated with @DirtiesContext [false] with mode [null]
+<pre>15:36:50.511 [Test worker] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [BuscadorPersonasUcamApplicationTests]: using SpringBootContextLoader
+15:36:50.525 [Test worker] DEBUG org.springframework.test.context.support.AbstractContextLoader - Could not detect default resource locations for test class [com.example.buscadorpersonasucam.BuscadorPersonasUcamApplicationTests]: no resource found for suffixes {-context.xml, Context.groovy}.
+15:36:50.527 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.example.buscadorpersonasucam.BuscadorPersonasUcamApplicationTests]: BuscadorPersonasUcamApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+15:36:50.577 [Test worker] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Using ContextCustomizers for test class [BuscadorPersonasUcamApplicationTests]: [DisableObservabilityContextCustomizer, PropertyMappingContextCustomizer, Customizer, ExcludeFilterContextCustomizer, DuplicateJsonObjectContextCustomizer, MockitoContextCustomizer, TestRestTemplateContextCustomizer]
+15:36:50.703 [Test worker] DEBUG org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider - Identified candidate component class: file [C:\Spring\BuscadorPersonasUCAM\build\classes\java\main\com\example\buscadorpersonasucam\BuscadorPersonasUcamApplication.class]
+15:36:50.712 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.example.buscadorpersonasucam.BuscadorPersonasUcamApplication for test class com.example.buscadorpersonasucam.BuscadorPersonasUcamApplicationTests
+15:36:50.943 [Test worker] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Using TestExecutionListeners for test class [BuscadorPersonasUcamApplicationTests]: [ServletTestExecutionListener, DirtiesContextBeforeModesTestExecutionListener, ApplicationEventsTestExecutionListener, MockitoTestExecutionListener, DependencyInjectionTestExecutionListener, DirtiesContextTestExecutionListener, TransactionalTestExecutionListener, SqlScriptsTestExecutionListener, EventPublishingTestExecutionListener, RestDocsTestExecutionListener, MockRestServiceServerResetTestExecutionListener, MockMvcPrintOnlyOnFailureTestExecutionListener, WebDriverTestExecutionListener, MockWebServiceServerTestExecutionListener, ResetMocksTestExecutionListener]
+15:36:50.946 [Test worker] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener - Before test class: class [BuscadorPersonasUcamApplicationTests], class annotated with @DirtiesContext [false] with mode [null]
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -104,14 +104,21 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v3.0.4)
 
-2023-03-22T10:53:53.475+01:00  INFO 12524 --- [    Test worker] e.b.BuscadorPersonasUcamApplicationTests : Starting BuscadorPersonasUcamApplicationTests using Java 17.0.6 with PID 12524 (started by Jose Ángel in C:\Spring\BuscadorPersonasUCAM)
-2023-03-22T10:53:53.477+01:00  INFO 12524 --- [    Test worker] e.b.BuscadorPersonasUcamApplicationTests : No active profile set, falling back to 1 default profile: &quot;default&quot;
-2023-03-22T10:53:54.303+01:00  INFO 12524 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
-2023-03-22T10:53:54.333+01:00  INFO 12524 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 17 ms. Found 0 Elasticsearch repository interfaces.
-2023-03-22T10:53:54.343+01:00  INFO 12524 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
-2023-03-22T10:53:54.347+01:00  INFO 12524 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 3 ms. Found 0 Reactive Elasticsearch repository interfaces.
-2023-03-22T10:53:55.189+01:00  INFO 12524 --- [    Test worker] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
-2023-03-22T10:53:56.019+01:00  INFO 12524 --- [    Test worker] e.b.BuscadorPersonasUcamApplicationTests : Started BuscadorPersonasUcamApplicationTests in 2.911 seconds (process running for 6.069)
+2023-04-21T15:36:51.529+02:00  INFO 15656 --- [    Test worker] e.b.BuscadorPersonasUcamApplicationTests : Starting BuscadorPersonasUcamApplicationTests using Java 17.0.6 with PID 15656 (started by Jose Ángel in C:\Spring\BuscadorPersonasUCAM)
+2023-04-21T15:36:51.531+02:00  INFO 15656 --- [    Test worker] e.b.BuscadorPersonasUcamApplicationTests : No active profile set, falling back to 1 default profile: &quot;default&quot;
+2023-04-21T15:36:52.401+02:00  INFO 15656 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-04-21T15:36:52.402+02:00  INFO 15656 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2023-04-21T15:36:52.418+02:00  INFO 15656 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 9 ms. Found 0 Elasticsearch repository interfaces.
+2023-04-21T15:36:52.677+02:00  INFO 15656 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-04-21T15:36:52.677+02:00  INFO 15656 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2023-04-21T15:36:52.694+02:00  INFO 15656 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 17 ms. Found 0 Elasticsearch repository interfaces.
+2023-04-21T15:36:52.701+02:00  INFO 15656 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-04-21T15:36:52.702+02:00  INFO 15656 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
+2023-04-21T15:36:52.709+02:00  INFO 15656 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 6 ms. Found 0 Reactive Elasticsearch repository interfaces.
+2023-04-21T15:36:54.633+02:00  INFO 15656 --- [    Test worker] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2023-04-21T15:36:55.286+02:00  WARN 15656 --- [    Test worker] .m.SimpleElasticsearchPersistentProperty : Unsupported type 'class java.lang.Long' for date property 'fecha_actualizacion'.
+2023-04-21T15:36:55.289+02:00  WARN 15656 --- [    Test worker] .m.SimpleElasticsearchPersistentProperty : Unsupported type 'class java.lang.Long' for date property 'fecha_nacimiento'.
+2023-04-21T15:36:55.530+02:00  INFO 15656 --- [    Test worker] e.b.BuscadorPersonasUcamApplicationTests : Started BuscadorPersonasUcamApplicationTests in 4.435 seconds (process running for 7.921)
 </pre>
 </span>
 </div>
@@ -123,7 +130,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 7.6.1</a> at 22 mar 2023 10:53:56</p>
+<a href="http://www.gradle.org">Gradle 7.6.1</a> at 21 abr 2023 15:36:56</p>
 </div>
 </div>
 </body>

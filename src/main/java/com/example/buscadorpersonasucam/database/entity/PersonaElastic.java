@@ -7,6 +7,8 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import org.apache.commons.text.WordUtils;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -528,8 +530,8 @@ public class PersonaElastic implements Serializable {
         PersonaDTO personaDTO = new PersonaDTO();
 
         personaDTO.setId(this.id);
-        personaDTO.setNombre_completo(this.nombre_completo);
-        personaDTO.setNombre_mostrar(this.nombre_mostrar);
+        personaDTO.setNombre_completo(WordUtils.capitalizeFully(this.nombre_completo));
+        personaDTO.setNombre_mostrar(WordUtils.capitalizeFully(this.nombre_mostrar));
         personaDTO.setCargos(this.cargos);
         personaDTO.setFoto(fromByteToBase64(this.foto));
         personaDTO.setExtension(this.extension);
@@ -542,6 +544,17 @@ public class PersonaElastic implements Serializable {
         personaDTO.setUbicacion(this.ubicacion);
         personaDTO.setTitulaciones_alumno(this.titulaciones_alumno);
         personaDTO.setTitulaciones_profesor(this.titulaciones_profesor);
+        personaDTO.setAreas_conocimiento(this.areas_conocimiento);
+        personaDTO.setWeb(this.web);
+        personaDTO.setPublicaciones(this.publicaciones);
+        personaDTO.setProyectos(this.proyectos);
+        personaDTO.setFormacion(this.formacion);
+        personaDTO.setSobre_mi(this.sobre_mi);
+        personaDTO.setFrase(this.frase);
+        personaDTO.setAutor_frase(this.autor_frase);
+        personaDTO.setDocencia(this.docencia);
+        personaDTO.setGrupos_investigacion(this.grupos_investigacion);
+        personaDTO.setDepartamentos(this.departamentos);
 
         return personaDTO;
     }

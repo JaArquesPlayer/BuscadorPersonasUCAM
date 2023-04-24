@@ -52,6 +52,12 @@ html{
     justify-content: center;
 }
 
+.related-profiles-departamento{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
 .profile-card{
     position: relative;
     margin: 10px;
@@ -153,8 +159,8 @@ html{
     flex-direction: row;
 }
 
-.card-body{
-    font-size: 14px;
+.col{
+    font-size: 16px;
 }
 
 .redes{
@@ -164,4 +170,8 @@ html{
 
 #btn-back:hover {
     cursor: pointer;
+}
+
+.autor{
+    font-size: 14px;
 }

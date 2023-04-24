@@ -17,7 +17,7 @@
 <header>
     <nav class="navbar navbar-light bg-info justify-content-end">
         <a class="navbar-brand mr-auto" th:href="@{/personas}">
-            <img class="img-fluid" src="/assets/img/logo.svg?0102" width="200" height="50" alt="Logo UCAM Personas">
+            <img class="img-fluid" th:src="@{/assets/img/logo.svg}" width="200" height="50" alt="Logo UCAM Personas">
         </a>
     </nav>
 
@@ -28,7 +28,7 @@
         <!-- buscador -->
         <div class="row">
             <div class="col">
-                <form th:action="@{/searchPersonal/}">
+                <form id="busqueda-form">
                     <div class="input-group">
                         <span class="input-group-prepend">
                             <div class="input-group-text bg-ucam-gray-lighter border-right-0">
@@ -51,11 +51,11 @@
 
                         <li class="nav-item swiper-slide">
                             <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="" aria-selected="true"
-                               id="personal-tab" href="#personal">Personal UCAM</a>
+                               id="personal-tab" href="#personal" >Personal UCAM</a>
                         </li>
                         <li class="nav-item swiper-slide">
-                            <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
-                               id="facultades-tab" href="#facultades">Facultades y Departamentos</a>
+                            <a type="button" class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
+                               id="facultades-tab" href="#departamentos">Facultades y Departamentos</a>
                         </li>
                         <li class="nav-item swiper-slide">
                             <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
@@ -64,7 +64,6 @@
                     </ul>
                 </div>
                 <!-- end tabs -->
-
             </div>
         </div>
 
@@ -81,8 +80,8 @@
                     <!--End of personal-->
 
                     <!--Departamentos-->
-                    <div class="tab-pane fade" id="facultades" role="tabpanel" aria-labelledby="facultades-tab">
-                        <div id="related-profiles" class="row"></div>
+                    <div class="tab-pane fade" id="departamentos" role="tabpanel" aria-labelledby="facultades-tab">
+                        <div id="resultados-departamentos" class="col"></div>
                     </div>
                     <!--End of departamentos-->
 
@@ -93,21 +92,8 @@
                     <!--End of publicaciones-->
                 </div>
                 <!-- end tabs content -->
-
                 </div>
             </div>
-
-            <!-- todo not found error -->
-            <div id="not-found">
-                <p class="text-size-subtitulo1 text-color-info">Lo sentimos, no hemos encontrado ningún resultado para la búsqueda. </p>
-                <p>Te sugerimos que:</p>
-                <ul class="marker-secondary">
-                    <li>Compruebes que las palabras que buscas están escritas correctmente</li>
-                    <li>Intentes usar otras palabras</li>
-                    <li>Pruebes con palabras más generales</li>
-                </ul>
-            </div>
-            <!-- end of not found error -->
         </div>
     </div>
     <!-- fin resultados de búsqueda -->
@@ -142,6 +128,15 @@
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
     };
+
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            var input = document.getElementById('busqueda');
+            var length = input.value.length;
+            input.focus();
+            input.setSelectionRange(length, length);
+        }, 500);
+    });
 </script>
 
 <!--Script para la busqueda en tiempo real del buscador-->
@@ -151,59 +146,56 @@
         var timeout = null;
         var $busqueda = $('#busqueda');
 
-        if($busqueda.val().length < 3){
-            $('#not-found').show();
-        }else{
-            $('#not-found').hide();
-        }
+        var $url = "/prueba/searchPersonal/" + $busqueda.val();
+        var $url2 = "/prueba/searchDepartamentos/" + $busqueda.val();
+        var $url3 = "/prueba/searchPublicaciones/" + $busqueda.val();
 
-        if ($busqueda.val() !== '' && $busqueda.val().length >= 3) {
-            var $url = "/searchPersonal/" + $busqueda.val();
+        $.ajax({
+            type: 'GET',
+            url: $url,
+            dataType: 'html'
+        })
+        .done(function(data) {
+            $('#resultados-personal').html(data);
+            console.log('Personas encontrados correctamente');
+        })
+        .fail(function() {
+            console.log('Error al buscar personas');
+        });
 
-            $.ajax({
-                type: 'GET',
-                url: $url,
-                dataType: 'html'
-            })
-                .done(function(data) {
-                    $('#resultados-personal').html(data);
-                    console.log('Personas encontradas correctamente');
-                })
-                .fail(function() {
-                    console.log('Error al buscar personas');
-                });
-        }
+        $.ajax({
+            type: 'GET',
+            url: $url2,
+            dataType: 'html'
+        })
+        .done(function(data) {
+            $('#resultados-departamentos').html(data);
+            console.log('Departamentos encontrados correctamente');
+        })
+        .fail(function() {
+            console.log('Error al buscar departamentos');
+        });
+
+        $.ajax({
+            type: 'GET',
+            url: $url3,
+            dataType: 'html'
+        })
+        .done(function(data) {
+            $('#resultados-publicaciones').html(data);
+            console.log('Publicaciones encontradas correctamente');
+        })
+        .fail(function() {
+            console.log('Error al buscar publicaciones');
+        });
+
 
         $busqueda.on('keyup', function() {
-            $('#not-found').hide();
-
             clearTimeout(timeout);
             timeout = setTimeout(function() {
-                var $url = "";
 
-                if($busqueda.val() == ""){
-                    $url = "/searchPersonal/" + "a";
-                }else{
-                    $url = "/searchPersonal/" + $busqueda.val();
-                }
+                $('#busqueda-form').submit();
 
-                $.ajax({
-                    type: 'GET',
-                    url: $url,
-                    dataType: 'html'
-                })
-                .done(function(data) {
-                    $('#resultados-personal').html(data);
-                    if($busqueda.val().length < 3){
-                        $('#not-found').show();
-                    }else{
-                        $('#not-found').hide();
-                    }
-                    console.log('Personas encontradas correctamente');
-                })
-                .fail(function() {
-                    console.log('Error al buscar personas');
-                });
             }, 1000);
         });
     });
