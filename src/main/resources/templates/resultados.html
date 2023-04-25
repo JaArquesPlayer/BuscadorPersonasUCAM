@@ -13,12 +13,47 @@
 </head>
 
 <body>
-
 <header>
     <nav class="navbar navbar-light bg-info justify-content-end">
-        <a class="navbar-brand mr-auto" th:href="@{/personas}">
-            <img class="img-fluid" th:src="@{/assets/img/logo.svg}" width="200" height="50" alt="Logo UCAM Personas">
+        <a class="navbar-brand mr-auto">
+            <img class="img-fluid" th:src="@{assets/img/logo.svg?0102}" width="200" height="50" alt="Logo UCAM Personas">
         </a>
+        <div *ngIf="estaAutenticado == false" class="dropdown">
+            <a class="decoration-none" href="#" id="loginButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="icon-button icon-perm-identity text-color-ucam-gray-medium"></span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right text-center p-3" aria-labelledby="loginButton">
+                <span class="icon-button icon-button-xl text-size-subtitulo1 icon-perm-identity text-color-ucam-gray-medium"></span>
+                <p class="dropdown-header">Iniciar sesión</p>
+                <form id="loginForm" action="#">
+                    <button type="submit" class="btn btn-info">Iniciar sesión</button>
+                </form>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a class="decoration-none rounded-circle" href="#" id="loginButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src="data:image/png;base64," alt="Miguel Ángel Abenza" class="img-fluid" width="36"></a>
+            <div class="dropdown-menu dropdown-menu-right text-center p-3" aria-labelledby="loginButton">
+                <a href="#" title="Editar foto" class="edit-photo-link">
+                    <div class="photo-mask">
+                        <img src="data:image/png;base64," alt="Miguel Ángel Abenza" width="70">
+                    </div>
+                    <span class="edit-photo">
+                        <img th:src="@{assets/img/icon-camera.svg}" alt="Icono editar foto">
+                    </span>
+                </a>
+                <p class="dropdown-header"></p>
+                <p><small></small></p>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="http://key.ucam.edu">
+                    <i class="icon-key"></i> Cambiar contraseña</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="https://inf.ucam.edu/personasucam/">
+                    <i class="icon-ajustes"></i> Modificar privacidad</a>
+                <div class="dropdown-divider"></div>
+                <button type="button" class="btn btn-info mt-3">Cerrar sesión</button>
+            </div>
+        </div>
     </nav>
 
 </header>
@@ -28,34 +63,46 @@
         <!-- buscador -->
         <div class="row">
             <div class="col">
-                <form id="busqueda-form">
+                <form>
                     <div class="input-group">
                         <span class="input-group-prepend">
-                            <div class="input-group-text bg-ucam-gray-lighter border-right-0">
-                                <i class="icon-lupa"></i>
-                            </div>
+                          <div class="input-group-text bg-ucam-gray-lighter border-right-0"><i
+                                  class="icon-lupa"></i></div>
                         </span>
-                        <input id="busqueda" name="search" type="text" class="form-control bg-ucam-gray-lighter py-2 border-left-0" placeholder="Nombre, apellidos, extensión, email..." th:value="${nombre}">
+                        <input type="text" class="form-control bg-ucam-gray-lighter py-2 border-left-0" name="search" value="" placeholder="Nombre, apellidos, extensión, email...">
                     </div>
                 </form>
             </div>
         </div>
         <!-- fin buscador -->
+        <!-- mensaje resultados restringidos -->
+        <div class="row mt-3">
+            <div class="col">
+                <div class="alert alert-light border alert-dismissible fade show d-flex" role="alert">
+                    <i class="icon-artboard-1-copy-10-copia"></i>
+                    <p class="m-0 ml-3">Se han encontrado más resultados en la búsqueda, pero por motivos de privacidad
+                        solo estan visibles para miembros de la Universidad. Para poder visualizarlos,
+                        <a><strong>inicie sesión</strong></a></p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- fin mensaje -->
 
         <!-- resultados de búsqueda -->
         <div class="row">
             <div class="col">
-                <!-- tabs -->
                 <div id="swiper-results-tabs" class="swiper-container">
                     <ul class="nav nav-tabs nav-justified swiper-wrapper" id="results" role="tablist">
-
                         <li class="nav-item swiper-slide">
                             <a class="nav-link active" data-toggle="tab" role="tab" aria-controls="" aria-selected="true"
-                               id="personal-tab" href="#personal" >Personal UCAM</a>
+                               id="personal-tab" href="#personal">Personal UCAM</a>
                         </li>
                         <li class="nav-item swiper-slide">
-                            <a type="button" class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
-                               id="facultades-tab" href="#departamentos">Facultades y Departamentos</a>
+                            <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
+                               id="facultades-tab" href="#facultades">Facultades y Departamentos</a>
                         </li>
                         <li class="nav-item swiper-slide">
                             <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
@@ -70,43 +117,206 @@
         <div class="row justify-content-center">
             <div class="col-12 col-lg-10">
 
-                <!-- tabs content-->
+                <!-- tabs content -->
                 <div class="tab-content" id="results-content">
-
-                    <!--Personal-->
                     <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
-                        <div id="resultados-personal" class="row"></div>
-                    </div>
-                    <!--End of personal-->
+                        <div class="row">
+                            <!-- resultados -->
+                            <!-- item -->
+                            <div class="col-12 col-md-6">
+                                <div class="card mb-3">
+                                    <div class="row no-gutters">
+                                        <div class="col-auto p-3">
+                                            <img src="data:image/png;base64,"
+                                                 alt="" width="86" height="105" class="img-fluid">
+                                            <im th:src="@{assets/img/personas/default.png}" width="86" height="105"
+                                                 class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <div class="card-body d-flex flex-column justify-content-end h-100">
+                                                <p class="card-title flex-1"><a title=""></a></p>
+                                                <p class="card-text">
+                                                    <i class="icon-email"></i>
+                                                    <a href="mailto:" title="Enviar correo a "></a>
+                                                </p>
+                                                <p class="card-text">
+                                                    <i class="icon-phone"></i>
+                                                    <a href="tel:0034968278294" title="Llamar al teléfono 968278294"></a>
+                                                </p>
+                                                <p class="card-text">
+                                                    <i class="icon-room"></i>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end item -->
+                            <!-- fin resultados -->
 
-                    <!--Departamentos-->
-                    <div class="tab-pane fade" id="departamentos" role="tabpanel" aria-labelledby="facultades-tab">
-                        <div id="resultados-departamentos" class="col"></div>
-                    </div>
-                    <!--End of departamentos-->
+                            <div class="col-12 mt-4">
+                                <nav aria-label="Paginación">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item">
+                                            <a class="page-link" aria-label="Anterior">
+                                                <span>Primera</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" aria-label="Anterior">
+                                                <span>&laquo;</span>
+                                                <span class="sr-only">Anterior</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item number-item">
+                                            <a class="page-link"></a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" aria-label="Siguiente">
+                                                <span aria-hidden="true">&raquo;</span>
+                                                <span class="sr-only">Siguiente</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a disabled class="page-link" aria-label="Anterior">
+                                                <span>Última</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
 
-                    <!--Publicaciones-->
+                            <!-- ejemplo búsqueda sin resultados -->
+                            <div class="col-12">
+                                <p class="text-size-subtitulo1 text-color-info">Lo sentimos, no hemos encontrado ningún resultado para
+                                    la búsqueda. </p>
+                                <p>Te sugerimos que:</p>
+                                <ul class="marker-secondary">
+                                    <li>Compruebes que las palabras que buscas están escritas correctmente</li>
+                                    <li>Intentes usar otras palabras</li>
+                                    <li>Pruebes con palabras más generales</li>
+                                </ul>
+                            </div>
+                            <!-- end búsqueda sin resultados -->
+
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="facultades" role="tabpanel" aria-labelledby="facultades-tab">
+                        <div class="row">
+                            <!-- resultados -->
+                            <!-- item -->
+                            <div class="col-12 col-md-6">
+                                <div class="card mb-3">
+                                    <div class="row no-gutters">
+                                        <div class="col-auto p-3">
+                                            <img th:src="@{assets/img/escudo-ucam.svg}" alt="Escudo UCAM" width="86" height="105" class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <div class="card-body d-flex flex-column justify-content-end h-100">
+                                                <p class="card-title flex-1">
+                                                    <a href="#" title="Samuel Ferrer García"></a>
+                                                </p>
+                                                <p class="card-text">
+                                                    <i class="icon-email"></i>
+                                                    <a href="mailto:" title="Enviar correo a "></a>
+                                                </p>
+                                                <p class="card-text">
+                                                    <i class="icon-phone"></i>
+                                                    <a>Ext. </a></p>
+                                                <p class="card-text">
+                                                    <i class="icon-room"></i> 1ª planta del Templo</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end item -->
+                            <!-- end resultados -->
+                            <!-- ejemplo búsqueda sin resultados -->
+                            <div class="col-12">
+                                <p class="text-size-subtitulo1 text-color-info">Lo sentimos, no hemos encontrado ningún resultado para
+                                    la búsqueda. </p>
+                                <p>Te sugerimos que:</p>
+                                <ul class="marker-secondary">
+                                    <li>Compruebes que las palabras que buscas están escritas correctmente</li>
+                                    <li>Intentes usar otras palabras</li>
+                                    <li>Pruebes con palabras más generales</li>
+                                </ul>
+                            </div>
+                            <!-- end búsqueda sin resultados -->
+                        </div>
+                    </div>
+
                     <div class="tab-pane fade" id="publicaciones" role="tabpanel" aria-labelledby="publicaciones-tab">
-                        <div id="resultados-publicaciones" class="row"></div>
+                        <div class="row">
+                            <!-- resultados -->
+                            <!-- item -->
+                            <div>
+                                <div class="col-12">
+                                    <a href="" class="font-weight-bold"></a>
+                                    <p class="text-color-info font-weight-bold mb-3"></p>
+                                    <div class="resultados_autores">
+                                        <p style="display: inline-block"></p>
+                                    </div>
+                                    <hr>
+                                </div>
+                            </div>
+                            <!-- end item -->
+                            <!-- end resultados -->
+
+                            <div class="col-12 mt-4">
+                                <nav aria-label="Paginación">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item">
+                                            <a class="page-link" aria-label="Primera">
+                                                <span>Primera</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" aria-label="Anterior">
+                                                <span>&laquo;</span>
+                                                <span class="sr-only">Anterior</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link"></a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" aria-label="Siguiente">
+                                                <span aria-hidden="true">&raquo;</span>
+                                                <span class="sr-only">Siguiente</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a disabled class="page-link" aria-label="Última">
+                                                <span>Última</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+
+                            <!-- ejemplo búsqueda sin resultados -->
+                            <div class="col-12">
+                                <p class="text-size-subtitulo1 text-color-info">Lo sentimos, no hemos encontrado ningún resultado para
+                                    la búsqueda. </p>
+                                <p>Te sugerimos que:</p>
+                                <ul class="marker-secondary">
+                                    <li>Compruebes que las palabras que buscas están escritas correctmente</li>
+                                    <li>Intentes usar otras palabras</li>
+                                    <li>Pruebes con palabras más generales</li>
+                                </ul>
+                            </div>
+                            <!-- end búsqueda sin resultados -->
+                        </div>
                     </div>
-                    <!--End of publicaciones-->
                 </div>
                 <!-- end tabs content -->
-                </div>
             </div>
         </div>
     </div>
-    <!-- fin resultados de búsqueda -->
-
-    </div>
-
-    <!--Boton para volver arriba-->
-    <button id="btn-up">
-        <span id="btn-up-icon" class="material-symbols-outlined">expand_less</span>
-    </button>
-    <!--En of boton para volver arriba-->
-
 </article>
+
 
 <script type="text/javascript" th:src="@{/assets/js/vendor/swiper.js}"></script>
 <script type="text/javascript" th:src="@{/assets/js/vendor/jquery.slim.min.js}"></script>

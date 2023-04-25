@@ -35,7 +35,7 @@ public class IndexController {
 
     @RequestMapping(value = "/personas")
     public String index() {
-        return "index";
+        return "index2";
     }
 
     @RequestMapping(value = "/perfil/{id}")

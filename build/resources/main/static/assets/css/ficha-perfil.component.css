@@ -1,0 +1,84 @@
+a {
+  cursor: pointer !important;
+}
+
+.hr {
+  margin-top: 40px;
+}
+
+.revista{
+  margin-bottom: 30px;
+}
+
+.publicacion_ficha {
+  margin-top: 30px;
+}
+
+.proyectos {
+  margin-top: 30px;
+}
+
+.pagination {
+  cursor: pointer;
+}
+
+a.publicacion_url {
+  cursor: default;
+}
+
+
+.related-profile__wrapper {
+  height: 220px;
+}
+
+.related-profile__wrapper img {
+  height: 220px !important;
+}
+
+ul .pagination .justify-content-center{
+  margin-top: 70px !important;
+}
+
+.titulo_publicacion {
+  color: #004379
+}
+
+.frase {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 158.18%;
+  text-indent: 15px;
+  color: #666C72;
+  display: inline;
+}
+
+.comillas_frase_start {
+  font-weight: bold;
+  font-size: 26px;
+  line-height: 158.18%;
+  color: #666C72;
+  display: inline;
+}
+
+.comillas_frase_end {
+  font-weight: bold;
+  font-size: 26px;
+  line-height: 158.18%;
+  color: #666C72;
+  transform: rotate(180deg);
+  display: inline;
+}
+
+.autor {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 158.18%;
+
+  color: #666C72;
+}
+
+.sobremi_frase {
+  margin-top: 20px;
+}
