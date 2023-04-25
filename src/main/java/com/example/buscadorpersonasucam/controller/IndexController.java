@@ -99,7 +99,7 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/searchPersonal/{busqueda}")
-    public String buscarPersonasUrl(@PathVariable String busqueda, Model model) throws IOException{
+    public String buscarPersonasUrl(@PathVariable String busqueda, Model model, @RequestParam("variable") int cont) throws IOException{
 
         List<PersonaElastic> personasEncontradas = new ArrayList<>();
         List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
@@ -109,23 +109,215 @@ public class IndexController {
                 personasEncontradas = getPersonasByBusqueda(busqueda);
             }
 
-            for (int i=0; i<personasEncontradas.size(); i++){
-                PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
+            for (; cont<personasEncontradas.size(); cont++){
+                PersonaDTO personaDTO = personasEncontradas.get(cont).toDTO();
                 personasEncontradasDTO.add(personaDTO);
+
+                if (personasEncontradasDTO.size() == 4){
+                    break;
+                }
             }
         }
 
-        if (personasEncontradasDTO.isEmpty()){
+
+        if (personasEncontradasDTO.isEmpty() && cont == 0){
             return "plantillas/sinResultado";
-        }else{
+        } else{
+            cont += 1;
+            model.addAttribute("i", cont);
             model.addAttribute("personasEncontradas", personasEncontradasDTO);
             return "plantillas/personal";
         }
     }
 
     @RequestMapping(value = "/searchDepartamentos/{busqueda}")
-    public String buscarDepartamentosUrl(@PathVariable String busqueda, Model model) throws IOException{
+    public String buscarDepartamentosUrl(@PathVariable String busqueda, Model model, @RequestParam("variable") int cont) throws IOException{
 
+        List<DepartamentoDTO> departamentosEncontradosAgrupados = new ArrayList<>();
+        List<DepartamentoDTO> departamentosEncontrados = new ArrayList<>();
+
+        if (busqueda.length() >= 3) {
+            if (busqueda != null) {
+                departamentosEncontradosAgrupados = getDepartamentosByBusqueda(busqueda);
+            }
+
+            for (; cont<departamentosEncontradosAgrupados.size(); cont++){
+                DepartamentoDTO departamentoDTO = departamentosEncontradosAgrupados.get(cont);
+                departamentosEncontrados.add(departamentoDTO);
+
+                if (departamentosEncontrados.size() == 4){
+                    break;
+                }
+            }
+        }
+
+        if (departamentosEncontrados.isEmpty() && cont == 0){
+            return "plantillas/sinResultado";
+        }else{
+            cont += 1;
+            model.addAttribute("i", cont);
+            model.addAttribute("departamentosEncontrados", departamentosEncontrados);
+            return "plantillas/departamentos";
+        }
+    }
+
+    @RequestMapping(value = "/searchPublicaciones/{busqueda}")
+    public String buscarPublicaciones(@PathVariable String busqueda, Model model, @RequestParam("variable") int cont) throws IOException{
+
+        List<PublicacionDTO> publicacionesEncontradasDTO = new ArrayList<>();
+        List<PublicacionDTO> publicaciones = new ArrayList<>();
+
+        if (busqueda.length() >= 3) {
+            if (busqueda != null) {
+                publicaciones = getPublicacionesByBusqueda(busqueda);
+            }
+
+            for (; cont<publicaciones.size(); cont++){
+                PublicacionDTO publicacionDTO = publicaciones.get(cont);
+                publicacionesEncontradasDTO.add(publicacionDTO);
+
+                if (publicacionesEncontradasDTO.size() == 4){
+                    break;
+                }
+            }
+        }
+
+        if (publicacionesEncontradasDTO.isEmpty() && cont == 0){
+            return "plantillas/sinResultado";
+        }else{
+            cont += 1;
+            logger.info(String.valueOf(cont));
+            model.addAttribute("i", cont);
+            model.addAttribute("publicacionesEncontradas", publicacionesEncontradasDTO);
+            return "plantillas/publicaciones";
+        }
+    }
+
+    @RequestMapping(value = "/searchNombres/{busqueda}")
+    public String buscarNombresUrl(@PathVariable(required = false) String busqueda, Model model) throws IOException{
+
+        if (busqueda.length() >= 3){
+            List<PersonaElastic> personasEncontradas = new ArrayList<>();
+            if (busqueda != null) {
+                personasEncontradas = getPersonasByBusqueda(busqueda);
+            }
+
+            List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
+            for (int i=0; i<personasEncontradas.size(); i++){
+                PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
+                personasEncontradasDTO.add(personaDTO);
+                if (i >= 4){break;}
+            }
+
+            model.addAttribute("personasEncontradas", personasEncontradasDTO);
+        }
+
+        return "plantillas/nombres";
+    }
+
+    public String normalize(String string) {
+        return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
+    }
+
+    public List<PersonaElastic> getPersonas() throws IOException {
+
+        String result = String.valueOf(elasticsearchRepository.searchAll());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        JsonNode hitsNode = rootNode.get("hits").get("hits");
+        List<PersonaElastic> personas = new ArrayList<>();
+
+        for (JsonNode hit : hitsNode) {
+            JsonNode sourceNode = hit.get("_source");
+            PersonaElastic personaElastic = mapper.treeToValue(sourceNode, PersonaElastic.class);
+            personas.add(personaElastic);
+        }
+
+        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+
+        for (int i=0; i< personas.size(); i++){
+            personasEncontradas.add(personas.get(i));
+        }
+        return personasEncontradas;
+    }
+
+    public List<PersonaElastic> getPersonasByDepartamento(@NotNull String busqueda) throws IOException{
+
+        String result = String.valueOf(elasticsearchRepository.searchAll());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        JsonNode hitsNode = rootNode.get("hits").get("hits");
+        List<PersonaElastic> personas = new ArrayList<>();
+
+        for (JsonNode hit : hitsNode) {
+            JsonNode sourceNode = hit.get("_source");
+            PersonaElastic personaElastic = mapper.treeToValue(sourceNode, PersonaElastic.class);
+            personas.add(personaElastic);
+        }
+
+        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+
+        for (int i=0; i< personas.size(); i++){
+            busqueda = normalize(busqueda).toLowerCase();
+
+            for(int z=0; z<personas.get(i).getDepartamentos().size(); z++){
+                String departamento = normalize(personas.get(i).getDepartamentos().get(z).getNombre()).toLowerCase();
+
+                if (departamento.contains(busqueda)){
+                    personasEncontradas.add(personas.get(i));
+                }
+            }
+        }
+
+        return personasEncontradas;
+    }
+
+    public PersonaElastic getPersonaById(Integer id) throws IOException {
+
+        String result = String.valueOf(elasticsearchRepository.searchById(id));
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        JsonNode hitsNode = rootNode.get("hits").get("hits");
+        JsonNode hit = hitsNode.get(0);
+
+        JsonNode sourceNode = hit.get("_source");
+        PersonaElastic personaEncontrada = mapper.treeToValue(sourceNode, PersonaElastic.class);
+
+        return personaEncontrada;
+    }
+
+    public List<PersonaElastic> getPersonasByBusqueda(@NotNull String busqueda) throws IOException {
+
+        String result = String.valueOf(elasticsearchRepository.searchAll());
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(result);
+        JsonNode hitsNode = rootNode.get("hits").get("hits");
+        List<PersonaElastic> personas = new ArrayList<>();
+
+        for (JsonNode hit : hitsNode) {
+            JsonNode sourceNode = hit.get("_source");
+            PersonaElastic personaElastic = mapper.treeToValue(sourceNode, PersonaElastic.class);
+            personas.add(personaElastic);
+        }
+
+        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+
+        for (int i=0; i< personas.size(); i++){
+            busqueda = normalize(busqueda).toLowerCase();
+            String nombre_completo = personas.get(i).getNombre_completo();
+
+            if (normalize(nombre_completo).toLowerCase().contains(busqueda)){
+                personasEncontradas.add(personas.get(i));
+            }
+        }
+        return personasEncontradas;
+    }
+
+    public List<DepartamentoDTO> getDepartamentosByBusqueda(@NotNull String busqueda) throws IOException{
         busqueda = normalize(busqueda).toLowerCase();
 
         List<PersonaElastic> personasEncontradas = new ArrayList<>();
@@ -197,22 +389,14 @@ public class IndexController {
             departamentoDTO.setPersonas(personasDelDepartamento);
             departamentosEncontradosAgrupados.add(departamentoDTO);
         }
-
-        if (departamentosEncontradosAgrupados.isEmpty()){
-            return "plantillas/sinResultado";
-        }else{
-            model.addAttribute("departamentosEncontrados", departamentosEncontradosAgrupados);
-            return "plantillas/departamentos";
-        }
+        return departamentosEncontradosAgrupados;
     }
 
-    @RequestMapping(value = "/searchPublicaciones/{busqueda}")
-    public String buscarPublicaciones(@PathVariable String busqueda, Model model) throws IOException{
-
+    public List<PublicacionDTO> getPublicacionesByBusqueda(@NotNull String busqueda) throws IOException{
+        busqueda = normalize(busqueda).toLowerCase();
         List<PublicacionDTO> publicacionesEncontradasDTO = new ArrayList<>();
 
         if (busqueda.length() >= 3){
-            busqueda = normalize(busqueda).toLowerCase();
             List<PersonaElastic> personasEncontradas = getPersonas();
 
             for (int i=0; i<personasEncontradas.size(); i++){
@@ -253,136 +437,6 @@ public class IndexController {
                 }
             }
         }
-
-        if (publicacionesEncontradasDTO.isEmpty()){
-            return "plantillas/sinResultado";
-        }else{
-            model.addAttribute("publicacionesEncontradas", publicacionesEncontradasDTO);
-            return "plantillas/publicaciones";
-        }
-    }
-
-    @RequestMapping(value = "/searchNombres/{busqueda}")
-    public String buscarNombresUrl(@PathVariable(required = false) String busqueda, Model model) throws IOException{
-
-        if (busqueda.length() >= 3){
-            List<PersonaElastic> personasEncontradas = new ArrayList<>();
-            if (busqueda != null) {
-                personasEncontradas = getPersonasByBusqueda(busqueda);
-            }
-
-            List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
-            for (int i=0; i<personasEncontradas.size(); i++){
-                PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
-                personasEncontradasDTO.add(personaDTO);
-                if (i >= 4){break;}
-            }
-
-            model.addAttribute("personasEncontradas", personasEncontradasDTO);
-        }
-
-        return "plantillas/nombres";
-    }
-
-    public String normalize(String string) {
-        return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
-    }
-
-    public List<PersonaElastic> getPersonas() throws IOException {
-
-        String result = String.valueOf(elasticsearchRepository.searchAll());
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode rootNode = mapper.readTree(result);
-        JsonNode hitsNode = rootNode.get("hits").get("hits");
-        List<PersonaElastic> personas = new ArrayList<>();
-
-        for (JsonNode hit : hitsNode) {
-            JsonNode sourceNode = hit.get("_source");
-            PersonaElastic personaElastic = mapper.treeToValue(sourceNode, PersonaElastic.class);
-            personas.add(personaElastic);
-        }
-
-        List<PersonaElastic> personasEncontradas = new ArrayList<>();
-
-        for (int i=0; i< personas.size(); i++){
-            personasEncontradas.add(personas.get(i));
-        }
-        return personasEncontradas;
-    }
-
-    public List<PersonaElastic> getPersonasByBusqueda(@NotNull String busqueda) throws IOException {
-
-        String result = String.valueOf(elasticsearchRepository.searchAll());
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode rootNode = mapper.readTree(result);
-        JsonNode hitsNode = rootNode.get("hits").get("hits");
-        List<PersonaElastic> personas = new ArrayList<>();
-
-        for (JsonNode hit : hitsNode) {
-            JsonNode sourceNode = hit.get("_source");
-            PersonaElastic personaElastic = mapper.treeToValue(sourceNode, PersonaElastic.class);
-            personas.add(personaElastic);
-        }
-
-        List<PersonaElastic> personasEncontradas = new ArrayList<>();
-
-        for (int i=0; i< personas.size(); i++){
-            busqueda = normalize(busqueda).toLowerCase();
-            String nombre_completo = personas.get(i).getNombre_completo();
-
-            if (normalize(nombre_completo).toLowerCase().contains(busqueda)){
-                personasEncontradas.add(personas.get(i));
-            }
-        }
-        return personasEncontradas;
-    }
-
-    public List<PersonaElastic> getPersonasByDepartamento(@NotNull String busqueda) throws IOException{
-
-        String result = String.valueOf(elasticsearchRepository.searchAll());
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode rootNode = mapper.readTree(result);
-        JsonNode hitsNode = rootNode.get("hits").get("hits");
-        List<PersonaElastic> personas = new ArrayList<>();
-
-        for (JsonNode hit : hitsNode) {
-            JsonNode sourceNode = hit.get("_source");
-            PersonaElastic personaElastic = mapper.treeToValue(sourceNode, PersonaElastic.class);
-            personas.add(personaElastic);
-        }
-
-        List<PersonaElastic> personasEncontradas = new ArrayList<>();
-
-        for (int i=0; i< personas.size(); i++){
-            busqueda = normalize(busqueda).toLowerCase();
-
-            for(int z=0; z<personas.get(i).getDepartamentos().size(); z++){
-                String departamento = normalize(personas.get(i).getDepartamentos().get(z).getNombre()).toLowerCase();
-
-                if (departamento.contains(busqueda)){
-                    personasEncontradas.add(personas.get(i));
-                }
-            }
-        }
-
-        return personasEncontradas;
-    }
-
-    public PersonaElastic getPersonaById(Integer id) throws IOException {
-
-        String result = String.valueOf(elasticsearchRepository.searchById(id));
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode rootNode = mapper.readTree(result);
-        JsonNode hitsNode = rootNode.get("hits").get("hits");
-        JsonNode hit = hitsNode.get(0);
-
-        JsonNode sourceNode = hit.get("_source");
-        PersonaElastic personaEncontrada = mapper.treeToValue(sourceNode, PersonaElastic.class);
-
-        return personaEncontrada;
+        return publicacionesEncontradasDTO;
     }
 }
