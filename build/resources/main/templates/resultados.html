@@ -122,6 +122,12 @@
         } else {
             document.getElementById("btn-up").style.display = "none";
         }
+
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("btn-up").style.display = "block";
+        } else {
+            document.getElementById("btn-up").style.display = "none";
+        }
     };
 
     document.getElementById("btn-up").onclick = function () {
@@ -146,6 +152,10 @@
         var timeout = null;
         var $busqueda = $('#busqueda');
 
+        var contPersonas=0;
+        var contDepartamentos=0;
+        var contPublicaciones=0;
+
         var $url = "/prueba/searchPersonal/" + $busqueda.val();
         var $url2 = "/prueba/searchDepartamentos/" + $busqueda.val();
         var $url3 = "/prueba/searchPublicaciones/" + $busqueda.val();
@@ -153,10 +163,11 @@
         $.ajax({
             type: 'GET',
             url: $url,
+            data: { variable: contPersonas },
             dataType: 'html'
         })
         .done(function(data) {
-            $('#resultados-personal').html(data);
+            $('#resultados-personal').append(data);
             console.log('Personas encontrados correctamente');
         })
         .fail(function() {
@@ -166,10 +177,11 @@
         $.ajax({
             type: 'GET',
             url: $url2,
+            data: { variable: contDepartamentos },
             dataType: 'html'
         })
         .done(function(data) {
-            $('#resultados-departamentos').html(data);
+            $('#resultados-departamentos').append(data);
             console.log('Departamentos encontrados correctamente');
         })
         .fail(function() {
@@ -179,16 +191,16 @@
         $.ajax({
             type: 'GET',
             url: $url3,
+            data: { variable: contPublicaciones },
             dataType: 'html'
         })
         .done(function(data) {
-            $('#resultados-publicaciones').html(data);
+            $('#resultados-publicaciones').append(data);
             console.log('Publicaciones encontradas correctamente');
         })
         .fail(function() {
             console.log('Error al buscar publicaciones');
         });
-
 
         $busqueda.on('keyup', function() {
             clearTimeout(timeout);
@@ -197,6 +209,70 @@
                 $('#busqueda-form').submit();
 
             }, 1000);
+        });
+
+        $(window).on('scroll', function() {
+            if ($(document).height() - $(this).height() <= $(this).scrollTop()) {
+                if($('#personal-tab').hasClass('active')){
+                    if($('.cont_personas').last().val() != null){
+                        contPersonas = $('.cont_personas').last().val();
+                    }
+
+                    $.ajax({
+                        type: 'GET',
+                        url: $url,
+                        data: { variable: contPersonas },
+                        dataType: 'html'
+                    })
+                    .done(function (data) {
+                        $('#resultados-personal').append(data);
+                        console.log('Personas encontrados correctamente');
+                    })
+                    .fail(function () {
+                        console.log('Error al buscar personas');
+                    });
+                }
+
+                if($('#facultades-tab').hasClass('active')){
+                    if($('.cont_departamentos').last().val() != null){
+                        contDepartamentos = $('.cont_departamentos').last().val();
+                    }
+
+                    $.ajax({
+                        type: 'GET',
+                        url: $url2,
+                        data: { variable: contDepartamentos },
+                        dataType: 'html'
+                    })
+                    .done(function(data) {
+                        $('#resultados-departamentos').append(data);
+                        console.log('Departamentos encontrados correctamente');
+                    })
+                    .fail(function() {
+                        console.log('Error al buscar departamentos');
+                    });
+                }
+                if($('#publicaciones-tab').hasClass('active')){
+                    if($('.cont_publicaciones').last().val() != null){
+                        contPublicaciones = $('.cont_publicaciones').last().val();
+                        console.log(contPublicaciones);
+                    }
+
+                    $.ajax({
+                        type: 'GET',
+                        url: $url3,
+                        data: { variable: contPublicaciones },
+                        dataType: 'html'
+                    })
+                    .done(function(data) {
+                        $('#resultados-publicaciones').append(data);
+                        console.log('Publicaciones encontradas correctamente');
+                    })
+                    .fail(function() {
+                        console.log('Error al buscar publicaciones');
+                    });
+                }
+            }
         });
     });
 </script>
