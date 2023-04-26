@@ -2,11 +2,12 @@
 <!-- item -->
 <div th:each="publicacion : ${publicacionesEncontradas}">
     <div class="col-12">
-        <a target="_blank" th:href="${publicacion.getUrl()}" th:text="${publicacion.getTitulo()}" class="font-weight-bold"></a>
-        <p class="text-color-info font-weight-bold mb-3"></p>
+        <h6>
+            <a class="titulo_publicacion font-weight-bold" target="_blank" th:href="${publicacion.getUrl()}" th:text="${publicacion.getTitulo()}"></a>
+        </h6>
         <div class="resultados_autores">
-            <p style="display: inline-block" th:each="autor, status : ${publicacion.autores}" th:if="${autor.nombreCompleto != null}" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombreCompleto} + ${status.last ? '' : ',&nbsp;'}"></p>
-            <p style="display: inline-block" th:each="autor, status : ${publicacion.autores}" th:unless="${autor.nombreCompleto != null}" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombre} + ${status.last ? '' : ',&nbsp;'}"></p>
+            <p style="display: inline-block; font-size: 14px" th:each="autor, status : ${publicacion.autores}" th:if="${autor.nombreCompleto != null}" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombreCompleto} + ${status.last ? '' : ',&nbsp;'}"></p>
+            <p style="display: inline-block; font-size: 14px" th:each="autor, status : ${publicacion.autores}" th:unless="${autor.nombreCompleto != null}" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombre} + ${status.last ? '' : ',&nbsp;'}"></p>
         </div>
         <hr>
     </div>

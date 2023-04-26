@@ -91,6 +91,12 @@ public class IndexController {
         return "perfil";
     }
 
+    @RequestMapping(value = "/departamento/{nombre}")
+    public String departamento(Model model, @PathVariable String nombre) throws IOException {
+
+        return "departamento";
+    }
+
     @RequestMapping(value = "/searchPersonal/")
     public String buscarPersonas( @RequestParam(name = "search") String busqueda, Model model) {
         model.addAttribute("nombre", busqueda);
@@ -107,14 +113,71 @@ public class IndexController {
         if (busqueda.length() >= 3){
             if (busqueda != null) {
                 personasEncontradas = getPersonasByBusqueda(busqueda);
-            }
 
-            for (; cont<personasEncontradas.size(); cont++){
-                PersonaDTO personaDTO = personasEncontradas.get(cont).toDTO();
-                personasEncontradasDTO.add(personaDTO);
+                if (!personasEncontradas.isEmpty()) {
+                    for (; cont < personasEncontradas.size(); cont++) {
+                        PersonaDTO personaDTO = personasEncontradas.get(cont).toDTO();
+                        personasEncontradasDTO.add(personaDTO);
 
-                if (personasEncontradasDTO.size() == 4){
-                    break;
+                        if (personasEncontradasDTO.size() == 4) {
+                            break;
+                        }
+                    }
+                }else {
+                    busqueda = normalize(busqueda).toLowerCase();
+                    personasEncontradas = getPersonas();
+
+                    for (; cont<personasEncontradas.size(); cont++){
+                        PersonaDTO personaDTO = personasEncontradas.get(cont).toDTO();
+                        boolean encontrado = false;
+
+                        if (normalize(personaDTO.getNombre_completo()).toLowerCase().contains(busqueda)){
+                            encontrado = true;
+
+                        }else if (normalize(personaDTO.getExtension()).toLowerCase().contains(busqueda)){
+                            encontrado = true;
+
+                        }else {
+                            if (encontrado == false){
+                                for (int i = 0; i < personaDTO.getCorreos_institucionales().size(); i++) {
+                                    String correo_institucional = normalize(personaDTO.getCorreos_institucionales().get(i)).toLowerCase();
+
+                                    if (correo_institucional.contains(busqueda)) {
+                                        encontrado = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (encontrado == false){
+                                for (int i = 0; i < personaDTO.getDepartamentos().size(); i++) {
+                                    String departamento = normalize(personaDTO.getDepartamentos().get(i).getNombre()).toLowerCase();
+
+                                    if (departamento.contains(busqueda)) {
+                                        encontrado = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (encontrado == false){
+                                for (int i = 0; i < personaDTO.getAreas_conocimiento().size(); i++) {
+                                    String areas_conocimiento = normalize(personaDTO.getAreas_conocimiento().get(i)).toLowerCase();
+
+                                    if (areas_conocimiento.contains(busqueda)) {
+                                        encontrado = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                        }
+
+                        if (encontrado == true){
+                            personasEncontradasDTO.add(personaDTO);
+                        }
+                        if (personasEncontradasDTO.size() == 4){
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -186,8 +249,6 @@ public class IndexController {
             return "plantillas/sinResultado";
         }else{
             cont += 1;
-            //todo
-            logger.info(String.valueOf(cont));
             model.addAttribute("i", cont);
             model.addAttribute("publicacionesEncontradas", publicacionesEncontradasDTO);
             return "plantillas/publicaciones";

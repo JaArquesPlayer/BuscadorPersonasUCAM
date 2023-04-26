@@ -555,6 +555,7 @@ public class PersonaElastic implements Serializable {
         personaDTO.setDocencia(this.docencia);
         personaDTO.setGrupos_investigacion(this.grupos_investigacion);
         personaDTO.setDepartamentos(this.departamentos);
+        personaDTO.setSexo(this.sexo);
 
         return personaDTO;
     }
