@@ -1,13 +1,14 @@
 <input class="cont_publicaciones" type="hidden" th:value="${i}"/>
-<!--item-->
-<div class="col-12 ng-tns-c11-32 ng-star-inserted" th:each="publicacion : ${publicacionesEncontradas}">
-    <div class="titulo_publicacion mb-3">
-        <a class="font-weight-bold ng-tns-c11-32 ng-star-inserted" target="_blank" th:href="${publicacion.getUrl()}" th:text="${publicacion.getTitulo()}"></a>
+<!-- item -->
+<div th:each="publicacion : ${publicacionesEncontradas}">
+    <div class="col-12">
+        <a target="_blank" th:href="${publicacion.getUrl()}" th:text="${publicacion.getTitulo()}" class="font-weight-bold"></a>
+        <p class="text-color-info font-weight-bold mb-3"></p>
+        <div class="resultados_autores">
+            <p style="display: inline-block" th:each="autor, status : ${publicacion.autores}" th:if="${autor.nombreCompleto != null}" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombreCompleto} + ${status.last ? '' : ',&nbsp;'}"></p>
+            <p style="display: inline-block" th:each="autor, status : ${publicacion.autores}" th:unless="${autor.nombreCompleto != null}" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombre} + ${status.last ? '' : ',&nbsp;'}"></p>
+        </div>
+        <hr>
     </div>
-    <div class="resultados_autores">
-        <p th:each="autor, status : ${publicacion.autores}" th:if="${autor.nombreCompleto != null}" style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombreCompleto} + ${status.last ? '' : ',&nbsp;'}"></p>
-        <p th:each="autor, status : ${publicacion.autores}" th:unless="${autor.nombreCompleto != null}" style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombre} + ${status.last ? '' : ',&nbsp;'}"></p>
-    </div>
-    <hr class="ng-tns-c11-32">
 </div>
-<!--end of item-->
+<!-- end item -->

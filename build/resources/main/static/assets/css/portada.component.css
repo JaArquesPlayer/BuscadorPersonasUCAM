@@ -16,15 +16,17 @@ mat-option:focus:not(.mat-option-disabled) {
    color: #ECEDEE;
  }
 
-.buscar {
-    background-color:  #a8a8a8;
+#buscar {
     width: 120px;
-    transition: background-color 0.3s ease-in-out;
-    color: #ffffff;
     border-radius: 0 5px 5px 0;
+    font-size: 16px;
+    color: #fff;
+    background-color: #a8a8a8;
+    border-color: #a8a8a8;
+    font-family: Open Sans, sans-serif;
 }
 
-.buscar:hover{
+#buscar:hover{
     color: #ffffff;
 }
 
@@ -34,9 +36,10 @@ mat-option:focus:not(.mat-option-disabled) {
     flex-direction: column;
     position: fixed;
     width: inherit;
-    min-width: inherit;
+    min-width: 250px;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
+    box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
 }
 
 #sugerencias a:hover{
@@ -56,4 +59,9 @@ mat-option:focus:not(.mat-option-disabled) {
     color: #ffffff;
 }
 
+@media (max-width: 480px) {
+    #buscar {
+        display: none;
+    }
+}
 

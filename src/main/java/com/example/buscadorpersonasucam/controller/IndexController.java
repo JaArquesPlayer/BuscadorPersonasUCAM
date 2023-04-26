@@ -186,6 +186,7 @@ public class IndexController {
             return "plantillas/sinResultado";
         }else{
             cont += 1;
+            //todo
             logger.info(String.valueOf(cont));
             model.addAttribute("i", cont);
             model.addAttribute("publicacionesEncontradas", publicacionesEncontradasDTO);
