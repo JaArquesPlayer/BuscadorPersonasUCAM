@@ -5,11 +5,11 @@ import com.example.buscadorpersonasucam.database.entity.PersonaElastic;
 import com.example.buscadorpersonasucam.repository.ElasticsearchRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletContext;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.logging.Logger;

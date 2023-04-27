@@ -1,12 +1,12 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.0.4'
+    id 'org.springframework.boot' version '2.3.1.RELEASE'
     id 'io.spring.dependency-management' version '1.1.0'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
@@ -14,19 +14,25 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+
+    implementation 'org.springframework.data:spring-data-elasticsearch:4.0.6.RELEASE'
+    implementation 'org.elasticsearch.client:elasticsearch-rest-client:7.6.2'
+    implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.6.2'
+
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.jetbrains:annotations:23.0.0'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
     implementation group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
-    implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.0.0'
+
     implementation 'org.apache.commons:commons-text:1.9'
     implementation 'javax.servlet:javax.servlet-api:4.0.1'
     implementation 'commons-io:commons-io:2.11.0'
+    implementation 'org.springframework.retry:spring-retry:1.1.5.RELEASE'
 }
 
 tasks.named('test') {

@@ -54,3 +54,46 @@ a.publicacion_url {
     background-repeat: no-repeat;
     background-position: right;
 }
+
+/*Botón volver arriba*/
+.material-symbols-outlined{
+    color: #edab00;
+    transform: scale(2);
+    transition-duration: .3s;
+}
+
+.material-symbols-outlined:hover{
+    transform: scale(3);
+    transition-duration: .3s;
+}
+
+#btn-up{
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    display: none;
+    z-index: 9;
+    width: 55px;
+    height: 55px;
+    border: 0;
+    border-radius: 5px;
+    background-color: #edab00;
+
+    transform: scale(1);
+    transition-duration: .3s;
+}
+
+#btn-up:hover{
+    transform: scale(1.05);
+    transition-duration: .3s;
+}
+
+#btn-up-icon{
+    margin: auto auto;
+    z-index: 10;
+    color: white;
+}
+
+#btn-up-icon:hover{
+    transform: scale(2);
+}
