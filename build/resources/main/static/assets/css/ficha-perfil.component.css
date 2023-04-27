@@ -1,0 +1,154 @@
+a {
+  cursor: pointer !important;
+}
+
+.hr {
+  margin-top: 40px;
+}
+
+.revista{
+  margin-bottom: 30px;
+}
+
+.publicacion_ficha {
+  margin-top: 30px;
+}
+
+.proyectos {
+  margin-top: 30px;
+}
+
+.pagination {
+  cursor: pointer;
+}
+
+a.publicacion_url {
+  cursor: default;
+}
+
+.related-profile__wrapper {
+  height: 220px;
+}
+
+ul .pagination .justify-content-center{
+  margin-top: 70px !important;
+}
+
+.titulo_publicacion {
+  color: #004379
+}
+
+.frase {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 158.18%;
+  text-indent: 15px;
+  color: #666C72;
+  display: inline;
+}
+
+.comillas_frase_start {
+  font-weight: bold;
+  font-size: 26px;
+  line-height: 158.18%;
+  color: #666C72;
+  display: inline;
+}
+
+.comillas_frase_end {
+  font-weight: bold;
+  font-size: 26px;
+  line-height: 158.18%;
+  color: #666C72;
+  transform: rotate(180deg);
+  display: inline;
+}
+
+.autor {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 158.18%;
+
+  color: #666C72;
+}
+
+.sobremi_frase {
+  margin-top: 20px;
+}
+
+/*Personal relacionado*/
+#related-profiles{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.related-profiles-departamento{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.profile-card{
+  position: relative;
+  margin: 10px;
+  width: 162px;
+  height: 200px;
+  border: none;
+}
+
+.profile-card a{
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
+
+.profile-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, .85));
+  z-index: 1;
+}
+
+.related-profile__caption {
+  font-size: 14px !important;
+  text-shadow: 2px 2px 4px rgb(0 0 0 / 70%);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding: 0.6rem 1rem;
+  font-weight: 700;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 1280px) {
+  #nombre-departamento {
+    display: flex;
+    justify-content: center;
+  }
+
+  #related-profiles {
+    display: flex;
+    justify-content: center;
+  }
+
+  #item-departamento{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  #resultados-departamentos{
+    display: flex;
+    justify-content: center;
+  }
+}

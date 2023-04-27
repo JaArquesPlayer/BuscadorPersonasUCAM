@@ -1,13 +1,13 @@
 <input class="cont_departamentos" type="hidden" th:value="${i}"/>
 <!--item-->
-<div th:each="departamento : ${departamentosEncontrados}" class="swiper-departamentos ng-tns-c3-17 ng-star-inserted" style="flex-direction: column; box-sizing: border-box; display: flex;">
-    <div class="ng-tns-c3-17" fxflex="100">
+<div id="item-departamento" class="swiper-departamentos ng-tns-c3-17 ng-star-inserted" th:each="departamento : ${departamentosEncontrados}">
+    <div id="nombre-departamento" class="ng-tns-c3-17">
         <h2 class="text-size-subtitulo1" style="margin-bottom: 25px">
-            <a class="ng-tns-c3-17" th:text="${departamento.nombre}"></a>
+            <a class="ng-tns-c3-17" th:href="'/prueba/departamento/' + ${departamento.nombre}" th:text="${departamento.nombre}"></a>
         </h2>
     </div>
 
-    <div id="related-profiles" style="justify-content: flex-start">
+    <div id="related-profiles">
         <div th:each="personas : ${departamento.personas}">
             <a th:each="persona, iter : ${personas}" th:if="${iter.index < 6}" th:href="'/prueba/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper">
                 <div class="profile-card">

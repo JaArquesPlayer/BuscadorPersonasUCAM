@@ -1,40 +1,63 @@
 <input class="cont_personas" type="hidden" th:value="${i}"/>
-
+<!-- item -->
 <div class="col-12 col-md-6" th:each="persona : ${personasEncontradas}">
     <div class="card mb-3">
-        <div class="col-auto p-3">
-            <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}"  width="86" height="105" class="img-fluid">
-            <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" width="86" height="105" class="img-fluid">
-        </div>
-        <div class="col mt-3 mb-5">
-            <p class="card-title flex-1"><a th:href="'/prueba/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" th:text="${persona.nombre_mostrar}"></a></p>
+        <div class="row no-gutters">
+            <div class="col-auto p-3">
+                <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}"  width="86" height="105" class="img-fluid">
+                <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/personas/default.png}" th:alt="${persona.nombre_mostrar}" width="86" height="105" class="img-fluid">
+            </div>
+            <div class="col">
+                <div class="card-body d-flex flex-column justify-content-end h-100">
+                    <p class="card-title flex-1">
+                        <a th:href="'/prueba/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" th:text="${persona.nombre_mostrar}"></a>
+                    </p>
+                    <p class="card-text" th:if="${persona.correos_institucionales != null && iter.index == 0}" th:each="c_institucional, iter : ${persona.correos_institucionales}">
+                        <i class="icon-email" th:if="${persona.correos_institucionales[0] != ''}"></i>
+                        <a th:href="'mailto:'+${c_institucional}" th:title="'Enviar correo a '+${c_institucional}" th:text="${c_institucional}"></a>
+                    </p>
+                    <p class="card-text" th:if="${persona.telefonos != null || persona.extension != null}">
+                        <i class="icon-phone" th:if="${persona.telefonos != null && persona.telefonos[0] != ''}"></i>
+                        <a th:if="${persona.telefonos != null && persona.telefonos[0] != ''}" th:href="'tel:' + ${persona.telefonos[0]}" th:title="${'Llamar al teléfono ' + persona.telefonos[0]}" th:text="${persona.telefonos[0]}"></a>
+                        <a th:if="${persona.extension != null && persona.extension != ''}" th:href="'tel:' + ${persona.extension}" th:title="${'Llamar a la extensión ' + persona.extension}" th:text="${' - Ext. ' + persona.extension}"></a>
+                    </p>
+                    <p class="card-text" th:if="${persona.ubicacion != null && persona.ubicacion != ''}">
+                        <!--<i class="ng-fa-icon" style="margin-right: 10px; width:16px; height: 16px;">
+                            <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="building" class="svg-inline--fa fa-building fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                <path fill="currentColor" d="M128 148v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12zm140 12h40c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12zm-128 96h40c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12zm128 0h40c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12zm-76 84v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm76 12h40c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12zm180 124v36H0v-36c0-6.6 5.4-12 12-12h19.5V24c0-13.3 10.7-24 24-24h337c13.3 0 24 10.7 24 24v440H436c6.6 0 12 5.4 12 12zM79.5 463H192v-67c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v67h112.5V49L80 48l-.5 415z"></path>
+                            </svg>
+                        </i>-->
+                        <i class="icon-room"></i>
+                        <a th:text="${persona.ubicacion}"></a>
+                    </p>
+                    <div class="card-text redes">
+                        <p th:if="${persona.web != null}" class="card-text">
+                            <a class="decoration-none" th:if="${persona.web != ''}" th:href="${persona.web}" th:title="Web">
+                                <i class="icon-web-2"></i>
+                            </a>
+                        </p>
 
-            <p th:if="${persona.correos_institucionales != null && iter.index == 0}" class="card-text" th:each="c_institucional, iter : ${persona.correos_institucionales}">
-                <i th:if="${persona.correos_institucionales[0] != ''}" class="icon-email"></i><a th:href="'mailto:'+${c_institucional}" th:title="'Enviar correo a '+${c_institucional}" th:text="${c_institucional}"></a></p>
+                        <p th:if="${persona.instagram != null}" class="card-text">
+                            <a class="decoration-none" th:if="${persona.instagram != ''}" th:href="${persona.instagram}" th:title="Instagram">
+                                <i class="icon-instagram"></i>
+                            </a>
+                        </p>
 
-            <p th:if="${persona.correos_personales != null && iter.index == 0}" class="card-text" th:each="c_personal, iter : ${persona.correos_personales}">
-                <i th:if="${persona.correos_personales[0] != ''}" class="icon-email"></i><a th:href="'mailto:'+${c_personal}" th:title="'Enviar correo a '+${c_personal}" th:text="${c_personal}"></a></p>
+                        <p th:if="${persona.linkedin != null}" class="card-text">
+                            <a class="decoration-none" th:if="${persona.linkedin != ''}" th:href="${persona.linkedin}" th:title="Linkedin">
+                                <i class="icon-linkedin"></i>
+                            </a>
+                        </p>
 
-            <p class="card-text" th:if="${persona.telefonos != null || persona.extension != null}">
-                <i th:if="${persona.telefonos != null && persona.telefonos[0] != ''}" class="icon-phone"></i>
-                <a th:if="${persona.telefonos != null && persona.telefonos[0] != ''}" th:href="'tel:' + ${persona.telefonos[0]}" th:title="${'Llamar al teléfono ' + persona.telefonos[0]}" th:text="${persona.telefonos[0]}"></a>
-                <a th:if="${persona.extension != null && persona.extension != ''}" th:href="'tel:' + ${persona.extension}" th:title="${'Llamar a la extensión ' + persona.extension}" th:text="${' - Ext. ' + persona.extension}"></a>
-            </p>
-
-            <p th:if="${persona.ubicacion != null && persona.ubicacion != ''}" class="card-text"><i class="icon-diploma"></i><a th:text="${persona.ubicacion}"></a></p>
-            <div class="redes">
-                <p th:if="${persona.web != null}" class="card-text">
-                    <a class="decoration-none" th:if="${persona.web != ''}" th:href="${persona.web}" th:title="Web"><i class="icon-web-2"></i></a></p>
-
-                <p th:if="${persona.instagram != null}" class="card-text">
-                    <a class="decoration-none" th:if="${persona.instagram != ''}" th:href="${persona.instagram}" th:title="Instagram"><i class="icon-instagram"></i></a></p>
-
-                <p th:if="${persona.linkedin != null}" class="card-text">
-                    <a class="decoration-none" th:if="${persona.linkedin != ''}" th:href="${persona.linkedin}" th:title="Linkedin"><i class="icon-linkedin"></i></a></p>
-
-                <p th:if="${persona.twitter != null}" class="card-text">
-                    <a class="decoration-none" th:if="${persona.twitter != ''}" th:href="${persona.twitter}" th:title="Twitter"><i class="icon-twitter"></i></a></p>
+                        <p th:if="${persona.twitter != null}" class="card-text">
+                            <a class="decoration-none" th:if="${persona.twitter != ''}" th:href="${persona.twitter}" th:title="Twitter">
+                                <i class="icon-twitter"></i>
+                            </a>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<!-- end item -->

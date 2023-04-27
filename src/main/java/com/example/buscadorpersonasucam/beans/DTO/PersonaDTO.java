@@ -18,6 +18,7 @@ public class PersonaDTO implements Serializable {
     private List<String> formacion;
     private String extension;
     private String web;
+    private String sexo;
     private String instagram;
     private String linkedin;
     private String twitter;
@@ -241,5 +242,13 @@ public class PersonaDTO implements Serializable {
 
     public void setDepartamentos(List<DepartamentoElasticDTO> departamentos) {
         this.departamentos = departamentos;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
     }
 }

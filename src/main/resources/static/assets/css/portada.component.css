@@ -1,0 +1,67 @@
+a {
+  cursor: pointer;
+}
+
+.mat-option {
+  font-family: Open Sans, sans-serif;
+}
+
+.subrayado {
+  font-weight: bold;
+}
+
+mat-option:hover:not(.mat-option-disabled),
+mat-option:focus:not(.mat-option-disabled) {
+   background: #004379;
+   color: #ECEDEE;
+ }
+
+#buscar {
+    width: 120px;
+    border-radius: 0 5px 5px 0;
+    font-size: 16px;
+    color: #fff;
+    background-color: #a8a8a8;
+    border-color: #a8a8a8;
+    font-family: Open Sans, sans-serif;
+}
+
+#buscar:hover{
+    color: #ffffff;
+}
+
+#sugerencias{
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    width: inherit;
+    min-width: 250px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+}
+
+#sugerencias a:hover{
+    background-color: #004379;
+}
+
+#sugerencias a{
+    color: rgba(50, 50, 50, 0.87);
+    font-size: 16px;
+    padding: 12px;
+    padding-left: 16px;
+    text-decoration: none;
+    font-family: Open Sans, sans-serif;
+}
+
+#sugerencias a:hover{
+    color: #ffffff;
+}
+
+@media (max-width: 480px) {
+    #buscar {
+        display: none;
+    }
+}
+
