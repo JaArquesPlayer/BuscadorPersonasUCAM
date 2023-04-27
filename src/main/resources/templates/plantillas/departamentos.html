@@ -3,7 +3,7 @@
 <div id="item-departamento" class="swiper-departamentos ng-tns-c3-17 ng-star-inserted" th:each="departamento : ${departamentosEncontrados}">
     <div id="nombre-departamento" class="ng-tns-c3-17">
         <h2 class="text-size-subtitulo1" style="margin-bottom: 25px">
-            <a class="ng-tns-c3-17" th:text="${departamento.nombre}"></a>
+            <a class="ng-tns-c3-17" th:href="'/prueba/departamento/' + ${departamento.nombre}" th:text="${departamento.nombre}"></a>
         </h2>
     </div>
 

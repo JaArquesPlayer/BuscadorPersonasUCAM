@@ -1,0 +1,56 @@
+a {
+    cursor: pointer !important;
+}
+
+.hr {
+    margin-top: 40px;
+}
+
+.revista{
+    margin-bottom: 30px;
+}
+
+.publicacion_ficha {
+    margin-top: 30px;
+}
+
+.proyectos {
+    margin-top: 30px;
+}
+
+.pagination {
+    cursor: pointer;
+}
+
+a.publicacion_url {
+    cursor: default;
+}
+
+.related-profile__wrapper {
+    width: 180px !important;
+    height: 220px !important;
+}
+
+.related-profile__wrapper img {
+    width: 180px !important;
+    height: 220px !important;
+}
+
+@media (max-width: 414px) {
+
+    .related-profile__wrapper {
+        width: 144px !important;
+        height: 176px !important;
+    }
+
+    .related-profile__wrapper img {
+        width: 144px !important;
+        height: 176px !important;
+    }
+}
+
+.hero {
+    background-image: url("/assets/img/logo.png");
+    background-repeat: no-repeat;
+    background-position: right;
+}

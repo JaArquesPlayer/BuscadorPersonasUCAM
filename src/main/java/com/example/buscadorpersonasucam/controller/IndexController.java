@@ -41,13 +41,13 @@ public class IndexController {
     @RequestMapping(value = "/perfil/{id}")
     public String perfil(Model model, @PathVariable int id) throws IOException {
 
-        PersonaElastic personaEncontrada = getPersonaById(id);
+        PersonaDTO personaEncontrada = getPersonaById(id);
         PersonaDTO personaEncontradaDTO = new PersonaDTO();
         List<ProyectoDTO> proyectosCompetitivosDTO = new ArrayList<>();
         List<ProyectoDTO> proyectosNoCompetitivosDTO = new ArrayList<>();
 
         if (personaEncontrada != null) {
-            personaEncontradaDTO = personaEncontrada.toDTO();
+            personaEncontradaDTO = personaEncontrada;
 
             if (personaEncontradaDTO.getProyectos() != null) {
 
@@ -62,15 +62,7 @@ public class IndexController {
             }
         }
 
-        List<PersonaElastic> personasEncontradasDepartamento = getPersonasByDepartamento(personaEncontradaDTO.getUbicacion());
-        List<PersonaDTO> personasEncontradasDepartamentoDTO = new ArrayList<>();
-
-        if (personasEncontradasDepartamento != null) {
-            for (int i=0; i<personasEncontradasDepartamento.size(); i++){
-                PersonaDTO personaDTO = personasEncontradasDepartamento.get(i).toDTO();
-                personasEncontradasDepartamentoDTO.add(personaDTO);
-            }
-        }
+        List<PersonaDTO> personasEncontradasDepartamentoDTO = getPersonasByDepartamento(personaEncontradaDTO.getUbicacion());
 
         model.addAttribute("persona", personaEncontradaDTO);
         model.addAttribute("personasEncontradasDepartamento", personasEncontradasDepartamentoDTO);
@@ -91,12 +83,6 @@ public class IndexController {
         return "perfil";
     }
 
-    @RequestMapping(value = "/departamento/{nombre}")
-    public String departamento(Model model, @PathVariable String nombre) throws IOException {
-
-        return "departamento";
-    }
-
     @RequestMapping(value = "/searchPersonal/")
     public String buscarPersonas( @RequestParam(name = "search") String busqueda, Model model) {
         model.addAttribute("nombre", busqueda);
@@ -107,7 +93,7 @@ public class IndexController {
     @RequestMapping(value = "/searchPersonal/{busqueda}")
     public String buscarPersonasUrl(@PathVariable String busqueda, Model model, @RequestParam("variable") int cont) throws IOException{
 
-        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+        List<PersonaDTO> personasEncontradas = new ArrayList<>();
         List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
 
         if (busqueda.length() >= 3){
@@ -116,10 +102,10 @@ public class IndexController {
 
                 if (!personasEncontradas.isEmpty()) {
                     for (; cont < personasEncontradas.size(); cont++) {
-                        PersonaDTO personaDTO = personasEncontradas.get(cont).toDTO();
+                        PersonaDTO personaDTO = personasEncontradas.get(cont);
                         personasEncontradasDTO.add(personaDTO);
 
-                        if (personasEncontradasDTO.size() == 4) {
+                        if (personasEncontradasDTO.size() == 8) {
                             break;
                         }
                     }
@@ -128,7 +114,7 @@ public class IndexController {
                     personasEncontradas = getPersonas();
 
                     for (; cont<personasEncontradas.size(); cont++){
-                        PersonaDTO personaDTO = personasEncontradas.get(cont).toDTO();
+                        PersonaDTO personaDTO = personasEncontradas.get(cont);
                         boolean encontrado = false;
 
                         if (normalize(personaDTO.getNombre_completo()).toLowerCase().contains(busqueda)){
@@ -239,7 +225,7 @@ public class IndexController {
                 PublicacionDTO publicacionDTO = publicaciones.get(cont);
                 publicacionesEncontradasDTO.add(publicacionDTO);
 
-                if (publicacionesEncontradasDTO.size() == 4){
+                if (publicacionesEncontradasDTO.size() == 10){
                     break;
                 }
             }
@@ -255,20 +241,54 @@ public class IndexController {
         }
     }
 
+    @RequestMapping(value = "/departamento/{nombre}")
+    public String departamento(Model model, @PathVariable String nombre) throws IOException {
+
+        String departamentoNormalized = normalize(nombre).toLowerCase();
+        List<PersonaDTO> personas = getPersonas();
+        List<PersonaDTO> personasEncontradas = new ArrayList<>();
+
+        for (int i=0; i<personas.size(); i++){
+            boolean encontrado = false;
+            PersonaDTO personaDTO = personas.get(i);
+
+            if (normalize(personaDTO.getUbicacion()).toLowerCase().equalsIgnoreCase(departamentoNormalized)){
+                encontrado = true;
+            }else{
+                for (int z=0; z<personaDTO.getDepartamentos().size(); z++){
+                    String departametoPersona = normalize(personaDTO.getDepartamentos().get(z).getNombre()).toLowerCase();
+
+                    if (departametoPersona.equalsIgnoreCase(departamentoNormalized)){
+                        encontrado = true;
+                        break;
+                    }
+                }
+            }
+            if (encontrado){
+                personasEncontradas.add(personaDTO);
+            }
+        }
+
+        model.addAttribute("nombreDepartamento", nombre);
+        model.addAttribute("personasEncontradas", personasEncontradas);
+
+        return "departamento";
+    }
+
     @RequestMapping(value = "/searchNombres/{busqueda}")
     public String buscarNombresUrl(@PathVariable(required = false) String busqueda, Model model) throws IOException{
 
         if (busqueda.length() >= 3){
-            List<PersonaElastic> personasEncontradas = new ArrayList<>();
+            List<PersonaDTO> personasEncontradas = new ArrayList<>();
             if (busqueda != null) {
                 personasEncontradas = getPersonasByBusqueda(busqueda);
             }
 
             List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
             for (int i=0; i<personasEncontradas.size(); i++){
-                PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
+                PersonaDTO personaDTO = personasEncontradas.get(i);
                 personasEncontradasDTO.add(personaDTO);
-                if (i >= 4){break;}
+                if (i == 4){break;}
             }
 
             model.addAttribute("personasEncontradas", personasEncontradasDTO);
@@ -281,7 +301,7 @@ public class IndexController {
         return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
     }
 
-    public List<PersonaElastic> getPersonas() throws IOException {
+    public List<PersonaDTO> getPersonas() throws IOException {
 
         String result = String.valueOf(elasticsearchRepository.searchAll());
 
@@ -296,15 +316,15 @@ public class IndexController {
             personas.add(personaElastic);
         }
 
-        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+        List<PersonaDTO> personasEncontradas = new ArrayList<>();
 
         for (int i=0; i< personas.size(); i++){
-            personasEncontradas.add(personas.get(i));
+            personasEncontradas.add(personas.get(i).toDTO());
         }
         return personasEncontradas;
     }
 
-    public List<PersonaElastic> getPersonasByDepartamento(@NotNull String busqueda) throws IOException{
+    public List<PersonaDTO> getPersonasByDepartamento(@NotNull String busqueda) throws IOException{
 
         String result = String.valueOf(elasticsearchRepository.searchAll());
 
@@ -319,7 +339,7 @@ public class IndexController {
             personas.add(personaElastic);
         }
 
-        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+        List<PersonaDTO> personasEncontradas = new ArrayList<>();
 
         for (int i=0; i< personas.size(); i++){
             busqueda = normalize(busqueda).toLowerCase();
@@ -328,7 +348,7 @@ public class IndexController {
                 String departamento = normalize(personas.get(i).getDepartamentos().get(z).getNombre()).toLowerCase();
 
                 if (departamento.contains(busqueda)){
-                    personasEncontradas.add(personas.get(i));
+                    personasEncontradas.add(personas.get(i).toDTO());
                 }
             }
         }
@@ -336,7 +356,7 @@ public class IndexController {
         return personasEncontradas;
     }
 
-    public PersonaElastic getPersonaById(Integer id) throws IOException {
+    public PersonaDTO getPersonaById(Integer id) throws IOException {
 
         String result = String.valueOf(elasticsearchRepository.searchById(id));
 
@@ -348,10 +368,10 @@ public class IndexController {
         JsonNode sourceNode = hit.get("_source");
         PersonaElastic personaEncontrada = mapper.treeToValue(sourceNode, PersonaElastic.class);
 
-        return personaEncontrada;
+        return personaEncontrada.toDTO();
     }
 
-    public List<PersonaElastic> getPersonasByBusqueda(@NotNull String busqueda) throws IOException {
+    public List<PersonaDTO> getPersonasByBusqueda(@NotNull String busqueda) throws IOException {
 
         String result = String.valueOf(elasticsearchRepository.searchAll());
 
@@ -366,14 +386,14 @@ public class IndexController {
             personas.add(personaElastic);
         }
 
-        List<PersonaElastic> personasEncontradas = new ArrayList<>();
+        List<PersonaDTO> personasEncontradas = new ArrayList<>();
 
         for (int i=0; i< personas.size(); i++){
             busqueda = normalize(busqueda).toLowerCase();
             String nombre_completo = personas.get(i).getNombre_completo();
 
             if (normalize(nombre_completo).toLowerCase().contains(busqueda)){
-                personasEncontradas.add(personas.get(i));
+                personasEncontradas.add(personas.get(i).toDTO());
             }
         }
         return personasEncontradas;
@@ -382,11 +402,11 @@ public class IndexController {
     public List<DepartamentoDTO> getDepartamentosByBusqueda(@NotNull String busqueda) throws IOException{
         busqueda = normalize(busqueda).toLowerCase();
 
-        List<PersonaElastic> personasEncontradas = new ArrayList<>();
-        List<PersonaElastic> personasEncontradasPorDepartamento = new ArrayList<>();
+        List<PersonaDTO> personasEncontradas = new ArrayList<>();
+        List<PersonaDTO> personasEncontradasPorDepartamento = new ArrayList<>();
         List<String> departamentosEncontrados = new ArrayList<>();
 
-        List<PersonaElastic> personasEncontradasDepartamento;
+        List<PersonaDTO> personasEncontradasDepartamento;
         List<DepartamentoDTO> departamentosEncontradosAgrupados = new ArrayList<>();
 
         if (busqueda.length() >= 3){
@@ -396,7 +416,7 @@ public class IndexController {
             }
 
             for (int i=0; i<personasEncontradas.size(); i++){
-                PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
+                PersonaDTO personaDTO = personasEncontradas.get(i);
 
                 for (int z=0; z<personaDTO.getDepartamentos().size(); z++){
                     boolean repetido = false;
@@ -414,7 +434,7 @@ public class IndexController {
             }
 
             for (int i=0; i<personasEncontradasPorDepartamento.size(); i++){
-                PersonaDTO personaDTO = personasEncontradasPorDepartamento.get(i).toDTO();
+                PersonaDTO personaDTO = personasEncontradasPorDepartamento.get(i);
 
                 for (int z=0; z<personaDTO.getDepartamentos().size(); z++){
                     boolean repetido = false;
@@ -441,10 +461,10 @@ public class IndexController {
             for (int z=0; z<personasEncontradasDepartamento.size(); z++){
 
                 if (personasEncontradas.size()==0){
-                    personasDelDepartamento.add(personasEncontradasDepartamento.get(z).toDTO());
+                    personasDelDepartamento.add(personasEncontradasDepartamento.get(z));
 
                 }else if (normalize(personasEncontradasDepartamento.get(z).getNombre_completo()).toLowerCase().contains(busqueda)){
-                    personasDelDepartamento.add(personasEncontradasDepartamento.get(z).toDTO());
+                    personasDelDepartamento.add(personasEncontradasDepartamento.get(z));
                 }
             }
 
@@ -459,10 +479,10 @@ public class IndexController {
         List<PublicacionDTO> publicacionesEncontradasDTO = new ArrayList<>();
 
         if (busqueda.length() >= 3){
-            List<PersonaElastic> personasEncontradas = getPersonas();
+            List<PersonaDTO> personasEncontradas = getPersonas();
 
             for (int i=0; i<personasEncontradas.size(); i++){
-                PersonaDTO personaDTO = personasEncontradas.get(i).toDTO();
+                PersonaDTO personaDTO = personasEncontradas.get(i);
                 List<PublicacionDTO> publicacionesTmpDTO = personaDTO.getPublicaciones();
 
                 if (publicacionesTmpDTO != null) {
