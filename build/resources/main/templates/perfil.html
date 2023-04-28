@@ -249,11 +249,11 @@
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
                    id="publicaciones-tab" href="#publicaciones">Publicaciones</a>
               </li>
-              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(proyectosCompetitivos)}">
+              <li class="nav-item swiper-slide" th:if="${persona.proyectos != null}">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
                    id="proyectos-competitivos-tab" href="#proyectos-competitivos">Proyectos competitivos</a>
               </li>
-              <li class="nav-item swiper-slide" th:if="${not #lists.isEmpty(proyectosNoCompetitivos)}">
+              <li class="nav-item swiper-slide" th:if="${persona.proyectos != null}">
                 <a class="nav-link" data-toggle="tab" role="tab" aria-controls="" aria-selected="false"
                    id="proyectos-no-competitivos-tab" href="#proyectos-no-competitivos">Proyectos no competitivos</a>
               </li>
@@ -266,6 +266,11 @@
           <!-- end tabs -->
 
           <!-- contenido tabs -->
+          <input id="idUcam" type="hidden" th:value="${persona.id}"/>
+          <input id="numPublicaciones" type="hidden" th:value="${numPublicaciones}"/>
+          <input id="numProyectosComp" type="hidden" th:value="${numProyectosComp}"/>
+          <input id="numProyectosNoComp" type="hidden" th:value="${numProyectosNoComp}"/>
+
           <div class="tab-content">
             <div class="tab-pane fade show active" id="informacion" role="tabpanel" aria-labelledby="informacion-tab">
 
@@ -328,53 +333,116 @@
 
             <!--publicaciones-->
             <div class="tab-pane fade" id="publicaciones" role="tabpanel" aria-labelledby="publicaciones-tab">
-              <div class="publicacion_ficha" th:if="${persona.publicaciones != null}">
-                <div th:each="publicacion : ${persona.publicaciones}">
-                  <div class="col-12">
-                    <h6>
-                      <a class="titulo_publicacion font-weight-bold" target="_blank" th:href="${publicacion.getUrl()}" th:text="${publicacion.getTitulo()}"></a>
-                    </h6>
-                    <div class="resultados_autores">
-                      <p style="display: inline-block; font-size: 14px" th:each="autor, status : ${publicacion.autores}" th:if="${autor.nombreCompleto != null}" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombreCompleto} + ${status.last ? '' : ',&nbsp;'}"></p>
-                      <p style="display: inline-block; font-size: 14px" th:each="autor, status : ${publicacion.autores}" th:unless="${autor.nombreCompleto != null}" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombre} + ${status.last ? '' : ',&nbsp;'}"></p>
-                    </div>
-                    <p class="text-color-ucam-gray-medium revista ng-tns-c3-4 ng-star-inserted" th:text="'Publicado en: ' + ${publicacion.editorial} + ', ' +${publicacion.paginaInicio} + ', ' + ${publicacion.paginaFinal}">
-                      <strong class="ng-tns-c3-4" th:text="' ' + ${publicacion.editorial}"></strong>
-                    </p>
-                    <hr>
+              <div id="contenidoPublicaciones"></div>
+
+              <div class="col-12 mt-4">
+                <div class="ng-tns-c11-1 ng-star-inserted">
+                  <div class="ng-star-inserted">
+                    <ul class="pagination justify-content-center ng-star-inserted">
+                      <li id="primera" class="page-item first-item">
+                        <a class="page-link">Primera</a>
+                      </li>
+                      <li id="anterior" class="page-item previous-item">
+                        <a class="page-link">
+                          <span>«</span>
+                          <span class="sr-only">Anterior</span>
+                        </a>
+                      </li>
+                      <!--
+                      <li class="page-item number-item ng-star-inserted">
+                          <a class="page-link">1</a>
+                      </li>
+                      <li class="page-item number-item ng-star-inserted active">
+                          <a class="page-link">2</a>
+                      </li>
+                      <li class="page-item number-item ng-star-inserted">
+                          <a class="page-link">3</a>
+                      </li>
+                      -->
+                      <li id="siguiente" class="page-item next-item">
+                        <a class="page-link">
+                          <span aria-hidden="true">»</span>
+                          <span class="sr-only">Siguiente</span>
+                        </a>
+                      </li>
+                      <li id="ultima" class="page-item last-item">
+                        <a class="page-link">Última</a>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
-              <div class="col-12 mt-4">
-              </div>
             </div>
+
             <!--end of publicaciones-->
 
             <!--proyectos competitivos-->
             <div class="tab-pane fade" id="proyectos-competitivos" role="tabpanel" aria-labelledby="proyectos-competitivos-tab">
-              <div class="publicacion_ficha" th:if="${not #lists.isEmpty(proyectosCompetitivos)}" th:each="proyecto : ${proyectosCompetitivos}">
-                <h6 class="text-color-info font-weight-bold mb-3"th:text="${proyecto.titulo}"></h6>
-                <div class="resultados_autores">
-                  <p style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:if="${proyecto.entidad != null}" th:text="${proyecto.entidad} + '.'"></p>
-                  <p style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:if="${proyecto.fechaInicio != null && proyecto.fechaFin != null}" th:text="${proyecto.fechaInicio} + ', ' + ${proyecto.fechaFin} + '.'"></p>
+              <div id="contenidoProyectosComp"></div>
+
+              <div class="col-12 mt-4">
+                <div class="ng-tns-c11-1 ng-star-inserted">
+                  <div class="ng-star-inserted">
+                    <ul class="pagination justify-content-center ng-star-inserted">
+                      <li id="primera2" class="page-item first-item">
+                        <a class="page-link">Primera</a>
+                      </li>
+                      <li id="anterior2" class="page-item previous-item">
+                        <a class="page-link">
+                          <span>«</span>
+                          <span class="sr-only">Anterior</span>
+                        </a>
+                      </li>
+
+                      <li id="siguiente2" class="page-item next-item">
+                        <a class="page-link">
+                          <span aria-hidden="true">»</span>
+                          <span class="sr-only">Siguiente</span>
+                        </a>
+                      </li>
+                      <li id="ultima2" class="page-item last-item">
+                        <a class="page-link">Última</a>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
-                <hr class="ng-tns-c11-32">
               </div>
             </div>
             <!--end of proyectos competitivos-->
 
-            <!--proyectos competitivos-->
+            <!--proyectos no competitivos-->
             <div class="tab-pane fade" id="proyectos-no-competitivos" role="tabpanel" aria-labelledby="proyectos-competitivos-tab">
-              <div class="publicacion_ficha" th:if="${not #lists.isEmpty(proyectosNoCompetitivos)}" th:each="proyecto : ${proyectosNoCompetitivos}">
-                <h6 class="text-color-info font-weight-bold mb-3"th:text="${proyecto.titulo}"></h6>
-                <div class="resultados_autores">
-                  <p style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:if="${proyecto.entidad != null}" th:text="${proyecto.entidad} + '.'"></p>
-                  <p style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:if="${proyecto.fechaInicio != null && proyecto.fechaFin != null}" th:text="${proyecto.fechaInicio} + ', ' + ${proyecto.fechaFin} + '.'"></p>
+              <div id="contenidoProyectosNoComp"></div>
+
+              <div class="col-12 mt-4">
+                <div class="ng-tns-c11-1 ng-star-inserted">
+                  <div class="ng-star-inserted">
+                    <ul class="pagination justify-content-center ng-star-inserted">
+                      <li id="primera3" class="page-item first-item">
+                        <a class="page-link">Primera</a>
+                      </li>
+                      <li id="anterior3" class="page-item previous-item">
+                        <a class="page-link">
+                          <span>«</span>
+                          <span class="sr-only">Anterior</span>
+                        </a>
+                      </li>
+
+                      <li id="siguiente3" class="page-item next-item">
+                        <a class="page-link">
+                          <span aria-hidden="true">»</span>
+                          <span class="sr-only">Siguiente</span>
+                        </a>
+                      </li>
+                      <li id="ultima3" class="page-item last-item">
+                        <a class="page-link">Última</a>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
-                <hr class="ng-tns-c11-32">
               </div>
             </div>
-            <!--end of proyectos competitivos-->
+            <!--end of proyectos no competitivos-->
 
             <!--docencia-->
             <div class="tab-pane fade" id="docencia" role="tabpanel" aria-labelledby="docencia-tab">
@@ -405,6 +473,185 @@
 <script th:src="@{/assets/js/main.scripts.js}"></script>
 <script th:src="@{/assets/js/vendor/swiper.js}"></script>
 <script th:src="@{/assets/js/profile.scripts.js}"></script>
+
+<!--Script para la paginacion-->
+<script src="//code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var contPublicaciones=0;
+    var numPublicaciones=$('#numPublicaciones').val();
+
+    var contProyectosCompetitivos=0;
+    var numProyectosComp=$('#numProyectosComp').val();
+
+    var contProyectosNoCompetitivos=0;
+    var numProyectosNoComp=$('#numProyectosNoComp').val();
+
+    var idUcam = $('#idUcam').val();
+    var $url = "";
+    var $url2 = "";
+    var $url3 = "";
+    $url = "/prueba/paginacionPerfilPublicaciones/" + idUcam;
+    $url2 = "/prueba/paginacionPerfilProyectosComp/" + idUcam;
+    $url3 = "/prueba/paginacionPerfilProyectosNoComp/" + idUcam;
+
+    $.ajax({
+      type: 'GET',
+      url: $url,
+      data: { pagina: contPublicaciones },
+      dataType: 'html'
+    })
+    .done(function(data) {
+      $('#contenidoPublicaciones').html(data);
+      console.log('Personas encontrados correctamente');
+    })
+    .fail(function() {
+      console.log('Error al buscar personas');
+    });
+
+    $.ajax({
+      type: 'GET',
+      url: $url2,
+      data: { pagina: contProyectosCompetitivos },
+      dataType: 'html'
+    })
+
+    .done(function(data) {
+      $('#contenidoProyectosComp').html(data);
+      console.log('Personas encontrados correctamente');
+    })
+    .fail(function() {
+      console.log('Error al buscar personas');
+    });
+
+    $.ajax({
+      type: 'GET',
+      url: $url3,
+      data: { pagina: contProyectosNoCompetitivos },
+      dataType: 'html'
+    })
+    .done(function(data) {
+      $('#contenidoProyectosNoComp').html(data);
+      console.log('Personas encontrados correctamente');
+    })
+    .fail(function() {
+      console.log('Error al buscar personas');
+    });
+
+    $('#siguiente').on('click', function() {
+      //todo controlar el pasarse por encima
+      var maxPublicaciones=$('.maxPublicaciones').last().val();
+
+      if ($('.finPublicaciones').last().val() < maxPublicaciones){
+        contPublicaciones=$('.finPublicaciones').last().val();
+        
+        $.ajax({
+          type: 'GET',
+          url: $url,
+          data: { pagina: contPublicaciones },
+          dataType: 'html'
+        })
+        .done(function(data) {
+          $('#contenidoPublicaciones').html(data);
+          console.log('Personas encontrados correctamente');
+        })
+        .fail(function() {
+          console.log('Error al buscar personas');
+        });
+      }
+    });
+
+    $('#anterior').on('click', function() {
+      contPublicaciones = contPublicaciones-10;
+      if (contPublicaciones <0){
+        contPublicaciones=0;
+      }
+
+      $.ajax({
+        type: 'GET',
+        url: $url,
+        data: { pagina: contPublicaciones },
+        dataType: 'html'
+      })
+      .done(function(data) {
+        $('#contenidoPublicaciones').html(data);
+        console.log('Personas encontrados correctamente');
+      })
+      .fail(function() {
+        console.log('Error al buscar personas');
+      });
+    });
+
+
+    $(window).on('scroll', function() {
+      if ($(document).height() - $(this).height() <= $(this).scrollTop()) {
+
+        /*
+        if($('#personal-tab').hasClass('active')){
+          if($('.cont_personas').last().val() != null){
+            contPersonas = $('.cont_personas').last().val();
+          }
+
+          $.ajax({
+            type: 'GET',
+            url: $url,
+            data: { pagina: contPersonas },
+            dataType: 'html'
+          })
+          .done(function (data) {
+            $('#resultados-personal').append(data);
+            console.log('Personas encontrados correctamente');
+          })
+          .fail(function () {
+            console.log('Error al buscar personas');
+          });
+        }
+
+        if($('#facultades-tab').hasClass('active')){
+          if($('.cont_departamentos').last().val() != null){
+            contDepartamentos = $('.cont_departamentos').last().val();
+          }
+
+          $.ajax({
+            type: 'GET',
+            url: $url2,
+            data: { pagina: contDepartamentos },
+            dataType: 'html'
+          })
+          .done(function(data) {
+            $('#resultados-departamentos').append(data);
+            console.log('Departamentos encontrados correctamente');
+          })
+          .fail(function() {
+            console.log('Error al buscar departamentos');
+          });
+        }
+
+        if($('#publicaciones-tab').hasClass('active')){
+          if($('.cont_publicaciones').last().val() != null){
+            contPublicaciones = $('.cont_publicaciones').last().val();
+          }
+
+          $.ajax({
+            type: 'GET',
+            url: $url3,
+            data: { pagina: contPublicaciones },
+            dataType: 'html'
+          })
+          .done(function(data) {
+            $('#resultados-publicaciones').append(data);
+            console.log('Publicaciones encontradas correctamente');
+          })
+          .fail(function() {
+            console.log('Error al buscar publicaciones');
+          });
+        }
+
+      */
+      }
+    });
+  });
+</script>
 
 </body>
 </html>

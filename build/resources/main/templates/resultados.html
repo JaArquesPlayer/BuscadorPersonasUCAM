@@ -233,7 +233,7 @@
         $.ajax({
             type: 'GET',
             url: $url,
-            data: { variable: contPersonas },
+            data: { pagina: contPersonas },
             dataType: 'html'
         })
         .done(function(data) {
@@ -247,7 +247,7 @@
         $.ajax({
             type: 'GET',
             url: $url2,
-            data: { variable: contDepartamentos },
+            data: { pagina: contDepartamentos },
             dataType: 'html'
         })
         .done(function(data) {
@@ -261,7 +261,7 @@
         $.ajax({
             type: 'GET',
             url: $url3,
-            data: { variable: contPublicaciones },
+            data: { pagina: contPublicaciones },
             dataType: 'html'
         })
         .done(function(data) {
@@ -292,7 +292,7 @@
                     $.ajax({
                         type: 'GET',
                         url: $url,
-                        data: { variable: contPersonas },
+                        data: { pagina: contPersonas },
                         dataType: 'html'
                     })
                     .done(function (data) {
@@ -312,7 +312,7 @@
                     $.ajax({
                         type: 'GET',
                         url: $url2,
-                        data: { variable: contDepartamentos },
+                        data: { pagina: contDepartamentos },
                         dataType: 'html'
                     })
                     .done(function(data) {
@@ -327,13 +327,12 @@
                 if($('#publicaciones-tab').hasClass('active')){
                     if($('.cont_publicaciones').last().val() != null){
                         contPublicaciones = $('.cont_publicaciones').last().val();
-                        console.log(contPublicaciones);
                     }
 
                     $.ajax({
                         type: 'GET',
                         url: $url3,
-                        data: { variable: contPublicaciones },
+                        data: { pagina: contPublicaciones },
                         dataType: 'html'
                     })
                     .done(function(data) {

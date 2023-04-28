@@ -7,8 +7,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import java.util.logging.Logger;
@@ -47,32 +51,18 @@ public class IndexController {
 
         PersonaDTO personaEncontrada = getPersonaById(id);
         PersonaDTO personaEncontradaDTO = new PersonaDTO();
-        List<ProyectoDTO> proyectosCompetitivosDTO = new ArrayList<>();
-        List<ProyectoDTO> proyectosNoCompetitivosDTO = new ArrayList<>();
 
         if (personaEncontrada != null) {
             personaEncontradaDTO = personaEncontrada;
-
-            if (personaEncontradaDTO.getProyectos() != null) {
-
-                for (int i = 0; i < personaEncontradaDTO.getProyectos().size(); i++) {
-                    if (personaEncontradaDTO.getProyectos().get(i).getTipoProyecto().equalsIgnoreCase("COMPETITIVO")) {
-                        proyectosCompetitivosDTO.add(personaEncontradaDTO.getProyectos().get(i));
-
-                    } else if (personaEncontradaDTO.getProyectos().get(i).getTipoProyecto().equalsIgnoreCase("NO COMPETITIVO")) {
-                        proyectosNoCompetitivosDTO.add(personaEncontradaDTO.getProyectos().get(i));
-                    }
-                }
-            }
         }
 
         List<PersonaDTO> personasEncontradasDepartamentoDTO = getPersonasByDepartamento(personaEncontradaDTO.getUbicacion());
 
         model.addAttribute("persona", personaEncontradaDTO);
         model.addAttribute("personasEncontradasDepartamento", personasEncontradasDepartamentoDTO);
-        model.addAttribute("proyectosCompetitivos", proyectosCompetitivosDTO);
-        model.addAttribute("proyectosNoCompetitivos", proyectosNoCompetitivosDTO);
+
         model.addAttribute( "ruta_controller_imagen", ruta_controller_imagen);
+        model.addAttribute("numPublicaciones", personaEncontradaDTO.getPublicaciones().size());
 
         String cargos = " | ";
         for (int i=0; i<personaEncontradaDTO.getCargos().size(); i++){
@@ -87,6 +77,128 @@ public class IndexController {
         return "perfil";
     }
 
+    @RequestMapping(value = "/paginacionPerfilPublicaciones/{id}")
+    public String recuperarPaginaPublicaciones(@PathVariable int id, Model model, @RequestParam("pagina") int pagina) throws IOException{
+
+        int principio=pagina;
+        int fin=pagina+10;
+
+        List<PublicacionDTO> publicaciones = getPersonaById(id).getPublicaciones();
+        List<PublicacionDTO> publicacionesEncontradas = new ArrayList<>();
+
+        if (fin > publicaciones.size()){
+            fin=publicaciones.size();
+        }
+        if(fin <0){
+            fin=0;
+        }
+
+        for (int i=principio; i<fin; i++){
+            PublicacionDTO publicacionDTO = publicaciones.get(i);
+            if (publicacionDTO != null){
+                publicacionesEncontradas.add(publicacionDTO);
+            }
+        }
+
+        logger.info(String.valueOf(fin));
+        logger.info(String.valueOf(publicaciones.size()));
+
+        model.addAttribute("i", fin);
+        model.addAttribute("max", publicaciones.size());
+        model.addAttribute("publicaciones", publicacionesEncontradas);
+
+        return "plantillas/publicacionesPaginadas";
+    }
+
+    @RequestMapping(value = "/paginacionPerfilProyectosComp/{id}")
+    public String recuperarPaginaProyectosComp(@PathVariable int id, Model model, @RequestParam("pagina") int pagina) throws IOException{
+
+        int principio=pagina;
+        int fin=pagina+10;
+
+        List<ProyectoDTO> proyectosCompetitivosDTO = new ArrayList<>();
+        List<ProyectoDTO> proyectosCompetitivosDTOEncontrados = new ArrayList<>();
+
+        PersonaDTO personaEncontrada = getPersonaById(id);
+        PersonaDTO personaEncontradaDTO = new PersonaDTO();
+
+        if (personaEncontrada != null) {
+            personaEncontradaDTO = personaEncontrada;
+
+            if (personaEncontradaDTO.getProyectos() != null) {
+
+                for (int i = 0; i < personaEncontradaDTO.getProyectos().size(); i++) {
+                    if (personaEncontradaDTO.getProyectos().get(i).getTipoProyecto().equalsIgnoreCase("COMPETITIVO")) {
+                        proyectosCompetitivosDTO.add(personaEncontradaDTO.getProyectos().get(i));
+
+                    }
+                }
+            }
+        }
+
+        if (fin > proyectosCompetitivosDTO.size()){
+            fin=proyectosCompetitivosDTO.size();
+        }
+        if(fin <0){
+            fin=0;
+        }
+
+        for (int i=principio; i<fin; i++){
+            ProyectoDTO proyectoDTO = proyectosCompetitivosDTO.get(i);
+            if (proyectoDTO != null){
+                proyectosCompetitivosDTOEncontrados.add(proyectoDTO);
+            }
+        }
+
+        model.addAttribute("proyectosCompetitivos", proyectosCompetitivosDTOEncontrados);
+
+        return "plantillas/proyectosCompPaginados";
+    }
+
+    @RequestMapping(value = "/paginacionPerfilProyectosNoComp/{id}")
+    public String recuperarPaginaProyectosNoComp(@PathVariable int id, Model model, @RequestParam("pagina") int pagina) throws IOException{
+
+        int principio=pagina;
+        int fin=pagina+10;
+
+        List<ProyectoDTO> proyectosNoCompetitivosDTO = new ArrayList<>();
+        List<ProyectoDTO> proyectosNoCompetitivosDTOEncontrados = new ArrayList<>();
+
+        PersonaDTO personaEncontrada = getPersonaById(id);
+        PersonaDTO personaEncontradaDTO = new PersonaDTO();
+
+        if (personaEncontrada != null) {
+            personaEncontradaDTO = personaEncontrada;
+
+            if (personaEncontradaDTO.getProyectos() != null) {
+
+                for (int i = 0; i < personaEncontradaDTO.getProyectos().size(); i++) {
+                    if (personaEncontradaDTO.getProyectos().get(i).getTipoProyecto().equalsIgnoreCase("NO COMPETITIVO")) {
+                        proyectosNoCompetitivosDTO.add(personaEncontradaDTO.getProyectos().get(i));
+                    }
+                }
+            }
+        }
+
+        if (fin > proyectosNoCompetitivosDTO.size()){
+            fin=proyectosNoCompetitivosDTO.size();
+        }
+        if(fin <0){
+            fin=0;
+        }
+
+        for (int i=principio; i<fin; i++){
+            ProyectoDTO proyectoDTO = proyectosNoCompetitivosDTO.get(i);
+            if (proyectoDTO != null){
+                proyectosNoCompetitivosDTOEncontrados.add(proyectoDTO);
+            }
+        }
+
+        model.addAttribute("proyectosNoCompetitivos", proyectosNoCompetitivosDTOEncontrados);
+
+        return "plantillas/proyectosNoCompPaginados";
+    }
+
     @RequestMapping(value = "/searchPersonal/")
     public String buscarPersonas(@RequestParam(name = "search") String busqueda, Model model) {
         model.addAttribute("nombre", busqueda);
@@ -95,23 +207,30 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/searchPersonal/{busqueda}")
-    public String buscarPersonasUrl(@PathVariable String busqueda, Model model, @RequestParam("variable") int cont) throws IOException{
+    public String buscarPersonasUrl(@PathVariable String busqueda, Model model, @RequestParam("pagina") int pagina) throws IOException{
 
-        busqueda = normalize(busqueda).toLowerCase();
-        List<PersonaDTO> personasEncontradas = getPersonasByBusquedaSized(busqueda, cont, (cont+6));
+        Pageable p = PageRequest.of(pagina, 6);
+        List<PersonaDTO> personasEncontradas = new ArrayList<>();
 
-        if (personasEncontradas.isEmpty() && cont == 0){
+        if (busqueda.length() >= 3) {
+            if (busqueda != null) {
+                busqueda = normalize(busqueda).toLowerCase();
+                personasEncontradas = getPersonasByBusquedaSized(busqueda, p, false, true);
+            }
+        }
+
+        if (personasEncontradas.isEmpty() && pagina == 0){
             return "plantillas/sinResultado";
         } else{
-            cont += 6;
-            model.addAttribute("i", cont);
+            pagina += 1;
+            model.addAttribute("i", pagina);
             model.addAttribute("personasEncontradas", personasEncontradas);
             return "plantillas/personal";
         }
     }
 
     @RequestMapping(value = "/searchDepartamentos/{busqueda}")
-    public String buscarDepartamentosUrl(@PathVariable String busqueda, Model model, @RequestParam("variable") int cont) throws IOException {
+    public String buscarDepartamentosUrl(@PathVariable String busqueda, Model model, @RequestParam("pagina") int pagina) throws IOException {
 
         List<DepartamentoDTO> departamentosEncontradosAgrupados = new ArrayList<>();
         List<DepartamentoDTO> departamentosEncontrados = new ArrayList<>();
@@ -121,8 +240,8 @@ public class IndexController {
                 departamentosEncontradosAgrupados = getDepartamentosByBusqueda(busqueda);
             }
 
-            for (; cont < departamentosEncontradosAgrupados.size(); cont++) {
-                DepartamentoDTO departamentoDTO = departamentosEncontradosAgrupados.get(cont);
+            for (; pagina < departamentosEncontradosAgrupados.size(); pagina++) {
+                DepartamentoDTO departamentoDTO = departamentosEncontradosAgrupados.get(pagina);
                 departamentosEncontrados.add(departamentoDTO);
 
                 if (departamentosEncontrados.size() == 4) {
@@ -131,18 +250,18 @@ public class IndexController {
             }
         }
 
-        if (departamentosEncontrados.isEmpty() && cont == 0) {
+        if (departamentosEncontrados.isEmpty() && pagina == 0) {
             return "plantillas/sinResultado";
         } else {
-            cont += 1;
-            model.addAttribute("i", cont);
+            pagina += 1;
+            model.addAttribute("i", pagina);
             model.addAttribute("departamentosEncontrados", departamentosEncontrados);
             return "plantillas/departamentos";
         }
     }
 
     @RequestMapping(value = "/searchPublicaciones/{busqueda}")
-    public String buscarPublicaciones(@PathVariable String busqueda, Model model, @RequestParam("variable") int cont) throws IOException{
+    public String buscarPublicaciones(@PathVariable String busqueda, Model model, @RequestParam("pagina") int pagina) throws IOException{
 
         List<PublicacionDTO> publicacionesEncontradasDTO = new ArrayList<>();
         List<PublicacionDTO> publicaciones = new ArrayList<>();
@@ -152,8 +271,8 @@ public class IndexController {
                 publicaciones = getPublicacionesByBusqueda(busqueda);
             }
 
-            for (; cont<publicaciones.size(); cont++){
-                PublicacionDTO publicacionDTO = publicaciones.get(cont);
+            for (; pagina<publicaciones.size(); pagina++){
+                PublicacionDTO publicacionDTO = publicaciones.get(pagina);
                 publicacionesEncontradasDTO.add(publicacionDTO);
 
                 if (publicacionesEncontradasDTO.size() == 10){
@@ -162,11 +281,11 @@ public class IndexController {
             }
         }
 
-        if (publicacionesEncontradasDTO.isEmpty() && cont == 0){
+        if (publicacionesEncontradasDTO.isEmpty() && pagina == 0){
             return "plantillas/sinResultado";
         }else{
-            cont += 1;
-            model.addAttribute("i", cont);
+            pagina += 10;
+            model.addAttribute("i", pagina);
             model.addAttribute("publicacionesEncontradas", publicacionesEncontradasDTO);
             return "plantillas/publicaciones";
         }
@@ -303,20 +422,16 @@ public class IndexController {
         return personaEncontrada.toDTO();
     }
 
-    public List<PersonaDTO> getPersonasByBusquedaSized(@NotNull String busqueda, Integer from, Integer size) throws IOException {
+    public List<PersonaDTO> getPersonasByBusquedaSized(@NotNull String busqueda, Pageable p, boolean resultadosPaginados, boolean paginado) throws IOException {
 
         busqueda = normalize(busqueda);
-        String result = String.valueOf(elasticsearchRepository.searchByBusquedaSized(busqueda, from, size));
+        SearchPage<PersonaElastic> result = elasticsearchRepository.busquedaResultados(busqueda, p, resultadosPaginados, paginado);
 
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode rootNode = mapper.readTree(result);
-        JsonNode hitsNode = rootNode.get("hits").get("hits");
         List<PersonaDTO> personas = new ArrayList<>();
-
-        for (JsonNode hit : hitsNode) {
-            JsonNode sourceNode = hit.get("_source");
-            PersonaElastic personaElastic = mapper.treeToValue(sourceNode, PersonaElastic.class);
-            personas.add(personaElastic.toDTO());
+        for (SearchHit<PersonaElastic> searchHit : result.getSearchHits()) {
+            PersonaElastic personaElastic = searchHit.getContent();
+            PersonaDTO personaDTO = personaElastic.toDTO();
+            personas.add(personaDTO);
         }
 
         return personas;

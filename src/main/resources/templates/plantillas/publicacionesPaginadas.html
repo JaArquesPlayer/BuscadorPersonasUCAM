@@ -1,0 +1,20 @@
+<input class="finPublicaciones" type="hidden" th:value="${i}"/>
+<input class="maxPublicaciones" type="hidden" th:value="${max}"/>
+
+<div class="publicacion_ficha" th:if="${publicaciones != null}">
+    <div th:each="publicacion : ${publicaciones}">
+        <div class="col-12">
+            <h6>
+                <a class="titulo_publicacion font-weight-bold" target="_blank" th:href="${publicacion.getUrl()}" th:text="${publicacion.getTitulo()}"></a>
+            </h6>
+            <div class="resultados_autores">
+                <p style="display: inline-block; font-size: 14px" th:each="autor, status : ${publicacion.autores}" th:if="${autor.nombreCompleto != null}" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombreCompleto} + ${status.last ? '' : ',&nbsp;'}"></p>
+                <p style="display: inline-block; font-size: 14px" th:each="autor, status : ${publicacion.autores}" th:unless="${autor.nombreCompleto != null}" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombre} + ${status.last ? '' : ',&nbsp;'}"></p>
+            </div>
+            <p class="text-color-ucam-gray-medium revista ng-tns-c3-4 ng-star-inserted" th:text="'Publicado en: ' + ${publicacion.editorial} + ', ' +${publicacion.paginaInicio} + ', ' + ${publicacion.paginaFinal}">
+                <strong class="ng-tns-c3-4" th:text="' ' + ${publicacion.editorial}"></strong>
+            </p>
+            <hr>
+        </div>
+    </div>
+</div>
