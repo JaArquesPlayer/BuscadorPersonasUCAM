@@ -267,9 +267,6 @@
 
           <!-- contenido tabs -->
           <input id="idUcam" type="hidden" th:value="${persona.id}"/>
-          <input id="numPublicaciones" type="hidden" th:value="${numPublicaciones}"/>
-          <input id="numProyectosComp" type="hidden" th:value="${numProyectosComp}"/>
-          <input id="numProyectosNoComp" type="hidden" th:value="${numProyectosNoComp}"/>
 
           <div class="tab-content">
             <div class="tab-pane fade show active" id="informacion" role="tabpanel" aria-labelledby="informacion-tab">
@@ -335,7 +332,7 @@
             <div class="tab-pane fade" id="publicaciones" role="tabpanel" aria-labelledby="publicaciones-tab">
               <div id="contenidoPublicaciones"></div>
 
-              <div class="col-12 mt-4">
+              <div th:if="${maxPagPublicaciones.size() > 1}" class="col-12 mt-4">
                 <div class="ng-tns-c11-1 ng-star-inserted">
                   <div class="ng-star-inserted">
                     <ul class="pagination justify-content-center ng-star-inserted">
@@ -348,17 +345,26 @@
                           <span class="sr-only">Anterior</span>
                         </a>
                       </li>
-                      <!--
-                      <li class="page-item number-item ng-star-inserted">
-                          <a class="page-link">1</a>
+                      <li th:each="pagina : ${maxPagPublicaciones}" th:attr="data-variable=${pagina}" onclick="function ajaxCallPublicaciones(attribute) {
+                            var idUcam = $('#idUcam').val();
+                             var $url = "/prueba/paginacionPerfilPublicaciones/" + idUcam;
+
+                              $.ajax({
+                                type: 'GET',
+                                url: $url,
+                                data: { pagina: attribute },
+                                dataType: 'html'
+                              })
+                              .done(function(data) {
+                                $('#contenidoPublicaciones').html(data);
+                                console.log('Busqueda correcta');
+                              })
+                              .fail(function() {
+                                console.log('Error al buscar');
+                              });
+                      } ajaxCallPublicaciones(this.getAttribute('data-variable'))"  class="page-item number-item ng-star-inserted">
+                          <a class="page-link" th:text="${pagina}"></a>
                       </li>
-                      <li class="page-item number-item ng-star-inserted active">
-                          <a class="page-link">2</a>
-                      </li>
-                      <li class="page-item number-item ng-star-inserted">
-                          <a class="page-link">3</a>
-                      </li>
-                      -->
                       <li id="siguiente" class="page-item next-item">
                         <a class="page-link">
                           <span aria-hidden="true">»</span>
@@ -380,7 +386,7 @@
             <div class="tab-pane fade" id="proyectos-competitivos" role="tabpanel" aria-labelledby="proyectos-competitivos-tab">
               <div id="contenidoProyectosComp"></div>
 
-              <div class="col-12 mt-4">
+              <div th:if="${maxPagProyectosComp.size() > 1}" class="col-12 mt-4">
                 <div class="ng-tns-c11-1 ng-star-inserted">
                   <div class="ng-star-inserted">
                     <ul class="pagination justify-content-center ng-star-inserted">
@@ -414,7 +420,7 @@
             <div class="tab-pane fade" id="proyectos-no-competitivos" role="tabpanel" aria-labelledby="proyectos-competitivos-tab">
               <div id="contenidoProyectosNoComp"></div>
 
-              <div class="col-12 mt-4">
+              <div th:if="${maxPagProyectosNoComp.size() > 1}" class="col-12 mt-4">
                 <div class="ng-tns-c11-1 ng-star-inserted">
                   <div class="ng-star-inserted">
                     <ul class="pagination justify-content-center ng-star-inserted">
@@ -478,105 +484,130 @@
 <script src="//code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
   $(document).ready(function() {
-    var contPublicaciones=0;
-    var numPublicaciones=$('#numPublicaciones').val();
 
-    var contProyectosCompetitivos=0;
-    var numProyectosComp=$('#numProyectosComp').val();
-
-    var contProyectosNoCompetitivos=0;
-    var numProyectosNoComp=$('#numProyectosNoComp').val();
+    var pagPublicaciones = 0;
+    var pagProyectosCompetitivos = 0;
+    var pagProyectosNoCompetitivos = 0;
 
     var idUcam = $('#idUcam').val();
     var $url = "/prueba/paginacionPerfilPublicaciones/" + idUcam;
     var $url2 = "/prueba/paginacionPerfilProyectosComp/" + idUcam;
     var $url3 = "/prueba/paginacionPerfilProyectosNoComp/" + idUcam;
 
-    $.ajax({
-      type: 'GET',
-      url: $url,
-      data: { pagina: contPublicaciones },
-      dataType: 'html'
-    })
-    .done(function(data) {
-      $('#contenidoPublicaciones').html(data);
-      console.log('Personas encontrados correctamente');
-    })
-    .fail(function() {
-      console.log('Error al buscar personas');
-    });
-
-    $.ajax({
-      type: 'GET',
-      url: $url2,
-      data: { pagina: contProyectosCompetitivos },
-      dataType: 'html'
-    })
-
-    .done(function(data) {
-      $('#contenidoProyectosComp').html(data);
-      console.log('Personas encontrados correctamente');
-    })
-    .fail(function() {
-      console.log('Error al buscar personas');
-    });
-
-    $.ajax({
-      type: 'GET',
-      url: $url3,
-      data: { pagina: contProyectosNoCompetitivos },
-      dataType: 'html'
-    })
-    .done(function(data) {
-      $('#contenidoProyectosNoComp').html(data);
-      console.log('Personas encontrados correctamente');
-    })
-    .fail(function() {
-      console.log('Error al buscar personas');
-    });
-
-    $('#siguiente').on('click', function() {
-      var maxPublicaciones=$('.maxPublicaciones').last().val();
-
-      if ($('.finPublicaciones').last().val() < maxPublicaciones){
-        contPublicaciones=$('.finPublicaciones').last().val();
-
-        $.ajax({
-          type: 'GET',
-          url: $url,
-          data: { pagina: contPublicaciones },
-          dataType: 'html'
-        })
-        .done(function(data) {
-          $('#contenidoPublicaciones').html(data);
-          console.log('Personas encontrados correctamente');
-        })
-        .fail(function() {
-          console.log('Error al buscar personas');
-        });
-      }
-    });
-
-    $('#anterior').on('click', function() {
-      contPublicaciones = contPublicaciones-10;
-      if (contPublicaciones <0){
-        contPublicaciones=0;
-      }
-
+    function ajaxCall($url, $pagina, $ubicacion){
       $.ajax({
         type: 'GET',
         url: $url,
-        data: { pagina: contPublicaciones },
+        data: { pagina: $pagina },
+        dataType: 'html'
+      })
+      .done(function(data) {
+        $ubicacion.html(data);
+        console.log('Busqueda correcta');
+      })
+      .fail(function() {
+        console.log('Error al buscar');
+      });
+    }
+
+    function ajaxCallPublicaciones($pagina){
+      $.ajax({
+        type: 'GET',
+        url: $url,
+        data: { pagina: $pagina },
         dataType: 'html'
       })
       .done(function(data) {
         $('#contenidoPublicaciones').html(data);
-        console.log('Personas encontrados correctamente');
+        console.log('Busqueda correcta');
       })
       .fail(function() {
-        console.log('Error al buscar personas');
+        console.log('Error al buscar');
       });
+    }
+
+    ajaxCall($url, pagPublicaciones, $('#contenidoPublicaciones'));
+    ajaxCall($url2, pagProyectosCompetitivos, $('#contenidoProyectosComp'));
+    ajaxCall($url3, pagProyectosNoCompetitivos, $('#contenidoProyectosNoComp'));
+
+    $('#siguiente').on('click', function() {
+      pagPublicaciones +=1;
+      if (pagPublicaciones > $('.maxPublicaciones').last().val()){
+        pagPublicaciones = $('.maxPublicaciones').last().val();
+      }
+      ajaxCall($url, pagPublicaciones, $('#contenidoPublicaciones'));
     });
+
+    $('#anterior').on('click', function() {
+      pagPublicaciones -= 1;
+      if (pagPublicaciones < 0){
+        pagPublicaciones = 0;
+      }
+      ajaxCall($url, pagPublicaciones, $('#contenidoPublicaciones'));
+    });
+
+    $('#primera').on('click', function() {
+      pagPublicaciones = 0;
+      ajaxCall($url, pagPublicaciones, $('#contenidoPublicaciones'));
+    });
+
+    $('#ultima').on('click', function() {
+      pagPublicaciones = $('.maxPublicaciones').last().val();
+      ajaxCall($url, pagPublicaciones, $('#contenidoPublicaciones'));
+    });
+
+    $('#siguiente2').on('click', function() {
+      pagProyectosCompetitivos +=1;
+      if (pagProyectosCompetitivos > $('.maxProyectosComp').last().val()){
+        pagProyectosCompetitivos = $('.maxProyectosComp').last().val();
+      }
+      ajaxCall($url2, pagProyectosCompetitivos, $('#contenidoProyectosComp'));
+    });
+
+    $('#anterior2').on('click', function() {
+      pagProyectosCompetitivos -= 1;
+      if (pagProyectosCompetitivos < 0){
+        pagProyectosCompetitivos = 0;
+      }
+      ajaxCall($url2, pagProyectosCompetitivos, $('#contenidoProyectosComp'));
+    });
+
+    $('#primera2').on('click', function() {
+      pagProyectosCompetitivos = 0;
+      ajaxCall($url2, pagProyectosCompetitivos, $('#contenidoProyectosComp'));
+    });
+
+    $('#ultima2').on('click', function() {
+      pagProyectosCompetitivos = $('.maxProyectosComp').last().val();
+      ajaxCall($url2, pagProyectosCompetitivos, $('#contenidoProyectosComp'));
+    });
+
+    $('#siguiente3').on('click', function() {
+      pagProyectosNoCompetitivos +=1;
+      if (pagProyectosNoCompetitivos > $('.maxProyectosNoComp').last().val()){
+        pagProyectosNoCompetitivos = $('.maxProyectosNoComp').last().val();
+      }
+      ajaxCall($url3, pagProyectosNoCompetitivos, $('#contenidoProyectosNoComp'));
+    });
+
+    $('#anterior3').on('click', function() {
+      pagProyectosNoCompetitivos -= 1;
+      if (pagProyectosNoCompetitivos < 0){
+        pagProyectosNoCompetitivos = 0;
+      }
+      ajaxCall($url3, pagProyectosNoCompetitivos, $('#contenidoProyectosNoComp'));
+    });
+
+    $('#primera3').on('click', function() {
+      pagProyectosNoCompetitivos = 0;
+      ajaxCall($url3, pagProyectosNoCompetitivos, $('#contenidoProyectosNoComp'));
+    });
+
+    $('#ultima3').on('click', function() {
+      pagProyectosNoCompetitivos = $('.maxProyectosNoComp').last().val();
+      ajaxCall($url3, pagProyectosNoCompetitivos, $('#contenidoProyectosNoComp'));
+    });
+
   });
 </script>
 

@@ -1,3 +1,5 @@
+<input class="maxProyectosComp" type="hidden" th:value="${max}"/>
+
 <div class="publicacion_ficha" th:if="${not #lists.isEmpty(proyectosCompetitivos)}" th:each="proyecto : ${proyectosCompetitivos}">
     <h6 class="text-color-info font-weight-bold mb-3"th:text="${proyecto.titulo}"></h6>
     <div class="resultados_autores">
