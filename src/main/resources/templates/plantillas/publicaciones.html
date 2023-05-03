@@ -3,7 +3,7 @@
 <div th:each="publicacion : ${publicacionesEncontradas}">
     <div class="col-12">
         <h6>
-            <a class="titulo_publicacion font-weight-bold" target="_blank" th:href="${publicacion.getUrl()}" th:text="${publicacion.getTitulo()}"></a>
+            <a class="titulo_publicacion font-weight-bold" target="_blank" th:href="${publicacion.url}" th:text="${publicacion.titulo}"></a>
         </h6>
         <div class="resultados_autores">
             <p style="display: inline-block; font-size: 14px" th:each="autor, status : ${publicacion.autores}" th:if="${autor.nombreCompleto != null}" class="ng-tns-c11-32 ng-star-inserted autor" th:text="${autor.nombreCompleto} + ${status.last ? '' : ',&nbsp;'}"></p>

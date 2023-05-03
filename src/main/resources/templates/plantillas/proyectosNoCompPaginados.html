@@ -1,0 +1,10 @@
+<input class="maxProyectosNoComp" type="hidden" th:value="${max}"/>
+
+<div class="publicacion_ficha" th:if="${not #lists.isEmpty(proyectosNoCompetitivos)}" th:each="proyecto : ${proyectosNoCompetitivos}">
+  <h6 class="text-color-info font-weight-bold mb-3"th:text="${proyecto.titulo}"></h6>
+  <div class="resultados_autores">
+    <p style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:if="${proyecto.entidad != null}" th:text="${proyecto.entidad} + '.'"></p>
+    <p style="display: inline-block" class="ng-tns-c11-32 ng-star-inserted autor" th:if="${proyecto.fechaInicio != null && proyecto.fechaFin != null}" th:text="${proyecto.fechaInicio} + ', ' + ${proyecto.fechaFin} + '.'"></p>
+  </div>
+  <hr class="ng-tns-c11-32">
+</div>

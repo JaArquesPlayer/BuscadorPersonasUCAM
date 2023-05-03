@@ -1,6 +1,7 @@
 package com.example.buscadorpersonasucam.database.entity;
 
 import com.example.buscadorpersonasucam.beans.DTO.AutorDTO;
+import com.example.buscadorpersonasucam.beans.DTO.PublicacionDTO;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -11,7 +12,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity
-@Document(indexName = "publicaciones_docentes")
+@Document(indexName = "alias_personas")
 public class PublicacionElastic implements Serializable {
     public String getId() {
         return id;
@@ -115,7 +116,7 @@ public class PublicacionElastic implements Serializable {
     private String tipo;
     @Field(name = "autores")
     private List<AutorDTO> autores;
-    @Field(name = "titulo")
+    @Field(name = "publicaciones.titulo")
     private String titulo;
     @Field(name = "editorial")
     private String editorial;
@@ -133,4 +134,21 @@ public class PublicacionElastic implements Serializable {
     private String pagina_final;
     @Field(name = "posicion", type = FieldType.Double)
     private Double posicion;
+
+    public PublicacionDTO toDTO(){
+        PublicacionDTO publicacionDTO = new PublicacionDTO();
+
+        publicacionDTO.setAutores(this.autores);
+        publicacionDTO.setEditorial(this.editorial);
+        publicacionDTO.setTipoPublicacion(this.tipo);
+        publicacionDTO.setPosicion(this.posicion);
+        publicacionDTO.setRevista(this.revista);
+        publicacionDTO.setFuenteImpacto(this.fuente_impacto);
+        publicacionDTO.setPaginaInicio(this.pagina_inicio);
+        publicacionDTO.setPaginaFinal(this.pagina_final);
+        publicacionDTO.setVolumenCapitulo(this.volumen_capitulo);
+        publicacionDTO.setUrl(this.url);
+
+        return publicacionDTO;
+    }
 }
