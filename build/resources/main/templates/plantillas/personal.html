@@ -4,22 +4,22 @@
     <div class="card mb-3">
         <div class="row no-gutters">
             <div class="col-auto p-3">
-                <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}"  width="86" height="105" class="img-fluid">
-                <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/personas/default.png}" th:alt="${persona.nombre_mostrar}" width="86" height="105" class="img-fluid">
+                <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre}"  width="86" height="105" class="img-fluid">
+                <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/personas/default.png}" th:alt="${persona.nombre}" width="86" height="105" class="img-fluid">
             </div>
             <div class="col">
                 <div class="card-body d-flex flex-column justify-content-end h-100">
                     <p class="card-title flex-1">
-                        <a th:href="'/prueba/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" th:text="${persona.nombre_mostrar}"></a>
+                        <a th:href="'/prueba/perfil/'+${persona.id}" th:title="${persona.nombre}" th:text="${persona.nombre}"></a>
                     </p>
-                    <p class="card-text" th:if="${persona.correos_institucionales != null && iter.index == 0}" th:each="c_institucional, iter : ${persona.correos_institucionales}">
-                        <i class="icon-email" th:if="${persona.correos_institucionales[0] != ''}"></i>
-                        <a th:href="'mailto:'+${c_institucional}" th:title="'Enviar correo a '+${c_institucional}" th:text="${c_institucional}"></a>
+                    <p class="card-text" th:if="${persona.email != null}">
+                        <i class="icon-email"></i>
+                        <a th:href="'mailto:'+${persona.email}" th:title="'Enviar correo a '+${persona.email}" th:text="${persona.email}"></a>
                     </p>
-                    <p class="card-text" th:if="${persona.telefonos != null || persona.extension != null}">
-                        <i class="icon-phone" th:if="${persona.telefonos != null && persona.telefonos[0] != ''}"></i>
-                        <a th:if="${persona.telefonos != null && persona.telefonos[0] != ''}" th:href="'tel:' + ${persona.telefonos[0]}" th:title="${'Llamar al teléfono ' + persona.telefonos[0]}" th:text="${persona.telefonos[0]}"></a>
-                        <a th:if="${persona.extension != null && persona.extension != ''}" th:href="'tel:' + ${persona.extension}" th:title="${'Llamar a la extensión ' + persona.extension}" th:text="${' - Ext. ' + persona.extension}"></a>
+                    <p class="card-text" th:if="${persona.telefono_ucam != null || persona.extension != null}">
+                        <i class="icon-phone" th:if="${persona.telefono_ucam != null}"></i>
+                        <a th:if="${persona.telefono_ucam != null}" th:href="'tel:' + ${persona.telefono_ucam}" th:title="${'Llamar al teléfono ' + persona.telefono_ucam}" th:text="${persona.telefono_ucam}"></a>
+                        <a th:if="${persona.extension != null}" th:href="'tel:' + ${persona.extension}" th:title="${'Llamar a la extensión ' + persona.extension}" th:text="${' - Ext. ' + persona.extension}"></a>
                     </p>
                     <p class="card-text" th:if="${persona.ubicacion != null && persona.ubicacion != ''}">
                         <!--<i class="ng-fa-icon" style="margin-right: 10px; width:16px; height: 16px;">

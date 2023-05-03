@@ -233,7 +233,7 @@
         $.ajax({
             type: 'GET',
             url: $url,
-            data: { pagina: contPersonas },
+            data: { page: contPersonas },
             dataType: 'html'
         })
         .done(function(data) {
@@ -292,7 +292,7 @@
                     $.ajax({
                         type: 'GET',
                         url: $url,
-                        data: { pagina: contPersonas },
+                        data: { page: contPersonas },
                         dataType: 'html'
                     })
                     .done(function (data) {

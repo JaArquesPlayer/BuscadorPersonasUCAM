@@ -2,8 +2,6 @@ package com.example.buscadorpersonasucam.repository;
 
 import com.example.buscadorpersonasucam.ElasticsearchConfig;
 import com.example.buscadorpersonasucam.database.entity.PersonaElastic;
-import com.example.buscadorpersonasucam.database.entity.PublicacionElastic;
-import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -18,6 +16,8 @@ import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.client.ClientConfiguration;
+import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHitSupport;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -36,14 +36,15 @@ import java.util.logging.Logger;
 @Repository
 public class ElasticsearchRepository {
 
-    private final RestHighLevelClient client;
-
     private final static Logger logger = Logger.getLogger("com.example.buscadorpersonasucam.controller.IndexController");
 
     @Autowired
     ElasticsearchRestTemplate elasticsearchRestTemplate;
 
-    static Integer totalHits;
+    public static Integer totalHits;
+
+    private final RestHighLevelClient client;
+    private ClientConfiguration clientConfiguration;
 
     public ElasticsearchRepository(RestHighLevelClient client) {
         this.client = client;
@@ -66,7 +67,8 @@ public class ElasticsearchRepository {
     }
 
     public SearchResponse searchAllByNombre(String busqueda) throws IOException{
-        RestHighLevelClient client = ElasticsearchConfig.restHighLevelClient();
+        //todo
+        RestHighLevelClient client = RestClients.create(clientConfiguration).rest();
 
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         QueryBuilder query = QueryBuilders.boolQuery()
@@ -83,49 +85,39 @@ public class ElasticsearchRepository {
 
         //HashMap<String, List<String>> unidadesHijas = departamentoService.departamentosHijos(texto)
 
-        final List<String> listaPalabras = new ArrayList<String>();
+        final List<String> listaPalabras = new ArrayList<>();
         String[] palabras = texto.split(" ");
         for (String palabra : palabras) {
             listaPalabras.add(palabra.substring(0, 1) + "*" + palabra.substring(1) + "*");
         }
         String textoFinal = String.join(" AND ", listaPalabras).trim();
-
-        //Boolean usuarioAutenticado = getUsuarioAutenticado();
-
-        Map<String, Float> mapaCampos = new HashMap<String, Float>();
+        Map<String, Float> mapaCampos = new HashMap<>() {
+            {
+                put("nombre", 1.0f);
+                put("apellido1", 1.0f);
+                put("apellido2", 1.0f);
+                put("ubicacion", 1.0f);
+                put("cargos.departamento", 1.0f);
+                put("extension", 1.0f);
+                put("correos_institucionales", 1.0f);
+                put("areas_conocimiento", 1.0f);
+            }
+        };
 
         FunctionScoreQueryBuilder.FilterFunctionBuilder[] function_score = new FunctionScoreQueryBuilder.FilterFunctionBuilder[]{
-                new FunctionScoreQueryBuilder.FilterFunctionBuilder(
-                        new FieldValueFactorFunctionBuilder("visitas_buscador")
-                                .factor(1000000)
-                                .modifier(FieldValueFactorFunction.Modifier.SQUARE)
-                                .missing(0)),
-                new FunctionScoreQueryBuilder.FilterFunctionBuilder(
-                        QueryBuilders.matchQuery("nombre", texto),
-                        ScoreFunctionBuilders.weightFactorFunction(100000)),
-                new FunctionScoreQueryBuilder.FilterFunctionBuilder(
-                        QueryBuilders.matchQuery("apellido1", texto),
-                        ScoreFunctionBuilders.weightFactorFunction(1000)),
-                new FunctionScoreQueryBuilder.FilterFunctionBuilder(
-                        QueryBuilders.matchQuery("apellido2", texto),
-                        ScoreFunctionBuilders.weightFactorFunction(100)),
-                new FunctionScoreQueryBuilder.FilterFunctionBuilder(
-                        QueryBuilders.matchQuery("ubicacion", texto),
-                        ScoreFunctionBuilders.weightFactorFunction(50)),
-                new FunctionScoreQueryBuilder.FilterFunctionBuilder(
-                        QueryBuilders.matchQuery("correos_institucionales", texto),
-                        ScoreFunctionBuilders.weightFactorFunction(1))
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder(new FieldValueFactorFunctionBuilder("visitas_buscador").factor(1000000).modifier(FieldValueFactorFunction.Modifier.SQUARE).missing(0)),
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("nombre", texto), ScoreFunctionBuilders.weightFactorFunction(100000)),
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("apellido1", texto), ScoreFunctionBuilders.weightFactorFunction(1000)),
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("apellido2", texto), ScoreFunctionBuilders.weightFactorFunction(100)),
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("ubicacion", texto), ScoreFunctionBuilders.weightFactorFunction(50)),
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("correos_institucionales", texto), ScoreFunctionBuilders.weightFactorFunction(1))
         };
 
         QueryBuilder queryBuilder = QueryBuilders.boolQuery();
 
-        ((BoolQueryBuilder) queryBuilder).must(
-                QueryBuilders.functionScoreQuery(
-                                QueryBuilders.boolQuery()
-                                        .must(QueryBuilders.queryStringQuery(textoFinal).fields(mapaCampos)),
-                                function_score)
-                        .scoreMode(FunctionScoreQuery.ScoreMode.MAX)
-                        .boostMode(CombineFunction.MULTIPLY)
+        ((BoolQueryBuilder) queryBuilder).must(QueryBuilders.functionScoreQuery(QueryBuilders.boolQuery()
+                        .must(QueryBuilders.queryStringQuery(textoFinal).fields(mapaCampos)), function_score)
+                        .scoreMode(FunctionScoreQuery.ScoreMode.MAX).boostMode(CombineFunction.MULTIPLY)
         );
 
         /*if (usuarioAutenticado || resultadosProtegidos) {
@@ -135,8 +127,6 @@ public class ElasticsearchRepository {
         }*/
 
         ((BoolQueryBuilder) queryBuilder).mustNot(QueryBuilders.termsQuery("privacidad.keyword", new ArrayList<String>(Arrays.asList("PROTEGIDO", "PRIVADO"))));
-
-
         ((BoolQueryBuilder) queryBuilder).filter(QueryBuilders.termsQuery("colectivo", "pas", "pdi"));
 
         Query query;
@@ -144,18 +134,18 @@ public class ElasticsearchRepository {
         if (paginado) {
             query = new NativeSearchQueryBuilder()
                     .withQuery(queryBuilder)
-                    .withFields("id_ucam", "nombre_mostrar", "correos_institucionales", "foto", "departamentos", "extension",
+                    .withFields("id_ucam", "nombre_completo", "correos_institucionales", "foto", "departamentos", "extension",
                             "alias_web", "ubicacion", "colectivo", "facebook", "instagram", "twitter", "linkedin",
-                            "youtube", "web", "cargos.departamento", "telefonos")
+                            "youtube", "web", "cargos.departamento", "telefono_ucam")
                     .withPageable(p)
                     .withTrackScores(true)
                     .build();
         } else {
                     query = new NativeSearchQueryBuilder()
                     .withQuery(queryBuilder)
-                    .withFields("id_ucam", "nombre_mostrar", "correos_institucionales", "foto", "departamentos", "extension",
+                    .withFields("id_ucam", "nombre_completo", "correos_institucionales", "foto", "departamentos", "extension",
                             "alias_web", "ubicacion", "colectivo", "facebook", "instagram", "twitter", "linkedin",
-                            "youtube", "web", "cargos.departamento", "telefonos")
+                            "youtube", "web", "cargos.departamento", "telefono_ucam")
                     .withTrackScores(true)
                     .build();
         }
@@ -168,5 +158,4 @@ public class ElasticsearchRepository {
 
         return listPaginated;
     }
-
 }

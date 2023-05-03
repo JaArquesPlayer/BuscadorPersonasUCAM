@@ -10,6 +10,10 @@ public class PersonaDTO implements Serializable {
 
     private Long id;
     private String nombre_completo;
+    private String alias_web;
+    private String telefono_ucam;
+    private String nombre;
+    private String email;
     private String nombre_mostrar;
     private List<String> areas_conocimiento;
     private List<String> correos_institucionales;
@@ -22,6 +26,8 @@ public class PersonaDTO implements Serializable {
     private String instagram;
     private String linkedin;
     private String twitter;
+    private String facebook;
+    private String youtube;
     private String ubicacion;
     private String sobre_mi;
     private String frase;
@@ -35,6 +41,39 @@ public class PersonaDTO implements Serializable {
     private List<DocenciaDTO> docencia;
     private List<GrupoInvestigacionDTO> grupos_investigacion;
     private String foto;
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFacebook() {
+        return facebook;
+    }
+
+    public void setFacebook(String facebook) {
+        this.facebook = facebook;
+    }
+
+    public String getYoutube() {
+        return youtube;
+    }
+
+    public void setYoutube(String youtube) {
+        this.youtube = youtube;
+    }
+
+    public String getAlias_web() {
+        return alias_web;
+    }
+
+    public void setAlias_web(String alias_web) {
+        this.alias_web = alias_web;
+    }
 
     public Long getId() {
         return id;
@@ -250,5 +289,21 @@ public class PersonaDTO implements Serializable {
 
     public void setSexo(String sexo) {
         this.sexo = sexo;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getTelefono_ucam() {
+        return telefono_ucam;
+    }
+
+    public void setTelefono_ucam(String telefono_ucam) {
+        this.telefono_ucam = telefono_ucam;
     }
 }

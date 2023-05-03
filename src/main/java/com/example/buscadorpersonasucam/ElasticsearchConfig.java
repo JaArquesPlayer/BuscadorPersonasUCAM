@@ -1,48 +1,73 @@
 package com.example.buscadorpersonasucam;
 
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.elasticsearch.client.ClientConfiguration;
+import org.springframework.data.elasticsearch.client.RestClients;
+import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
+import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
+
+import java.time.Duration;
 
 @Configuration
 @EnableElasticsearchRepositories(basePackages = "com.example.buscadorpersonasucam.repository")
-public class ElasticsearchConfig {
+public class ElasticsearchConfig extends AbstractElasticsearchConfiguration {
 
-    @Value("${elasticsearch.host}")
-    private static String elasticsearchHost;
+    @Value("${elasticsearch.host:null}")
+    private String eHost;
+    @Value("${elasticsearch.port:null}")
+    private int ePort;
+    @Value("${elasticsearch.clustername:null}")
+    private String eClusterName;
+    @Value("${elasticsearch.username:null}")
+    private String eUsername;
+    @Value("${elasticsearch.password:null}")
+    private String ePassword;
 
-    @Value("${elasticsearch.port}")
-    private static int elasticsearchPort;
+    @Bean
+    RestHighLevelClient client() {
+        ClientConfiguration clientConfiguration  = null;
+        if(eUsername != "null") {
+            clientConfiguration  = ClientConfiguration.builder()
+                    .connectedTo(eHost + ":" + ePort)
+                    .withBasicAuth(eUsername, ePassword)
+                    .withSocketTimeout(Duration.ofSeconds(10))
+                    .withConnectTimeout(Duration.ofSeconds(10)).build();
+        } else {
+            clientConfiguration  = ClientConfiguration.builder()
+                    .connectedTo(eHost + ":" + ePort)
+                    .withSocketTimeout(Duration.ofSeconds(10))
+                    .withConnectTimeout(Duration.ofSeconds(10)).build();
+        }
 
-    @Bean(destroyMethod = "close")
-    public static RestHighLevelClient restHighLevelClient() {
+        return RestClients.create(clientConfiguration).rest();
+    }
 
-        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY,
-                new UsernamePasswordCredentials("", ""));
+    @Bean(name = "elasticsearchTemplate")
+    ElasticsearchOperations elasticsearchTemplate() {
+        return new ElasticsearchRestTemplate(client());
+    }
 
-        RestClientBuilder builder = RestClient.builder(
-                        new HttpHost("localhost", 9200, "http"))
-                .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
-                        .setDefaultCredentialsProvider(credentialsProvider)
-                        .setDefaultRequestConfig(RequestConfig.custom()
-                                .setConnectTimeout(5000)
-                                .setSocketTimeout(30000)
-                                .setConnectionRequestTimeout(0)
-                                .build()));
+    @Override
+    public RestHighLevelClient elasticsearchClient() {
+        return client();
+    }
 
-        RestHighLevelClient client = new RestHighLevelClient(builder);
-        return client;
+    /*
+    @Override
+    public ElasticsearchConverter elasticsearchConverter() {
+        return new MappingElasticsearchConverter(elasticsearchMappingContext());
+    }
+    */
+
+    @Bean
+    public ElasticsearchOperations elasticsearchOperations() {
+        return new ElasticsearchRestTemplate(client());
     }
 }

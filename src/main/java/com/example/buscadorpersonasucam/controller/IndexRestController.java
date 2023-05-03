@@ -41,14 +41,7 @@ public class IndexRestController {
         HttpHeaders headers = new HttpHeaders();
 
         PersonaDTO persona = getPersonaById(id).toDTO();
-        String foto = persona.getFoto();
-        byte[] bytes = Base64.getDecoder().decode(foto);
-
-        //prueba
-        //File fichero = new File("C:/11.jpg");
-        //InputStream in = new FileInputStream(fichero);
-        //byte[] media = IOUtils.toByteArray(in);
-        //prueba
+        byte[] bytes = Base64.getDecoder().decode(persona.getFoto());
 
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());
         ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(bytes, headers, HttpStatus.OK);

@@ -3,12 +3,13 @@ package com.example.buscadorpersonasucam.controller;
 import com.example.buscadorpersonasucam.beans.DTO.*;
 import com.example.buscadorpersonasucam.database.entity.PersonaElastic;
 import com.example.buscadorpersonasucam.repository.ElasticsearchRepository;
+
+import com.example.buscadorpersonasucam.services.PersonaService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.text.WordUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.text.Normalizer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import java.util.logging.Logger;
@@ -33,13 +34,15 @@ public class IndexController {
 
     private final static Logger logger = Logger.getLogger("com.example.buscadorpersonasucam.controller.IndexController");
 
+    private final PersonaService buscadorService;
     private final ElasticsearchRepository elasticsearchRepository;
 
 
     @Value("${meta_imagen_controller_call}")
     private String ruta_controller_imagen;
 
-    public IndexController(ElasticsearchRepository elasticsearchRepository) {
+    public IndexController(PersonaService buscadorService, ElasticsearchRepository elasticsearchRepository) {
+        this.buscadorService = buscadorService;
         this.elasticsearchRepository = elasticsearchRepository;
     }
 
@@ -76,7 +79,7 @@ public class IndexController {
 
         int maxPublicaciones = (int) Math.ceil((double) personaEncontradaDTO.getPublicaciones().size() / 10);
         List<Integer> arrayPublicaciones = new ArrayList<>();
-        for (int i=1; i<=maxPublicaciones; i++) {
+        for (int i=0; i<maxPublicaciones; i++) {
             arrayPublicaciones.add(i);
         }
         model.addAttribute("maxPagPublicaciones", arrayPublicaciones);
@@ -97,7 +100,7 @@ public class IndexController {
         }
         int maxProyectosComp = (int) Math.ceil((double) proyectosCompetitivosDTO.size() / 10);
         List<Integer> arrayProyectosComp = new ArrayList<>();
-        for (int i=1; i<=maxProyectosComp; i++) {
+        for (int i=0; i<maxProyectosComp; i++) {
             arrayProyectosComp.add(i);
         }
         model.addAttribute("maxPagProyectosComp", arrayProyectosComp);
@@ -117,7 +120,7 @@ public class IndexController {
         }
         int maxProyectosNoComp = (int) Math.ceil((double) proyectosNoCompetitivosDTO.size() / 10);
         List<Integer> arrayProyectosNoComp = new ArrayList<>();
-        for (int i=1; i<=maxProyectosNoComp; i++) {
+        for (int i=0; i<maxProyectosNoComp; i++) {
             arrayProyectosNoComp.add(i);
         }
         model.addAttribute("maxPagProyectosNoComp", arrayProyectosNoComp);
@@ -229,24 +232,29 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/searchPersonal/{busqueda}")
-    public String buscarPersonasUrl(@PathVariable String busqueda, Model model, @RequestParam("pagina") int pagina) throws IOException{
+    public String buscarPersonasUrl(@PathVariable String busqueda, Model model, @RequestParam(defaultValue = "1") int page,
+                                                                                @RequestParam(defaultValue = "6") int size,
+                                                                                @RequestParam(required = false) Boolean primeraBusqueda,
+                                                                                @RequestParam(defaultValue = "true") Boolean paginado) {
 
-        Pageable p = PageRequest.of(pagina, 6);
-        List<PersonaDTO> personasEncontradas = new ArrayList<>();
-
-        if (busqueda.length() >= 3) {
-            if (busqueda != null) {
-                busqueda = normalize(busqueda).toLowerCase();
-                personasEncontradas = getPersonasByBusquedaSized(busqueda, p, false, true);
+        ResultadoBusquedaDTO resultado = new ResultadoBusquedaDTO();
+        if((busqueda != null)) {
+            if ((busqueda.length() > 2)) {
+                Pageable requestedPage = PageRequest.of(page, size);
+                busqueda = Normalizer.normalize(busqueda, Normalizer.Form.NFD);
+                busqueda = busqueda.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+                resultado = buscadorService.getPersonas(busqueda, requestedPage);
             }
         }
 
-        if (personasEncontradas.isEmpty() && pagina == 0){
+        logger.info(resultado.getListaPersonas().toString());
+
+        if (resultado == null && page == 0){
             return "plantillas/sinResultado";
         } else{
-            pagina += 1;
-            model.addAttribute("i", pagina);
-            model.addAttribute("personasEncontradas", personasEncontradas);
+            page += 1;
+            model.addAttribute("i", page);
+            model.addAttribute("personasEncontradas", resultado.getListaPersonas());
             return "plantillas/personal";
         }
     }

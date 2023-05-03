@@ -345,7 +345,24 @@
                           <span class="sr-only">Anterior</span>
                         </a>
                       </li>
-                      <li th:each="pagina : ${maxPagPublicaciones}" th:attr="data-variable=${pagina}" onclick="ajaxCallPublicaciones(this.getAttribute('data-variable'))"  class="page-item number-item ng-star-inserted">
+                      <li th:each="pagina : ${maxPagPublicaciones}" th:attr="data-variable=${pagina}" onclick="function ajaxCallPublicaciones(attribute) {
+                          var idUcam = $('#idUcam').val();
+                          var $url = '/prueba/paginacionPerfilPublicaciones/' + idUcam;
+
+                          $.ajax({
+                            type: 'GET',
+                            url: $url,
+                            data: { pagina: attribute },
+                            dataType: 'html'
+                          })
+                          .done(function(data) {
+                            $('#contenidoPublicaciones').html(data);
+                            console.log('Busqueda correcta');
+                          })
+                          .fail(function() {
+                            console.log('Error al buscar');
+                          });
+                      } ajaxCallPublicaciones(this.getAttribute('data-variable'))"  class="page-item number-item ng-star-inserted">
                           <a class="page-link" th:text="${pagina}"></a>
                       </li>
                       <li id="siguiente" class="page-item next-item">

@@ -14,6 +14,7 @@ import javax.persistence.Id;
 
 import java.io.Serializable;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -556,6 +557,9 @@ public class PersonaElastic implements Serializable {
         personaDTO.setGrupos_investigacion(this.grupos_investigacion);
         personaDTO.setDepartamentos(this.departamentos);
         personaDTO.setSexo(this.sexo);
+        personaDTO.setNombre(this.nombre);
+        personaDTO.setAlias_web(this.alias_web);
+        personaDTO.setTelefono_ucam(this.telefono_ucam);
 
         return personaDTO;
     }
