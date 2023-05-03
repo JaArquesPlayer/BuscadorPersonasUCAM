@@ -1,23 +1,27 @@
 package com.example.buscadorpersonasucam;
 
-import org.elasticsearch.client.RestHighLevelClient;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.elasticsearch.client.ClientConfiguration;
-import org.springframework.data.elasticsearch.client.RestClients;
-import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
-import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
-import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
+        import org.apache.http.HttpHost;
+        import org.apache.http.auth.AuthScope;
+        import org.apache.http.auth.UsernamePasswordCredentials;
+        import org.apache.http.client.CredentialsProvider;
+        import org.apache.http.client.config.RequestConfig;
+        import org.apache.http.impl.client.BasicCredentialsProvider;
+        import org.elasticsearch.client.RestClient;
+        import org.elasticsearch.client.RestClientBuilder;
+        import org.elasticsearch.client.RestHighLevelClient;
+        import org.springframework.beans.factory.annotation.Value;
+        import org.springframework.context.annotation.Bean;
+        import org.springframework.context.annotation.Configuration;
+        import org.springframework.data.elasticsearch.client.ClientConfiguration;
+        import org.springframework.data.elasticsearch.client.RestClients;
+        import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
+        import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
-import java.time.Duration;
+        import java.time.Duration;
 
 @Configuration
 @EnableElasticsearchRepositories(basePackages = "com.example.buscadorpersonasucam.repository")
-public class ElasticsearchConfig extends AbstractElasticsearchConfiguration {
+public class ElasticsearchConfig {
 
     @Value("${elasticsearch.host:null}")
     private String eHost;
@@ -49,25 +53,23 @@ public class ElasticsearchConfig extends AbstractElasticsearchConfiguration {
         return RestClients.create(clientConfiguration).rest();
     }
 
-    @Bean(name = "elasticsearchTemplate")
-    ElasticsearchOperations elasticsearchTemplate() {
-        return new ElasticsearchRestTemplate(client());
-    }
+    @Bean(destroyMethod = "close")
+    public static RestHighLevelClient restHighLevelClient() {
 
-    @Override
-    public RestHighLevelClient elasticsearchClient() {
-        return client();
-    }
+        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY,
+                new UsernamePasswordCredentials("", ""));
 
-    /*
-    @Override
-    public ElasticsearchConverter elasticsearchConverter() {
-        return new MappingElasticsearchConverter(elasticsearchMappingContext());
-    }
-    */
+        RestClientBuilder builder = RestClient.builder(new HttpHost("localhost", 9200, "http"))
+                .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
+                .setDefaultCredentialsProvider(credentialsProvider)
+                .setDefaultRequestConfig(RequestConfig.custom()
+                .setConnectTimeout(5000)
+                .setSocketTimeout(5000)
+                .setConnectionRequestTimeout(0)
+                .build()));
 
-    @Bean
-    public ElasticsearchOperations elasticsearchOperations() {
-        return new ElasticsearchRestTemplate(client());
+        RestHighLevelClient client = new RestHighLevelClient(builder);
+        return client;
     }
 }

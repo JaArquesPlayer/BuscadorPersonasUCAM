@@ -5,12 +5,15 @@ import com.example.buscadorpersonasucam.beans.DTO.ResultadoBusquedaDTO;
 import com.example.buscadorpersonasucam.database.entity.PersonaElastic;
 import com.example.buscadorpersonasucam.repository.ElasticsearchRepository;
 import org.apache.commons.text.WordUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -24,6 +27,21 @@ public class PersonaService {
 
     public PersonaService(ElasticsearchRepository elasticsearchRepository) {
         this.elasticsearchRepository = elasticsearchRepository;
+    }
+
+    public List<PersonaDTO> getAllPersonasByNombre(@NotNull String busqueda) throws IOException {
+
+        busqueda = normalize(busqueda);
+        SearchPage<PersonaElastic> result = elasticsearchRepository.searchAllByNombre(busqueda, false, false);
+
+        List<PersonaDTO> personas = new ArrayList<>();
+        for (SearchHit<PersonaElastic> searchHit : result.getSearchHits()) {
+            PersonaElastic personaElastic = searchHit.getContent();
+            PersonaDTO personaDTO = personaElastic.toDTO();
+            personas.add(personaDTO);
+        }
+
+        return personas;
     }
 
     public ResultadoBusquedaDTO getPersonas(String texto, Pageable p) {
@@ -118,12 +136,16 @@ public class PersonaService {
         resultadoBusquedaDTO.setPageSize(p.getPageSize());
         resultadoBusquedaDTO.setListaPersonas(listaResultados);
         resultadoBusquedaDTO.setTotalItems(elasticsearchRepository.totalHits);
-        resultadoBusquedaDTO.setTotalPages((int) (elasticsearchRepository.totalHits / p.getPageSize()));
+        resultadoBusquedaDTO.setTotalPages((elasticsearchRepository.totalHits / p.getPageSize()));
         if (elasticsearchRepository.totalHits % p.getPageSize() > 0) {
             resultadoBusquedaDTO.setTotalPages(resultadoBusquedaDTO.getTotalPages() + 1);
         }
         logger.info("Retorno ResultadoBusquedaDTO");
         return resultadoBusquedaDTO;
+    }
+
+    public String normalize(String string) {
+        return Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
     }
 }
 

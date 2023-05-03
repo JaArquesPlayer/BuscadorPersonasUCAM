@@ -138,7 +138,7 @@
                     </svg>
                 </i>-->
                 <i class="icon-room"></i>
-                <a th:if="${persona.ubicacion != null}" th:href="'/prueba/departamento' + ${persona.ubicacion}" th:text="${persona.ubicacion}"></a>
+                <a th:if="${persona.ubicacion != null}" th:href="'/personas/departamento' + ${persona.ubicacion}" th:text="${persona.ubicacion}"></a>
               </p>
               <ul class="list-inline mt-2">
                 <li class="list-inline-item text-size-titulo2" th:if="${persona.web != null && persona.web != ''}">
@@ -200,7 +200,7 @@
                 </svg>
             </i>-->
             <i class="icon-room"></i>
-            <a th:if="${persona.ubicacion != null}" th:href="'/prueba/departamento' + ${persona.ubicacion}" th:text="${persona.ubicacion}"></a>
+            <a th:if="${persona.ubicacion != null}" th:href="'/personas/departamento' + ${persona.ubicacion}" th:text="${persona.ubicacion}"></a>
           </p>
           <ul class="list-inline mt-2">
             <li class="list-inline-item text-size-titulo2" th:if="${persona.web != null && persona.web != ''}">
@@ -310,14 +310,14 @@
               <!--personas relacionadas-->
               <h3 class="text-size-subtitulo1">Personas relacionadas</h3>
               <div id="related-profiles" th:if="${not #lists.isEmpty(personasEncontradasDepartamento)}">
-                <a th:each="persona, iter : ${personasEncontradasDepartamento}" th:if="${iter.index < 6}" th:href="'/prueba/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper">
+                <a th:each="persona, iter : ${personasEncontradasDepartamento}" th:if="${iter.index < 6}" th:href="'/personas/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper">
                   <div class="profile-card">
                     <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
                     <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
                     <p class="related-profile__caption" th:text="${persona.nombre_mostrar}"></p>
                   </div>
                 </a>
-                <a th:each="persona, iter : ${personasEncontradasDepartamento}" th:if="${iter.index >= 6}" th:href="'/prueba/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper d-none ver-mas">
+                <a th:each="persona, iter : ${personasEncontradasDepartamento}" th:if="${iter.index >= 6}" th:href="'/personas/perfil/'+${persona.id}" th:title="${persona.nombre_mostrar}" class="related-profile__wrapper d-none ver-mas">
                   <div class="profile-card">
                     <img th:if="${persona.foto != null && persona.foto != ''}" th:src="'data:image/jpeg;base64,' + ${persona.foto}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
                     <img th:unless="${persona.foto != null && persona.foto != ''}" th:src="@{/assets/img/sinfoto.jpg}" th:alt="${persona.nombre_mostrar}" class="img-fluid">
@@ -347,7 +347,7 @@
                       </li>
                       <li th:each="pagina : ${maxPagPublicaciones}" th:attr="data-variable=${pagina}" onclick="function ajaxCallPublicaciones(attribute) {
                           var idUcam = $('#idUcam').val();
-                          var $url = '/prueba/paginacionPerfilPublicaciones/' + idUcam;
+                          var $url = '/personas/paginacionPerfilPublicaciones/' + idUcam;
 
                           $.ajax({
                             type: 'GET',
@@ -363,7 +363,7 @@
                             console.log('Error al buscar');
                           });
                       } ajaxCallPublicaciones(this.getAttribute('data-variable'))"  class="page-item number-item ng-star-inserted">
-                          <a class="page-link" th:text="${pagina}"></a>
+                          <a class="page-link" th:text="${pagina + 1}"></a>
                       </li>
                       <li id="siguiente" class="page-item next-item">
                         <a class="page-link">
@@ -399,7 +399,26 @@
                           <span class="sr-only">Anterior</span>
                         </a>
                       </li>
+                      <li th:each="pagina : ${maxPagProyectosComp}" th:attr="data-variable=${pagina}" onclick="function ajaxCallProyectosComp(attribute) {
+                          var idUcam = $('#idUcam').val();
+                          var $url = '/personas/paginacionPerfilProyectosComp/' + idUcam;
 
+                          $.ajax({
+                            type: 'GET',
+                            url: $url,
+                            data: { pagina: attribute },
+                            dataType: 'html'
+                          })
+                          .done(function(data) {
+                            $('#contenidoProyectosComp').html(data);
+                            console.log('Busqueda correcta');
+                          })
+                          .fail(function() {
+                            console.log('Error al buscar');
+                          });
+                      } ajaxCallProyectosComp(this.getAttribute('data-variable'))"  class="page-item number-item ng-star-inserted">
+                        <a class="page-link" th:text="${pagina + 1}"></a>
+                      </li>
                       <li id="siguiente2" class="page-item next-item">
                         <a class="page-link">
                           <span aria-hidden="true">»</span>
@@ -433,7 +452,26 @@
                           <span class="sr-only">Anterior</span>
                         </a>
                       </li>
+                      <li th:each="pagina : ${maxPagProyectosNoComp}" th:attr="data-variable=${pagina}" onclick="function ajaxCallProyectosNoComp(attribute) {
+                          var idUcam = $('#idUcam').val();
+                          var $url = '/personas/paginacionPerfilProyectosNoComp/' + idUcam;
 
+                          $.ajax({
+                            type: 'GET',
+                            url: $url,
+                            data: { pagina: attribute },
+                            dataType: 'html'
+                          })
+                          .done(function(data) {
+                            $('#contenidoProyectosNoComp').html(data);
+                            console.log('Busqueda correcta');
+                          })
+                          .fail(function() {
+                            console.log('Error al buscar');
+                          });
+                      } ajaxCallProyectosNoComp(this.getAttribute('data-variable'))"  class="page-item number-item ng-star-inserted">
+                        <a class="page-link" th:text="${pagina + 1}"></a>
+                      </li>
                       <li id="siguiente3" class="page-item next-item">
                         <a class="page-link">
                           <span aria-hidden="true">»</span>
@@ -490,9 +528,9 @@
     var pagProyectosNoCompetitivos = 0;
 
     var idUcam = $('#idUcam').val();
-    var $url = "/prueba/paginacionPerfilPublicaciones/" + idUcam;
-    var $url2 = "/prueba/paginacionPerfilProyectosComp/" + idUcam;
-    var $url3 = "/prueba/paginacionPerfilProyectosNoComp/" + idUcam;
+    var $url = "/personas/paginacionPerfilPublicaciones/" + idUcam;
+    var $url2 = "/personas/paginacionPerfilProyectosComp/" + idUcam;
+    var $url3 = "/personas/paginacionPerfilProyectosNoComp/" + idUcam;
 
     function ajaxCall($url, $pagina, $ubicacion){
       $.ajax({

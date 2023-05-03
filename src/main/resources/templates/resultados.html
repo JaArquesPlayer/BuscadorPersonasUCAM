@@ -221,13 +221,13 @@
         var $url3 = "";
 
         if ($busqueda.val() == ""){
-            $url = "/prueba/searchPersonal/" + "a";
-            $url2 = "/prueba/searchDepartamentos/" + "a";
-            $url3 = "/prueba/searchPublicaciones/" + "a";
+            $url = "/personas/searchPersonal/" + "a";
+            $url2 = "/personas/searchDepartamentos/" + "a";
+            $url3 = "/personas/searchPublicaciones/" + "a";
         }else{
-            $url = "/prueba/searchPersonal/" + $busqueda.val();
-            $url2 = "/prueba/searchDepartamentos/" + $busqueda.val();
-            $url3 = "/prueba/searchPublicaciones/" + $busqueda.val();
+            $url = "/personas/searchPersonal/" + $busqueda.val();
+            $url2 = "/personas/searchDepartamentos/" + $busqueda.val();
+            $url3 = "/personas/searchPublicaciones/" + $busqueda.val();
         }
 
         $.ajax({

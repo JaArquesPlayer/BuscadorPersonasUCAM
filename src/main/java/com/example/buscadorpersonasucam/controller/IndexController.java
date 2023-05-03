@@ -17,7 +17,6 @@ import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -232,22 +231,17 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/searchPersonal/{busqueda}")
-    public String buscarPersonasUrl(@PathVariable String busqueda, Model model, @RequestParam(defaultValue = "1") int page,
-                                                                                @RequestParam(defaultValue = "6") int size,
-                                                                                @RequestParam(required = false) Boolean primeraBusqueda,
-                                                                                @RequestParam(defaultValue = "true") Boolean paginado) {
+    public String buscarPersonasUrl(@PathVariable String busqueda, Model model, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "6") int size, @RequestParam(required = false) Boolean primeraBusqueda, @RequestParam(defaultValue = "true") Boolean paginado) {
 
         ResultadoBusquedaDTO resultado = new ResultadoBusquedaDTO();
         if((busqueda != null)) {
-            if ((busqueda.length() > 2)) {
+            if ((busqueda.length() >= 3)) {
                 Pageable requestedPage = PageRequest.of(page, size);
                 busqueda = Normalizer.normalize(busqueda, Normalizer.Form.NFD);
                 busqueda = busqueda.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
                 resultado = buscadorService.getPersonas(busqueda, requestedPage);
             }
         }
-
-        logger.info(resultado.getListaPersonas().toString());
 
         if (resultado == null && page == 0){
             return "plantillas/sinResultado";
@@ -360,20 +354,20 @@ public class IndexController {
     @RequestMapping(value = "/searchNombres/{busqueda}")
     public String buscarNombresUrl(@PathVariable(required = false) String busqueda, Model model) throws IOException{
 
-        if (busqueda.length() >= 3){
-            List<PersonaDTO> personasEncontradas = new ArrayList<>();
-            if (busqueda != null) {
-                personasEncontradas = getAllPersonasByNombre(busqueda);
-            }
+        List<PersonaDTO> personasEncontradasDTO;
 
-            List<PersonaDTO> personasEncontradasDTO = new ArrayList<>();
-            for (int i=0; i<personasEncontradas.size(); i++){
-                PersonaDTO personaDTO = personasEncontradas.get(i);
-                personasEncontradasDTO.add(personaDTO);
-                if (i == 4){break;}
-            }
+        if((busqueda != null)) {
+            if (busqueda.length() >= 3) {
+                busqueda = Normalizer.normalize(busqueda, Normalizer.Form.NFD);
+                busqueda = busqueda.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+                personasEncontradasDTO = buscadorService.getAllPersonasByNombre(busqueda);
 
-            model.addAttribute("personasEncontradas", personasEncontradasDTO);
+                if (personasEncontradasDTO.size() > 5){
+                    model.addAttribute("personasEncontradas", personasEncontradasDTO.subList(0, 4));
+                }else{
+                    model.addAttribute("personasEncontradas", personasEncontradasDTO);
+                }
+            }
         }
 
         return "plantillas/nombres";
@@ -408,7 +402,6 @@ public class IndexController {
 
     public List<PersonaDTO> getPersonasByDepartamento(@NotNull String busqueda) throws IOException{
 
-        //todo searchAll()
         String result = String.valueOf(elasticsearchRepository.searchAll());
 
         ObjectMapper mapper = new ObjectMapper();
@@ -469,25 +462,6 @@ public class IndexController {
         return personas;
     }
 
-    public List<PersonaDTO> getAllPersonasByNombre(@NotNull String busqueda) throws IOException {
-
-        busqueda = normalize(busqueda);
-        String result = String.valueOf(elasticsearchRepository.searchAllByNombre(busqueda));
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode rootNode = mapper.readTree(result);
-        JsonNode hitsNode = rootNode.get("hits").get("hits");
-        List<PersonaDTO> personas = new ArrayList<>();
-
-        for (JsonNode hit : hitsNode) {
-            JsonNode sourceNode = hit.get("_source");
-            PersonaElastic personaElastic = mapper.treeToValue(sourceNode, PersonaElastic.class);
-            personas.add(personaElastic.toDTO());
-        }
-
-        return personas;
-    }
-
     public List<DepartamentoDTO> getDepartamentosByBusqueda(@NotNull String busqueda) throws IOException{
         busqueda = normalize(busqueda).toLowerCase();
 
@@ -500,7 +474,9 @@ public class IndexController {
 
         if (busqueda.length() >= 3){
             if (busqueda != null) {
-                personasEncontradas = getAllPersonasByNombre(busqueda);
+                busqueda = Normalizer.normalize(busqueda, Normalizer.Form.NFD);
+                busqueda = busqueda.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+                personasEncontradas = buscadorService.getAllPersonasByNombre(busqueda);
                 personasEncontradasPorDepartamento = getPersonasByDepartamento(busqueda);
             }
 

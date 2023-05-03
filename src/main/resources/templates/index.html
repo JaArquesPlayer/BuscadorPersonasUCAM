@@ -97,9 +97,9 @@
         <div class="form-wrapper">
             <form id="searchPortadaForm" th:action="@{/searchPersonal/}">
                 <div class="input-group">
-          <span class="input-group-prepend">
-              <div class="input-group-text bg-light border-right-0"><i class="icon-lupa"></i></div>
-          </span>
+                      <span class="input-group-prepend">
+                          <div class="input-group-text bg-light border-right-0"><i class="icon-lupa"></i></div>
+                      </span>
                     <input id="busqueda" type="text" autocomplete="off" formControlName="userInput" class="form-control py-2 border-left-0" name="search" placeholder="Nombre, apellidos, extensión, email">
                     <button id="buscar" class="btn">Buscar</button>
                 </div>
@@ -137,33 +137,38 @@
         });
 
         $('#busqueda').on('focus', function () {
-            console.log("aqui llega");
             $('#sugerencias').show();
         });
 
         $('#busqueda').on('blur', function () {
-            console.log("aqui llega tambien");
-            $('#sugerencias').hide();
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                $('#sugerencias').hide();
+            }, 600);
         });
 
         $busqueda.on('keyup', function() {
             clearTimeout(timeout);
             timeout = setTimeout(function() {
-                var $url = "/prueba/searchNombres/" + $busqueda.val();
+                if ($busqueda.val().length >2) {
+                    var $url = "/personas/searchNombres/" + $busqueda.val();
 
-                $.ajax({
-                    type: 'GET',
-                    url: $url,
-                    dataType: 'html'
-                })
-                .done(function(data) {
-                    $sugerencias.html(data);
-                    console.log('Personas encontradas correctamente');
-                })
-                .fail(function() {
-                    console.log('Error al buscar personas');
-                });
-            }, 1000);
+                    $.ajax({
+                        type: 'GET',
+                        url: $url,
+                        dataType: 'html'
+                    })
+                    .done(function (data) {
+                        $sugerencias.html(data);
+                        console.log('Personas encontradas correctamente');
+                    })
+                    .fail(function () {
+                        console.log('Error al buscar personas');
+                    });
+                }else{
+                    $sugerencias.html("");
+                }
+            }, 600);
         });
     });
 </script>

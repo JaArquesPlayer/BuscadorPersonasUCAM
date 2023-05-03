@@ -16,8 +16,6 @@ import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.client.ClientConfiguration;
-import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHitSupport;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -36,15 +34,14 @@ import java.util.logging.Logger;
 @Repository
 public class ElasticsearchRepository {
 
+    private final RestHighLevelClient client;
+
     private final static Logger logger = Logger.getLogger("com.example.buscadorpersonasucam.controller.IndexController");
 
     @Autowired
     ElasticsearchRestTemplate elasticsearchRestTemplate;
 
     public static Integer totalHits;
-
-    private final RestHighLevelClient client;
-    private ClientConfiguration clientConfiguration;
 
     public ElasticsearchRepository(RestHighLevelClient client) {
         this.client = client;
@@ -66,19 +63,66 @@ public class ElasticsearchRepository {
         return client.search(searchRequest, RequestOptions.DEFAULT);
     }
 
-    public SearchResponse searchAllByNombre(String busqueda) throws IOException{
-        //todo
-        RestHighLevelClient client = RestClients.create(clientConfiguration).rest();
+    @Retryable(value = {Exception.class}, maxAttempts = 3, backoff = @Backoff(1000L))
+    public SearchPage<PersonaElastic> searchAllByNombre(String texto, Boolean resultadosProtegidos, Boolean paginado) {
 
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        QueryBuilder query = QueryBuilders.boolQuery()
-                .should(QueryBuilders.matchQuery("nombre_mostrar", busqueda));
-        searchSourceBuilder.query(query);
-        SearchRequest searchRequest = new SearchRequest("personas");
-        searchRequest.source(searchSourceBuilder);
+        final List<String> listaPalabras = new ArrayList<>();
+        String[] palabras = texto.split(" ");
+        for (String palabra : palabras) {
+            listaPalabras.add(palabra.substring(0, 1) + "*" + palabra.substring(1) + "*");
+        }
+        String textoFinal = String.join(" AND ", listaPalabras).trim();
+        Map<String, Float> mapaCampos = new HashMap<>() {
+            {
+                put("nombre", 1.0f);
+                put("apellido1", 1.0f);
+                put("apellido2", 1.0f);
+                put("ubicacion", 1.0f);
+                put("cargos.departamento", 1.0f);
+                put("extension", 1.0f);
+                put("correos_institucionales", 1.0f);
+                put("areas_conocimiento", 1.0f);
+            }
+        };
 
-        return client.search(searchRequest, RequestOptions.DEFAULT);
+        FunctionScoreQueryBuilder.FilterFunctionBuilder[] function_score = new FunctionScoreQueryBuilder.FilterFunctionBuilder[]{
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+                        new FieldValueFactorFunctionBuilder("visitas_buscador").factor(1000000).modifier(FieldValueFactorFunction.Modifier.SQUARE).missing(0)),
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("nombre", texto), ScoreFunctionBuilders.weightFactorFunction(100000)),
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("apellido1", texto), ScoreFunctionBuilders.weightFactorFunction(1000)),
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("apellido2", texto), ScoreFunctionBuilders.weightFactorFunction(100))
+        };
+
+        QueryBuilder queryBuilder = QueryBuilders.boolQuery();
+
+        ((BoolQueryBuilder) queryBuilder).must(QueryBuilders.functionScoreQuery(QueryBuilders.boolQuery()
+                        .must(QueryBuilders.queryStringQuery(textoFinal).fields(mapaCampos)), function_score)
+                .scoreMode(FunctionScoreQuery.ScoreMode.MAX).boostMode(CombineFunction.MULTIPLY)
+        );
+
+
+        ((BoolQueryBuilder) queryBuilder).mustNot(QueryBuilders.termsQuery("privacidad.keyword", new ArrayList<String>(Arrays.asList("PROTEGIDO", "PRIVADO"))));
+        ((BoolQueryBuilder) queryBuilder).filter(QueryBuilders.termsQuery("colectivo", "pas", "pdi"));
+
+        Query query;
+        query = new NativeSearchQueryBuilder()
+                .withQuery(queryBuilder)
+                .withFields("id_ucam", "nombre_completo", "correos_institucionales", "foto", "departamentos", "extension",
+                        "alias_web", "ubicacion", "colectivo", "facebook", "instagram", "twitter", "linkedin",
+                        "youtube", "web", "cargos.departamento", "telefono_ucam")
+                .withTrackScores(true)
+                .build();
+
+
+        SearchHits<PersonaElastic> list = elasticsearchRestTemplate.search(query, PersonaElastic.class);
+        SearchPage<PersonaElastic> listPaginated = SearchHitSupport.searchPageFor(list, query.getPageable());
+
+        totalHits = Math.toIntExact(list.getTotalHits());
+        logger.info("Retorno resultados personas");
+
+        return listPaginated;
     }
+
 
     @Retryable(value = {Exception.class}, maxAttempts = 3, backoff = @Backoff(1000L))
     public SearchPage<PersonaElastic> busquedaResultados(String texto, Pageable p, Boolean resultadosProtegidos, Boolean paginado) {
@@ -105,10 +149,12 @@ public class ElasticsearchRepository {
         };
 
         FunctionScoreQueryBuilder.FilterFunctionBuilder[] function_score = new FunctionScoreQueryBuilder.FilterFunctionBuilder[]{
-                new FunctionScoreQueryBuilder.FilterFunctionBuilder(new FieldValueFactorFunctionBuilder("visitas_buscador").factor(1000000).modifier(FieldValueFactorFunction.Modifier.SQUARE).missing(0)),
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+                        new FieldValueFactorFunctionBuilder("visitas_buscador").factor(1000000).modifier(FieldValueFactorFunction.Modifier.SQUARE).missing(0)),
                 new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("nombre", texto), ScoreFunctionBuilders.weightFactorFunction(100000)),
                 new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("apellido1", texto), ScoreFunctionBuilders.weightFactorFunction(1000)),
                 new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("apellido2", texto), ScoreFunctionBuilders.weightFactorFunction(100)),
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("nombre_completo", texto), ScoreFunctionBuilders.weightFactorFunction(100)),
                 new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("ubicacion", texto), ScoreFunctionBuilders.weightFactorFunction(50)),
                 new FunctionScoreQueryBuilder.FilterFunctionBuilder(QueryBuilders.matchQuery("correos_institucionales", texto), ScoreFunctionBuilders.weightFactorFunction(1))
         };
